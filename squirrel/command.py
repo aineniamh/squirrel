@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-from alignHPXV.utils.log_colours import green,cyan
+from squirrel.utils.log_colours import green,cyan
 
-import alignHPXV.utils.custom_logger as custom_logger
-from alignHPXV.utils.config import *
-from alignHPXV.utils.initialising import *
-import alignHPXV.utils.io_parsing as io
-from alignHPXV import __version__
+import squirrel.utils.custom_logger as custom_logger
+from squirrel.utils.config import *
+from squirrel.utils.initialising import *
+import squirrel.utils.io_parsing as io
+from squirrel import __version__
 from . import _program
 
 import os
@@ -19,8 +19,8 @@ cwd = os.getcwd()
 
 def main(sysargs = sys.argv[1:]):
     parser = argparse.ArgumentParser(prog = _program,
-    description='alignHPXV: monkeypox alignment tool',
-    usage='''alignHPXV <query> [options]''')
+    description='squirrel: monkeypox alignment tool',
+    usage='''squirrel <query> [options]''')
 
     io_group = parser.add_argument_group('Input-Output options')
     io_group.add_argument('query', nargs="*", help='Input fasta file of sequences to analyse.')
@@ -30,7 +30,7 @@ def main(sysargs = sys.argv[1:]):
     io_group.add_argument("--no-temp",action="store_true",help="Output all intermediate files, for dev purposes.")
     
     m_group = parser.add_argument_group('Misc options')
-    m_group.add_argument("-v","--version", action='version', version=f"alignHPXV {__version__}")
+    m_group.add_argument("-v","--version", action='version', version=f"squirrel {__version__}")
     m_group.add_argument("--verbose",action="store_true",help="Print lots of stuff to screen")
     m_group.add_argument("-t","--threads",action="store",default=1,type=int, help="Number of threads")
 

@@ -3,25 +3,25 @@ import glob
 import os
 import pkg_resources
 
-from alignHPXV import __version__, _program
+from squirrel import __version__, _program
 
-setup(name='alignHPXV',
+setup(name='squirrel',
       version=__version__,
       packages=find_packages(),
       scripts=[
-            'alignHPXV/scripts/msa.smk'
+            'squirrel/scripts/msa.smk'
                 ],
-      package_data={"alignHPXV":["data/*"]},
+      package_data={"squirrel":["data/*"]},
       install_requires=[
             "biopython>=1.70"
         ],
       description='',
-      url='https://github.com/cov-lineages/alignHPXV',
+      url='https://github.com/cov-lineages/squirrel',
       author='Aine OToole',
       author_email='aine.otoole@ed.ac.uk',
       entry_points="""
       [console_scripts]
-      {program} = alignHPXV.command:main
+      {program} = squirrel.command:main
       """.format(program = _program),
       include_package_data=True,
       keywords=[],

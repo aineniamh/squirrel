@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 import sys
 import os
-from alignHPXV.utils.log_colours import green,cyan
+from squirrel.utils.log_colours import green,cyan
 import select
 from Bio import SeqIO
 
 import tempfile
 import shutil
 
-from alignHPXV.utils.config import *
+from squirrel.utils.config import *
 
 
 def set_up_outdir(outdir_arg,cwd,outdir):

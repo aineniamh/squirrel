@@ -1,8 +1,8 @@
 import os
-from alignHPXV.utils.config import *
+from squirrel.utils.config import *
 from Bio import SeqIO
 import csv
-from alignHPXV.utils.log_colours import green,cyan
+from squirrel.utils.log_colours import green,cyan
 
 rule all:
     input:

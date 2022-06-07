@@ -5,9 +5,9 @@ import itertools
 import pkg_resources
 from Bio import SeqIO
 
-from alignHPXV.utils.log_colours import green,cyan
-from alignHPXV.utils.config import *
-from alignHPXV import __version__
+from squirrel.utils.log_colours import green,cyan
+from squirrel.utils.config import *
+from squirrel import __version__
 
 
 def setup_config_dict(cwd):
@@ -39,7 +39,7 @@ def get_snakefile(thisdir,filename):
 def package_data_check(filename,directory,key,config):
     try:
         package_datafile = os.path.join(directory,filename)
-        data = pkg_resources.resource_filename('alignHPXV', package_datafile)
+        data = pkg_resources.resource_filename('squirrel', package_datafile)
         config[key] = data
     except:
         sys.stderr.write(colour.cyan(f'Error: Missing package data.')+f'\n\t- {filename}\n')
