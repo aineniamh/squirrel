@@ -16,7 +16,7 @@ def setup_config_dict(cwd):
             KEY_INPUT_FASTA:None,
 
             KEY_OUTDIR:cwd,
-            KEY_OUTFILE:"alignment.fasta",
+            KEY_OUTFILE:None,
 
             KEY_TEMPDIR:None,
             KEY_NO_TEMP:False,

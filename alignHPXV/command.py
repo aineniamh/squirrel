@@ -47,7 +47,7 @@ def main(sysargs = sys.argv[1:]):
     get_datafiles(config)
 
     config[KEY_OUTDIR] = io.set_up_outdir(args.outdir,cwd,config[KEY_OUTDIR])
-    config[KEY_OUTFILE] = io.set_up_outfile(args.outfile, config[KEY_OUTFILE],config[KEY_OUTDIR])
+    config[KEY_OUTFILE] = io.set_up_outfile(args.outfile,args.query, config[KEY_OUTFILE],config[KEY_OUTDIR])
     io.set_up_tempdir(args.tempdir,args.no_temp,cwd,config[KEY_OUTDIR], config)
 
     config[KEY_INPUT_FASTA] = io.find_query_file(cwd, config[KEY_TEMPDIR], args.query)

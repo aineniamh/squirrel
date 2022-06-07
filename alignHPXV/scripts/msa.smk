@@ -2,6 +2,7 @@ import os
 from alignHPXV.utils.config import *
 from Bio import SeqIO
 import csv
+from alignHPXV.utils.log_colours import green,cyan
 
 rule all:
     input:
@@ -33,7 +34,7 @@ rule align_to_reference:
                 --trimstart {params.trim_start} \
                 --trimend {params.trim_end} \
                 --trim \
-                --pad > '{output.fasta}'
+                --pad -o '{output.fasta}' &> {log:q}
             """
 
         shell_command = "cat \"{input.fasta}\"" + shell_command
@@ -56,14 +57,17 @@ rule mask_repetitive_regions:
                 length = int(row["Length"])
                 mask_sites.append((start,end,length))
                 total_masked += length
-        
+        records = 0
         with open(output[0],"w") as fw:
             for record in SeqIO.parse(input.fasta,"fasta"):
+                records+=1
                 new_seq = str(record.seq)
                 for site in mask_sites:
                     new_seq = new_seq[:site[0]] + ("N"*site[2]) + new_seq[site[1]:]
                 n_diff = str(record.seq).count("N") - new_seq.count("N")
                 fw.write(f">{record.description}\n{new_seq}\n")
+        
+        print(green(f"{records} masked, aligned sequences written to: ") + f"{output[0]}")
 
 
 
