@@ -2,6 +2,8 @@
 
 **S**ome **QUI**ck **R**earranging to **R**esolve **E**volutionary **L**inks
 
+## Generate a quick monkeypox alignment
+
 ```
 usage: squirrel <input> [options]
 
@@ -24,3 +26,22 @@ Misc options:
   -t THREADS, --threads THREADS
                         Number of threads
 ```
+
+## Installation
+
+
+## Installation
+
+1. Clone this repository and ``cd squirrel``
+2. ``conda env create -f environment.yml``
+3. ``conda activate squirrel``
+4. ``pip install .``
+
+## Check the install worked
+
+Type (in the <strong>squirrel</strong> environment):
+
+```
+squirrel -v
+```
+and you should see the versions of <strong>squirrel</strong>.
