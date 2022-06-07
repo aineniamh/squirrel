@@ -1,12 +1,14 @@
-Name,Minimum,Maximum,Length
-repetitive region,192404,192529,126
-repetitive region,179077,179245,169
-repetitive region,173274,173317,44
-repetitive region,169721,169774,54
-repetitive region,163190,163214,25
-repetitive region,150550,150628,79
-repetitive region,146848,146912,65
-repetitive region,136513,136569,57
-repetitive region,29749,29762,14
-repetitive region,16609,16622,14
-repetitive region,4680,4806,127
+Name,Type,Minimum,Maximum,Length,Direction
+repetitive region,misc_feature,16609,16622,14,none
+repetitive region,misc_feature,29749,29762,14,none
+homopolymeric runs,misc_feature,148334,148351,18,none
+repetitive region,misc_feature,163190,163214,25,none
+repetitive region,misc_feature,174518,174545,28,none
+repetitive region,misc_feature,173274,173317,44,none
+repetitive region,misc_feature,169721,169774,54,none
+repetitive region,misc_feature,136513,136569,57,none
+repetitive region,misc_feature,146848,146912,65,none
+repetitive region,misc_feature,150542,150628,87,none
+repetitive region,misc_feature,192404,192529,126,none
+repetitive region,misc_feature,4680,4806,127,none
+repetitive region,misc_feature,179057,179245,189,none
