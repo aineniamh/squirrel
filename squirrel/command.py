@@ -19,13 +19,13 @@ cwd = os.getcwd()
 
 def main(sysargs = sys.argv[1:]):
     parser = argparse.ArgumentParser(prog = _program,
-    description='squirrel: monkeypox alignment tool',
-    usage='''squirrel <query> [options]''')
+    description='squirrel: Some QUIck Rearranging to Resolve Evolutionary Links',
+    usage='''squirrel <input> [options]''')
 
     io_group = parser.add_argument_group('Input-Output options')
-    io_group.add_argument('query', nargs="*", help='Input fasta file of sequences to analyse.')
+    io_group.add_argument('input', nargs="*", help='Input fasta file of sequences to analyse.')
     io_group.add_argument('-o','--outdir', action="store",help="Output directory. Default: current working directory")
-    io_group.add_argument('--outfile', action="store",help="Optional output file name. Default: alignment.fasta")
+    io_group.add_argument('--outfile', action="store",help="Optional output file name. Default: <input>.aln.fasta")
     io_group.add_argument('--tempdir',action="store",help="Specify where you want the temp stuff to go. Default: $TMPDIR")
     io_group.add_argument("--no-temp",action="store_true",help="Output all intermediate files, for dev purposes.")
     
@@ -47,10 +47,10 @@ def main(sysargs = sys.argv[1:]):
     get_datafiles(config)
 
     config[KEY_OUTDIR] = io.set_up_outdir(args.outdir,cwd,config[KEY_OUTDIR])
-    config[KEY_OUTFILE] = io.set_up_outfile(args.outfile,args.query, config[KEY_OUTFILE],config[KEY_OUTDIR])
+    config[KEY_OUTFILE] = io.set_up_outfile(args.outfile,args.input, config[KEY_OUTFILE],config[KEY_OUTDIR])
     io.set_up_tempdir(args.tempdir,args.no_temp,cwd,config[KEY_OUTDIR], config)
 
-    config[KEY_INPUT_FASTA] = io.find_query_file(cwd, config[KEY_TEMPDIR], args.query)
+    config[KEY_INPUT_FASTA] = io.find_query_file(cwd, config[KEY_TEMPDIR], args.input)
     
     snakefile = get_snakefile(thisdir,"msa")
 

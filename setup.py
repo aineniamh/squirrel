@@ -15,7 +15,7 @@ setup(name='squirrel',
       install_requires=[
             "biopython>=1.70"
         ],
-      description='',
+      description='Some QUIck Rearranging to Resolve Evolutionary Links',
       url='https://github.com/cov-lineages/squirrel',
       author='Aine OToole',
       author_email='aine.otoole@ed.ac.uk',
