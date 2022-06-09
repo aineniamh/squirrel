@@ -17,7 +17,7 @@ def setup_config_dict(cwd):
 
             KEY_OUTDIR:cwd,
             KEY_OUTFILE:None,
-
+            KEY_TRIM_END:190788,
             KEY_TEMPDIR:None,
             KEY_NO_TEMP:False,
 

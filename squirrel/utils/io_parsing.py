@@ -103,3 +103,9 @@ def find_query_file(cwd, tempdir, query_arg):
         sys.exit(-1)
 
     return query
+
+
+def pipeline_options(no_mask, no_itr_mask, config):
+    config[KEY_NO_MASK] = no_mask
+    if no_itr_mask:
+        config[KEY_TRIM_END] = 0

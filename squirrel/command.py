@@ -28,6 +28,10 @@ def main(sysargs = sys.argv[1:]):
     io_group.add_argument('--outfile', action="store",help="Optional output file name. Default: <input>.aln.fasta")
     io_group.add_argument('--tempdir',action="store",help="Specify where you want the temp stuff to go. Default: $TMPDIR")
     io_group.add_argument("--no-temp",action="store_true",help="Output all intermediate files, for dev purposes.")
+
+    a_group = parser.add_argument_group("Pipeline options")
+    a_group.add_argument("--no-mask",action="store_true",help="Skip masking of repetitive regions. Default: masks repeat regions")
+    a_group.add_argument("--no-itr-mask",action="store_true",help="Skip masking of end ITR. Default: masks ITR")
     
     m_group = parser.add_argument_group('Misc options')
     m_group.add_argument("-v","--version", action='version', version=f"squirrel {__version__}")
@@ -49,6 +53,8 @@ def main(sysargs = sys.argv[1:]):
     config[KEY_OUTDIR] = io.set_up_outdir(args.outdir,cwd,config[KEY_OUTDIR])
     config[KEY_OUTFILE] = io.set_up_outfile(args.outfile,args.input, config[KEY_OUTFILE],config[KEY_OUTDIR])
     io.set_up_tempdir(args.tempdir,args.no_temp,cwd,config[KEY_OUTDIR], config)
+
+    io.pipeline_options(args.no_mask, args.no_itr_mask, config)
 
     config[KEY_INPUT_FASTA] = io.find_query_file(cwd, config[KEY_TEMPDIR], args.input)
     
