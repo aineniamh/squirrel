@@ -14,7 +14,7 @@ rule align_to_reference:
         reference = config[KEY_REFERENCE_FASTA]
     params:
         trim_start = 0,
-        trim_end = 190788,
+        trim_end = config[KEY_TRIM_END],
         sam = os.path.join(config[KEY_TEMPDIR],"mapped.sam")
     output:
         fasta = os.path.join(config[KEY_TEMPDIR],"msa.fasta")
@@ -47,27 +47,32 @@ rule mask_repetitive_regions:
     output:
         os.path.join(config[KEY_OUTDIR],config[KEY_OUTFILE])
     run:
-        mask_sites = []
-        total_masked = 0
-        with open(input.mask, "r") as f:
-            reader = csv.DictReader(f)
-            for row in reader:
-                start = int(row["Minimum"]) - 1
-                end = int(row["Maximum"])
-                length = int(row["Length"])
-                mask_sites.append((start,end,length))
-                total_masked += length
-        records = 0
-        with open(output[0],"w") as fw:
-            for record in SeqIO.parse(input.fasta,"fasta"):
-                records+=1
-                new_seq = str(record.seq)
-                for site in mask_sites:
-                    new_seq = new_seq[:site[0]] + ("N"*site[2]) + new_seq[site[1]:]
-                n_diff = str(record.seq).count("N") - new_seq.count("N")
-                fw.write(f">{record.description}\n{new_seq}\n")
-        
-        print(green(f"{records} masked, aligned sequences written to: ") + f"{output[0]}")
+        if not config["no_mask"]:
+            mask_sites = []
+            total_masked = 0
+            with open(input.mask, "r") as f:
+                reader = csv.DictReader(f)
+                for row in reader:
+                    start = int(row["Minimum"]) - 1
+                    end = int(row["Maximum"])
+                    length = int(row["Length"])
+                    mask_sites.append((start,end,length))
+                    total_masked += length
+
+            records = 0
+            with open(output[0],"w") as fw:
+                for record in SeqIO.parse(input.fasta,"fasta"):
+                    records+=1
+                    new_seq = str(record.seq)
+                    for site in mask_sites:
+                        new_seq = new_seq[:site[0]] + ("N"*site[2]) + new_seq[site[1]:]
+                    n_diff = str(record.seq).count("N") - new_seq.count("N")
+                    fw.write(f">{record.description}\n{new_seq}\n")
+            
+            print(green(f"{records} masked, aligned sequences written to: ") + f"{output[0]}")
+        else:
+            shell("cp {input.fasta:q} {output[0]:q}")
+            print(green(f"{records} aligned sequences written to: ") + f"{output[0]}")
 
 
 

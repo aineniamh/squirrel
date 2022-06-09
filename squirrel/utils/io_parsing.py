@@ -108,4 +108,4 @@ def find_query_file(cwd, tempdir, query_arg):
 def pipeline_options(no_mask, no_itr_mask, config):
     config[KEY_NO_MASK] = no_mask
     if no_itr_mask:
-        config[KEY_TRIM_END] = 0
+        config[KEY_TRIM_END] = 197209
