@@ -17,9 +17,12 @@ def setup_config_dict(cwd):
 
             KEY_OUTDIR:cwd,
             KEY_OUTFILE:None,
-            KEY_TRIM_END:190788,
             KEY_TEMPDIR:None,
             KEY_NO_TEMP:False,
+
+            KEY_TRIM_END:190788,
+            KEY_EXTRACT_CDS:False,
+            KEY_CONCATENATE:False,
 
             KEY_VERBOSE: False,
             KEY_THREADS: 1
@@ -50,9 +53,12 @@ def get_datafiles(config):
             {"key":KEY_REFERENCE_FASTA,
             "directory":"data",
             "filename":"NC_063383.fasta"},
-            {"key":"to_mask",
+            {"key":KEY_TO_MASK,
             "directory":"data",
-            "filename":"to_mask.csv"}
+            "filename":"to_mask.csv"},
+            {"key":KEY_GENE_BOUNDARIES,
+            "directory":"data",
+            "filename":"gene_boundaries.csv"}
             ]
 
     for resource in resources:

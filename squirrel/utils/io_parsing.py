@@ -29,7 +29,10 @@ def set_up_outfile(outfile_arg,query_arg, outfile, outdir):
     else:
         out_str = ".".join(query_arg[0].split(".")[:-1]) + ".aln.fasta"
         outfile = os.path.join(outdir, out_str)
-    return outfile
+        cds_outstr = ".".join(query_arg[0].split(".")[:-1]) + ".aln.cds.fasta"
+        cds_outfile = os.path.join(outdir, cds_outstr)
+
+    return outfile,cds_outfile
 
 
 def set_up_tempdir(tempdir_arg,no_temp_arg,cwd,outdir,config):
@@ -104,8 +107,10 @@ def find_query_file(cwd, tempdir, query_arg):
 
     return query
 
-
-def pipeline_options(no_mask, no_itr_mask, config):
+def pipeline_options(no_mask, no_itr_mask, extract_cds,concatenate, config):
     config[KEY_NO_MASK] = no_mask
     if no_itr_mask:
         config[KEY_TRIM_END] = 197209
+    
+    config[KEY_EXTRACT_CDS] = extract_cds
+    config[KEY_CONCATENATE] = concatenate

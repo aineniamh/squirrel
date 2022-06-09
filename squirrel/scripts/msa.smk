@@ -1,12 +1,20 @@
 import os
 from squirrel.utils.config import *
 from Bio import SeqIO
+from Bio.Seq import Seq
 import csv
 from squirrel.utils.log_colours import green,cyan
 
-rule all:
-    input:
-        os.path.join(config[KEY_OUTDIR],config[KEY_OUTFILE])
+
+if config[KEY_EXTRACT_CDS]:
+    rule all:
+        input:
+            os.path.join(config[KEY_OUTDIR],config[KEY_OUTFILE]),
+            os.path.join(config[KEY_OUTDIR],config[KEY_CDS_OUTFILE])
+else:
+    rule all:
+        input:
+            os.path.join(config[KEY_OUTDIR],config[KEY_OUTFILE])
 
 rule align_to_reference:
     input:
@@ -73,6 +81,51 @@ rule mask_repetitive_regions:
         else:
             shell("cp {input.fasta:q} {output[0]:q}")
             print(green(f"Aligned sequences written to: ") + f"{output[0]}")
+
+rule extract_cds:
+    input:
+        boundaries = config[KEY_GENE_BOUNDARIES],
+        fasta = rules.mask_repetitive_regions.output[0]
+    output:
+        os.path.join(config[KEY_OUTDIR],config[KEY_CDS_OUTFILE])
+    run:
+        genes = {}
+        gene_id = 0
+        with open(input.boundaries, "r") as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                gene_id +=1
+                name = f"{row['Name'].replace(' ','_')}_{gene_id}"
+                start = int(row["Minimum"]) - 1
+                end = int(row["Maximum"])
+                length = int(row["Length"])
+                direction = row["Direction"]
+                # print(name,start,end,direction)
+                genes[name]=(start,end,length,direction)
+
+        with open(output[0],"w") as fw:
+            for record in SeqIO.parse(input.fasta,"fasta"):
+                full_genome = record.seq
+                extractions = []
+                for gene in genes:
+
+                    start,end,length,direction = genes[gene]
+                    extraction = full_genome[start:end]
+                    if len(extraction)%3 != 0:
+                        print("Extraction not a multiple of 3: ",gene,", length: ",len(extraction)," coords: ,",start,end)
+                    if direction == "reverse":
+                        extraction = extraction.reverse_complement()
+                    extraction_name = f"{record.description}|{gene}"
+                    extractions.append((extraction_name,start,end, direction, extraction))
+
+                if config[KEY_CONCATENATE]:
+                    seqs_to_write = [str(i[-1]) for i in extractions]
+                    new_seq = "NNN".join(seqs_to_write)
+                    fw.write(f">{record.description}\n{new_seq}")
+                else:
+                    for i in extractions:
+                        fw.write(f">{i[0]}|{i[1]}-{i[2]}|{i[3]}\n{i[-1]}\n")
+        print(green(f"CDS sequences written to: ") + f"{output[0]}")
 
 
 
