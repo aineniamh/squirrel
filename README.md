@@ -20,6 +20,12 @@ Input-Output options:
   --tempdir TEMPDIR     Specify where you want the temp stuff to go. Default: $TMPDIR
   --no-temp             Output all intermediate files, for dev purposes.
 
+Pipeline options:
+  --no-mask             Skip masking of repetitive regions. Default: masks repeat regions
+  --no-itr-mask         Skip masking of end ITR. Default: masks ITR
+  --extract-cds         Extract coding sequences based on coordinates in the reference
+  --concatenate         Concatenate coding sequences for each genome, separated by `NNN`. Default: write out as separate records
+
 Misc options:
   -v, --version         show program's version number and exit
   --verbose             Print lots of stuff to screen
