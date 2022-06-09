@@ -72,7 +72,7 @@ rule mask_repetitive_regions:
             print(green(f"{records} masked, aligned sequences written to: ") + f"{output[0]}")
         else:
             shell("cp {input.fasta:q} {output[0]:q}")
-            print(green(f"{records} aligned sequences written to: ") + f"{output[0]}")
+            print(green(f"Aligned sequences written to: ") + f"{output[0]}")
 
 
 
