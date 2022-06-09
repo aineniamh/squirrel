@@ -121,7 +121,7 @@ rule extract_cds:
                 if config[KEY_CONCATENATE]:
                     seqs_to_write = [str(i[-1]) for i in extractions]
                     new_seq = "NNN".join(seqs_to_write)
-                    fw.write(f">{record.description}\n{new_seq}")
+                    fw.write(f">{record.description}\n{new_seq}\n")
                 else:
                     for i in extractions:
                         fw.write(f">{i[0]}|{i[1]}-{i[2]}|{i[3]}\n{i[-1]}\n")
