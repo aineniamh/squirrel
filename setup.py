@@ -9,7 +9,8 @@ setup(name='squirrel',
       version=__version__,
       packages=find_packages(),
       scripts=[
-            'squirrel/scripts/msa.smk'
+            'squirrel/scripts/msa.smk',
+            'squirrel/scripts/reconstruction.smk'
                 ],
       package_data={"squirrel":["data/*"]},
       install_requires=[

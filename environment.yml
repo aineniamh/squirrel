@@ -10,3 +10,5 @@ dependencies:
   - python>=3.7
   - snakemake-minimal<=6.8.0
   - gofasta
+  - iqtree>=2.1
+  - cov-ert::jclusterfunk>=0.0.25
