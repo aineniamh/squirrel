@@ -70,9 +70,12 @@ def main(sysargs = sys.argv[1:]):
     status = misc.run_snakemake(config,snakefile,args.verbose,config)
 
     if status:
-        phylo_snakefile = get_snakefile(thisdir,"reconstruction")
+        if config[KEY_RUN_PHYLO]:
+            phylo_snakefile = get_snakefile(thisdir,"reconstruction")
 
-        status = misc.run_snakemake(config,phylo_snakefile,args.verbose,config)
+            status = misc.run_snakemake(config,phylo_snakefile,args.verbose,config)
 
-        if status:
-            print(green("Ancestral reconstruction & phylogenetics complete."))
+            if status:
+                print(green("Ancestral reconstruction & phylogenetics complete."))
+        else:
+            print(green("Alignment complete."))

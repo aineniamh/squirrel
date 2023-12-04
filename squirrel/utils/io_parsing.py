@@ -119,10 +119,15 @@ def phylo_options(run_phylo,outgroups,alignment,config):
     config[KEY_RUN_PHYLO] = run_phylo
 
     if config[KEY_RUN_PHYLO]:
+
+        if not outgroups:
+            sys.stderr.write(cyan(
+                        f'Error: must supply outgroup(s) for phylogenetics module.\n'))
+            sys.exit(-1)
         if not type(outgroups) == list:
             outgroups = outgroups.split(",")
         config[KEY_OUTGROUPS] = outgroups
-
+        
         seqs = SeqIO.index(alignment,"fasta")
         not_in = set()
         for outgroup in outgroups:
