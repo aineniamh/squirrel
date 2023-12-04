@@ -5,6 +5,7 @@ import squirrel.utils.custom_logger as custom_logger
 from squirrel.utils.config import *
 from squirrel.utils.initialising import *
 import squirrel.utils.io_parsing as io
+import squirrel.utils.misc as misc
 from squirrel import __version__
 from . import _program
 
@@ -34,6 +35,8 @@ def main(sysargs = sys.argv[1:]):
     a_group.add_argument("--no-itr-mask",action="store_true",help="Skip masking of end ITR. Default: masks ITR")
     a_group.add_argument("--extract-cds",action="store_true",help="Extract coding sequences based on coordinates in the reference")
     a_group.add_argument("--concatenate",action="store_true",help="Concatenate coding sequences for each genome, separated by `NNN`. Default: write out as separate records")
+    a_group.add_argument("-p","--run-phylo",action="store_true",help="Run phylogenetic reconstruction pipeline")
+    a_group.add_argument("--outgroups",action="store",help="Specify which MPXV outgroup(s) in the alignment to use in the phylogeny. These will get pruned out from the final tree.")
 
     m_group = parser.add_argument_group('Misc options')
     m_group.add_argument("-v","--version", action='version', version=f"squirrel {__version__}")
@@ -60,32 +63,16 @@ def main(sysargs = sys.argv[1:]):
 
     config[KEY_INPUT_FASTA] = io.find_query_file(cwd, config[KEY_TEMPDIR], args.input)
     
+    io.phylo_options(args.run_phylo,args.outgroups,config[KEY_INPUT_FASTA],config)
+
     snakefile = get_snakefile(thisdir,"msa")
 
-    if args.verbose:
-        print(green("\n**** CONFIG ****"))
-        for k in sorted(config):
-            print(green(k), config[k])
+    status = misc.run_snakemake(config,snakefile,args.verbose,config)
 
-        status = snakemake.snakemake(snakefile, 
-                                        printshellcmds=True, 
-                                        forceall=True, 
-                                        force_incomplete=True,
-                                        workdir=config[KEY_TEMPDIR],
-                                        config=config, 
-                                        cores=args.threads,
-                                        lock=False
-                                        )
-    else:
-        logger = custom_logger.Logger()
-        status = snakemake.snakemake(snakefile, 
-                                        printshellcmds=False, 
-                                        forceall=True,
-                                        force_incomplete=True,
-                                        workdir=config[KEY_TEMPDIR],
-                                        config=config, 
-                                        cores=args.threads,
-                                        lock=False,
-                                        quiet=True,
-                                        log_handler=logger.log_handler
-                                    )
+    if status:
+        phylo_snakefile = get_snakefile(thisdir,"reconstruction")
+
+        status = misc.run_snakemake(config,phylo_snakefile,args.verbose,config)
+
+        if status:
+            print(green("Ancestral reconstruction & phylogenetics complete."))
