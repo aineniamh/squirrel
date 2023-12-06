@@ -9,12 +9,17 @@ setup(name='squirrel',
       version=__version__,
       packages=find_packages(),
       scripts=[
-            'squirrel/scripts/msa.smk'
+            'squirrel/scripts/msa.smk',
+            'squirrel/scripts/reconstruction.smk'
                 ],
       package_data={"squirrel":["data/*"]},
       install_requires=[
             "biopython>=1.70",
-            'tabulate==0.8.10'
+            'tabulate==0.8.10',
+            'baltic',
+            'matplotlib',
+            'seaborn',
+            'pandas'
         ],
       description='Some QUIck Rearranging to Resolve Evolutionary Links',
       url='https://github.com/cov-lineages/squirrel',

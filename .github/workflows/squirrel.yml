@@ -10,7 +10,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: ["ubuntu-latest", "macos-latest"]
+        os: ["ubuntu-latest"]
     steps:
       - uses: actions/checkout@v2
       - uses: conda-incubator/setup-miniconda@v2
@@ -18,7 +18,7 @@ jobs:
           environment-file: environment.yml
           activate-environment: squirrel
           channels: conda-forge,bioconda,defaults
-          conda-version: "4.12.0"
+          conda-version: "23.5.0"
           mamba-version: "*"
       - name: Install squirrel
         run: pip install -e .
@@ -26,4 +26,6 @@ jobs:
         run: squirrel --version
       - name: Run squirrel with test data
         run: squirrel squirrel/data/NC_063383.fasta 2>&1 | tee squirrel.log
+      - name: Run squirrel phylo with test data
+        run: squirrel squirrel/data/outgroups.fasta --run-phylo --outgroups 'KJ642617' 2>&1 | tee squirrel_phylo.log
       

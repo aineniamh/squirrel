@@ -58,7 +58,10 @@ def get_datafiles(config):
             "filename":"to_mask.csv"},
             {"key":KEY_GENE_BOUNDARIES,
             "directory":"data",
-            "filename":"gene_boundaries.csv"}
+            "filename":"gene_boundaries.csv"},
+            {"key":KEY_GRANTHAM_SCORES,
+            "directory":"data",
+            "filename":"grantham_score.txt"}
             ]
 
     for resource in resources:

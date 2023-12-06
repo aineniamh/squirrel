@@ -26,6 +26,8 @@ def set_up_outdir(outdir_arg,cwd,outdir):
 def set_up_outfile(outfile_arg,query_arg, outfile, outdir):
     if outfile_arg:
         outfile = os.path.join(outdir, outfile_arg)
+        cds_outstr = ".".join(query_arg[0].split(".")[:-1]) + ".aln.cds.fasta"
+        cds_outfile = os.path.join(outdir, cds_outstr)
     else:
         out_str = ".".join(query_arg[0].split(".")[:-1]) + ".aln.fasta"
         outfile = os.path.join(outdir, out_str)
@@ -114,3 +116,29 @@ def pipeline_options(no_mask, no_itr_mask, extract_cds,concatenate, config):
     
     config[KEY_EXTRACT_CDS] = extract_cds
     config[KEY_CONCATENATE] = concatenate
+
+def phylo_options(run_phylo,outgroups,alignment,config):
+    config[KEY_RUN_PHYLO] = run_phylo
+
+    if config[KEY_RUN_PHYLO]:
+
+        if not outgroups:
+            sys.stderr.write(cyan(
+                        f'Error: must supply outgroup(s) for phylogenetics module.\n'))
+            sys.exit(-1)
+        if not type(outgroups) == list:
+            outgroups = outgroups.split(",")
+        config[KEY_OUTGROUPS] = outgroups
+        
+        seqs = SeqIO.index(alignment,"fasta")
+        not_in = set()
+        for outgroup in outgroups:
+            if outgroup not in seqs:
+                not_in.add(outgroup)
+
+        if not_in:
+            sys.stderr.write(cyan(
+                        f'Error: outgroup(s) not found in input sequence file.\n'))
+            for seq in not_in:
+                sys.stderr.write(cyan(f"- {seq}\n"))
+            sys.exit(-1)
