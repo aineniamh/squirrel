@@ -18,7 +18,7 @@ jobs:
           environment-file: environment.yml
           activate-environment: squirrel
           channels: conda-forge,bioconda,defaults
-          conda-version: "4.12.0"
+          conda-version: "23.5.0"
           mamba-version: "*"
       - name: Install squirrel
         run: pip install -e .
