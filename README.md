@@ -25,6 +25,9 @@ Pipeline options:
   --no-itr-mask         Skip masking of end ITR. Default: masks ITR
   --extract-cds         Extract coding sequences based on coordinates in the reference
   --concatenate         Concatenate coding sequences for each genome, separated by `NNN`. Default: write out as separate records
+  -p, --run-phylo       Run phylogenetic reconstruction pipeline
+  --outgroups OUTGROUPS
+                        Specify which MPXV outgroup(s) in the alignment to use in the phylogeny. These will get pruned out from the final tree.
 
 Misc options:
   -v, --version         show program's version number and exit
