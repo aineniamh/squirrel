@@ -26,4 +26,6 @@ jobs:
         run: squirrel --version
       - name: Run squirrel with test data
         run: squirrel squirrel/data/NC_063383.fasta 2>&1 | tee squirrel.log
+      - name: Run squirrel phylo with test data
+        run: squirrel squirrel/data/outgroups.fasta --run-phylo --outgroups 'KJ642617' 2>&1 | tee squirrel_phylo.log
       
