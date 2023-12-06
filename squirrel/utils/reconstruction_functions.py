@@ -203,77 +203,6 @@ def get_acc_to_metadata_map(metadata):
                 
     return acc_dict
 
-def make_reconstruction_tree_figure(outfile,branch_snps,treefile,width,height):
-    
-    branch_snps_dict = read_in_branch_snps(branch_snps)
-    # print(len(branch_snps_dict),"snps")
-#     acc_dict = get_acc_to_metadata_map(metadata)
-#     print(len(acc_dict))        
-    
-    my_tree=bt.loadNewick(treefile,absoluteTime=False)
-
-    fig,ax = plt.subplots(figsize=(width,height),facecolor='w')
-    plt.switch_backend('Agg') 
-
-    x_attr=lambda k: k.height ## x coordinate of branches will be absoluteTime attribute
-    su_func=lambda k: 50-30*k.height/my_tree.treeHeight ## size of tips
-    s_func=lambda k: 50-20*k.height/my_tree.treeHeight ## size of tips
-    c_func=lambda k: "dimgrey"
-
-    increment = my_tree.treeHeight/150
-    my_tree.plotTree(ax,x_attr=x_attr) ## plot branches
-    my_tree.plotPoints(ax,size=s_func,colour=c_func,x_attr=x_attr) ## plot circles at tips
-    mpl.rcParams['font.family'] = 'sans-serif'
-    
-
-    
-    
-    for k in my_tree.Objects:
-        current_node = k
-        if k.branchType == 'leaf':
-            current_node.traits["label"]=k.name
-
-        node_name = current_node.traits["label"]
-        try:
-            parent_name = current_node.parent.traits["label"]
-        except:
-            continue
-        branch_name= f"{parent_name}_{node_name}"
-
-        if branch_name in branch_snps_dict:
-            snps = []
-#                 print(branch_name, len(branch_snps_dict[branch_name]))
-            snp_placement = current_node.parent.height + increment
-            for s in branch_snps_dict[branch_name]:
-                site,snp,dimer = s
-                if snp == "G->A":
-                    if dimer in ["GA"]:
-                        snps.append((1,"#995e62"))
-                    else:
-                        snps.append((2,"#d9b660"))
-                elif snp == "C->T":
-                    if dimer in ["TC"]:
-                        snps.append((1,"#995e62"))
-                    else:
-                        snps.append((2,"#d9b660"))
-                else:
-                    snps.append((2,"#d9b660"))
-
-            for snp in sorted(snps, key = lambda x : x[0]):
-                plt.scatter([snp_placement],[k.y+0.5],color=snp[1],s=30)
-                snp_placement += increment
-
-    [ax.spines[loc].set_visible(False) for loc in ['top','right','left','bottom']]
-    ax.tick_params(axis='y',size=0)
-    ax.tick_params(axis='x',size=0)
-
-    ax.set_yticklabels([])
-    ax.set_xticklabels([])
-
-    plt.savefig(f"figures/{outfile}.svg");
-    plt.savefig(f"figures/{outfile}.png",bbox_inches='tight', 
-                   transparent=True);
-    
 
 def make_reconstruction_tree_figure_w_labels(outfile,branch_snps,treefile,width,height):
     
@@ -345,7 +274,7 @@ def make_reconstruction_tree_figure_w_labels(outfile,branch_snps,treefile,width,
 
     ax.set_yticklabels([])
     ax.set_xticklabels([])
-
+    plt.margins(0.005,0.005,tight=True)
     plt.savefig(f"{outfile}.svg");
     plt.savefig(f"{outfile}.png",bbox_inches='tight', 
                    transparent=True);
