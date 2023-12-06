@@ -11,9 +11,9 @@ squirrel <your-sequences.fasta>
 ## Run reconstruction
 
 ```
-squirrel <your-sequences.fasta> --run-phylo --outgroups KJ642617,KJ642615,KJ642616
+squirrel <your-sequences.fasta> --run-phylo --outgroups outgroup_id1,outgroup_id2
 ```
-Note: the sequence file you provide must have the specified outgroups in it.
+Note: the sequence file you provide must have the specified outgroups in it, with the IDs matching those you provide. This pipeline can accept one or more outgroup IDs.
 
 
 ## How it works - alignment
