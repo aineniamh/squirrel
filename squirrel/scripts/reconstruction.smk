@@ -4,11 +4,12 @@ from Bio import SeqIO
 from Bio.Seq import Seq
 import csv
 from squirrel.utils.log_colours import green,cyan
-
+import squirrel.utils.reconstruction_functions as recon
 
 rule all:
     input:
-        os.path.join(config[KEY_OUTDIR],config[KEY_PHYLOGENY])
+        config[KEY_PHYLOGENY],
+        config[KEY_PHYLOGENY_SVG]
 
 
 rule iqtree:
@@ -17,7 +18,7 @@ rule iqtree:
     params:
         outgroup = config[KEY_OUTGROUP_STRING]
     output:
-        tree = os.path.join(f"{config[KEY_OUTFILE]}.treefile")
+        tree = f"{config[KEY_OUTFILE]}.treefile"
     shell:
         """
         iqtree  -s {input.aln:q} \
@@ -35,12 +36,27 @@ rule prune_outgroup:
     params:
         outgroup = config[KEY_OUTGROUP_SENTENCE]
     output:
-        tree = os.path.join(config[KEY_PHYLOGENY])
+        tree = config[KEY_PHYLOGENY]
     shell:
         """
         jclusterfunk prune  -i {input.tree:q} \
                             -o {output.tree:q} \
-                            -t '{params.outgroup}' \
-                            -f newick 
+                            -t '{params.outgroup}' 
         """
+
+
+rule reconstruction_analysis:
+    input:
+        tree = rules.prune_outgroup.output.tree,
+        alignment = config[KEY_OUTFILE]
+    params:
+        outdir = config[KEY_OUTDIR]
+    output:
+        tree = config[KEY_PHYLOGENY_SVG]
+    run:
+        directory = params.outdir
+        width= 25
+        height=30
+        recon.run_full_analysis(directory, input.alignment, input.tree,config,width,height)
+
 
