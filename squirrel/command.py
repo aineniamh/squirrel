@@ -72,6 +72,10 @@ def main(sysargs = sys.argv[1:]):
     if status:
         if config[KEY_RUN_PHYLO]:
             phylo_snakefile = get_snakefile(thisdir,"reconstruction")
+            phylo_stem = ".".join(config[KEY_INPUT_FASTA].split(".")[:-1])
+            config[KEY_PHYLOGENY] = os.path.join(config[KEY_OUTDIR],f"{phylo_stem}.tree")
+            config[KEY_OUTGROUP_STRING] = ",".join(config[KEY_OUTGROUPS])
+            config[KEY_OUTGROUP_SENTENCE] = " ".join(config[KEY_OUTGROUPS])
 
             status = misc.run_snakemake(config,phylo_snakefile,args.verbose,config)
 
