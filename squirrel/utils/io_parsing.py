@@ -26,6 +26,8 @@ def set_up_outdir(outdir_arg,cwd,outdir):
 def set_up_outfile(outfile_arg,query_arg, outfile, outdir):
     if outfile_arg:
         outfile = os.path.join(outdir, outfile_arg)
+        cds_outstr = ".".join(query_arg[0].split(".")[:-1]) + ".aln.cds.fasta"
+        cds_outfile = os.path.join(outdir, cds_outstr)
     else:
         out_str = ".".join(query_arg[0].split(".")[:-1]) + ".aln.fasta"
         outfile = os.path.join(outdir, out_str)
