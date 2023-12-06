@@ -30,6 +30,7 @@ Squirrel also has an optional `--run-phylo` mode that will take the newly genera
 ## Recommended outgroups for phylogeny mode
 Clade I
 - KJ642617,KJ642615,KJ642616
+  
 Clade IIb
 - KJ642617,KJ642615
 
