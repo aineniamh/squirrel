@@ -1,6 +1,9 @@
 import os
 from squirrel.utils.config import *
 from squirrel.utils.log_colours import green,cyan
+import warnings
+from Bio import BiopythonWarning
+warnings.simplefilter('ignore', BiopythonWarning)
 
 from Bio import AlignIO
 from Bio import SeqIO
@@ -202,6 +205,15 @@ def get_acc_to_metadata_map(metadata):
                     pass
                 
     return acc_dict
+
+def get_fig_height(alignment):
+    seqs = SeqIO.index(alignment,"fasta")
+
+    height = 0.5*len(seqs)
+    if height >30:
+        return height
+    else:
+        return 30
 
 
 def make_reconstruction_tree_figure_w_labels(outfile,branch_snps,treefile,width,height):

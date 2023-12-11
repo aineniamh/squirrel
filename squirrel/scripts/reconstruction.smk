@@ -56,7 +56,9 @@ rule reconstruction_analysis:
     run:
         directory = params.outdir
         width= 25
-        height=30
+
+        height = recon.get_fig_height(alignment)
+
         recon.run_full_analysis(directory, input.alignment, input.tree,config,width,height)
 
 
