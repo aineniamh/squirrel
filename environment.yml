@@ -6,8 +6,8 @@ channels:
 dependencies:
   - biopython>=1.74
   - minimap2>=2.16
-  - python>=3.7
-  - snakemake-minimal
+  - python=3.10
+  - snakemake-minimal=7.32
   - gofasta
   - iqtree>=2.1
   - cov-ert::jclusterfunk>=0.0.25
