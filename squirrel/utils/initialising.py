@@ -48,14 +48,26 @@ def package_data_check(filename,directory,key,config):
         sys.stderr.write(colour.cyan(f'Error: Missing package data.')+f'\n\t- {filename}\n')
         sys.exit(-1)
 
-def get_datafiles(config):
+def get_datafiles(config,clade):
+    fasta_filename = ""
+    if clade.lower() == "cladei":
+        fasta_filename = "NC_003310.fasta"
+        mask_file = "to_mask.cladei.csv"
+    elif clade.lower() == "cladeii":
+        fasta_filename = "NC_063383.fasta"
+        mask_file = "to_mask.csv"
+    else:
+        sys.stderr.write(colour.cyan(f'Error: invalid clade specified. Please specify one of `cladei` or `cladeii`\n'))
+        sys.exit(-1)
+
+
     resources = [
             {"key":KEY_REFERENCE_FASTA,
             "directory":"data",
-            "filename":"NC_063383.fasta"},
+            "filename":fasta_filename},
             {"key":KEY_TO_MASK,
             "directory":"data",
-            "filename":"to_mask.csv"},
+            "filename":mask_file},
             {"key":KEY_GENE_BOUNDARIES,
             "directory":"data",
             "filename":"gene_boundaries.csv"},

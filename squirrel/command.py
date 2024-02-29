@@ -35,6 +35,7 @@ def main(sysargs = sys.argv[1:]):
     a_group.add_argument("--no-itr-mask",action="store_true",help="Skip masking of end ITR. Default: masks ITR")
     a_group.add_argument("--extract-cds",action="store_true",help="Extract coding sequences based on coordinates in the reference")
     a_group.add_argument("--concatenate",action="store_true",help="Concatenate coding sequences for each genome, separated by `NNN`. Default: write out as separate records")
+    a_group.add_argument("--clade",action="store",help="Specify whether the alignment is primarily for `cladei` or `cladeii` (will determine reference used for alignment). Default: `cladeii`", default="cladeii")
     a_group.add_argument("-p","--run-phylo",action="store_true",help="Run phylogenetic reconstruction pipeline")
     a_group.add_argument("--outgroups",action="store",help="Specify which MPXV outgroup(s) in the alignment to use in the phylogeny. These will get pruned out from the final tree.")
 
@@ -53,7 +54,7 @@ def main(sysargs = sys.argv[1:]):
     # Initialise config dict
     config = setup_config_dict(cwd)
 
-    get_datafiles(config)
+    get_datafiles(config,args.clade)
 
     config[KEY_OUTDIR] = io.set_up_outdir(args.outdir,cwd,config[KEY_OUTDIR])
     config[KEY_OUTFILE],config[KEY_CDS_OUTFILE] = io.set_up_outfile(args.outfile,args.input, config[KEY_OUTFILE],config[KEY_OUTDIR])
