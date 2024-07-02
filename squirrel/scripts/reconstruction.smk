@@ -39,9 +39,9 @@ rule prune_outgroup:
         tree = config[KEY_PHYLOGENY]
     shell:
         """
-        jclusterfunk prune  -i {input.tree:q} \
-                            -o {output.tree:q} \
-                            -t '{params.outgroup}' 
+        jclusterfunk prune  -i "{input.tree}" \
+                            -o "{output.tree}" \
+                            -t "{params.outgroup}"
         """
 
 
