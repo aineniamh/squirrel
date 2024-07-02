@@ -8,8 +8,8 @@ import squirrel.utils.reconstruction_functions as recon
 
 rule all:
     input:
-        config[KEY_PHYLOGENY],
-        config[KEY_PHYLOGENY_SVG]
+        os.path.join(config[KEY_OUTDIR],config[KEY_PHYLOGENY]),
+        os.path.join(config[KEY_OUTDIR],config[KEY_PHYLOGENY_SVG])
 
 
 rule iqtree:
@@ -56,7 +56,7 @@ rule reconstruction_analysis:
     params:
         outdir = config[KEY_OUTDIR]
     output:
-        tree = config[KEY_PHYLOGENY_SVG]
+        tree = os.path.join(config[KEY_OUTDIR],config[KEY_PHYLOGENY_SVG])
     run:
         directory = params.outdir
         width= 25
