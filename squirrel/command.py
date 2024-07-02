@@ -57,7 +57,7 @@ def main(sysargs = sys.argv[1:]):
     get_datafiles(config,args.clade)
 
     config[KEY_OUTDIR] = io.set_up_outdir(args.outdir,cwd,config[KEY_OUTDIR])
-    config[KEY_OUTFILE],config[KEY_CDS_OUTFILE] = io.set_up_outfile(args.outfile,args.input, config[KEY_OUTFILE],config[KEY_OUTDIR])
+    config[KEY_OUTFILE],config[KEY_CDS_OUTFILE],config[KEY_OUTFILENAME] = io.set_up_outfile(args.outfile,args.input, config[KEY_OUTFILE],config[KEY_OUTDIR])
     io.set_up_tempdir(args.tempdir,args.no_temp,cwd,config[KEY_OUTDIR], config)
 
     io.pipeline_options(args.no_mask, args.no_itr_mask, args.extract_cds, args.concatenate, config)
@@ -74,6 +74,8 @@ def main(sysargs = sys.argv[1:]):
         if config[KEY_RUN_PHYLO]:
             phylo_snakefile = get_snakefile(thisdir,"reconstruction")
             phylo_stem = ".".join(config[KEY_INPUT_FASTA].split(".")[:-1])
+            phylo_stem=phylo_stem.split("/")[-1]
+
             config[KEY_PHYLOGENY] = f"{phylo_stem}.tree"
             config[KEY_PHYLOGENY_SVG] = f"{phylo_stem}.tree.svg"
             config[KEY_OUTGROUP_STRING] = ",".join(config[KEY_OUTGROUPS])

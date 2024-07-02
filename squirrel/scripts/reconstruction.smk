@@ -34,13 +34,17 @@ rule prune_outgroup:
     input:
         tree = rules.iqtree.output.tree
     params:
+        treefile = f"{config[KEY_OUTFILENAME]}.treefile",
+        outdir = config[KEY_OUTDIR],
+        outtree = config[KEY_PHYLOGENY],
         outgroup = config[KEY_OUTGROUP_SENTENCE]
     output:
-        tree = config[KEY_PHYLOGENY]
+        tree = os.path.join(config[KEY_OUTDIR],config[KEY_PHYLOGENY])
     shell:
         """
-        jclusterfunk prune  -i "{input.tree}" \
-                            -o "{output.tree}" \
+        cd {params.outdir:q}
+        jclusterfunk prune  -i "{params.treefile}" \
+                            -o "{params.outtree}" \
                             -t "{params.outgroup}"
         """
 
