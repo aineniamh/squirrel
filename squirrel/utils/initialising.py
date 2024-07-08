@@ -56,7 +56,7 @@ def get_datafiles(config,clade):
         mask_file = "to_mask.cladei.csv"
     elif clade.lower() == "cladeii":
         fasta_filename = "NC_063383.fasta"
-        mask_file = "to_mask.csv"
+        mask_file = "to_mask.cladeii.csv"
     else:
         sys.stderr.write(colour.cyan(f'Error: invalid clade specified. Please specify one of `cladei` or `cladeii`\n'))
         sys.exit(-1)
