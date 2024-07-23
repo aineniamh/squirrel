@@ -29,10 +29,16 @@ def set_up_outfile(outfile_arg,query_arg, outfile, outdir):
         cds_outstr = ".".join(query_arg[0].split(".")[:-1]) + ".aln.cds.fasta"
         cds_outfile = os.path.join(outdir, cds_outstr)
         outfilename=outfile_arg
-    else:
+    elif query_arg:
         out_str = ".".join(query_arg[0].split(".")[:-1]) + ".aln.fasta"
         outfile = os.path.join(outdir, out_str)
         cds_outstr = ".".join(query_arg[0].split(".")[:-1]) + ".aln.cds.fasta"
+        cds_outfile = os.path.join(outdir, cds_outstr)
+        outfilename=out_str
+    else:
+        out_str = "sequences.aln.fasta"
+        outfile = os.path.join(outdir, out_str)
+        cds_outstr = "sequences.aln.cds.fasta"
         cds_outfile = os.path.join(outdir, cds_outstr)
         outfilename=out_str
 
