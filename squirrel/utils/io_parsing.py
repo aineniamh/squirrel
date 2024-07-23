@@ -111,6 +111,7 @@ def find_query_file(cwd, tempdir, query_arg):
 
     return query
 
+
 def pipeline_options(no_mask, no_itr_mask, extract_cds,concatenate, config):
     config[KEY_NO_MASK] = no_mask
     if no_itr_mask:

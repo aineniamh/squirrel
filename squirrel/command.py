@@ -5,6 +5,8 @@ import squirrel.utils.custom_logger as custom_logger
 from squirrel.utils.config import *
 from squirrel.utils.initialising import *
 import squirrel.utils.io_parsing as io
+import squirrel.utils.cns_qc as qc
+
 import squirrel.utils.misc as misc
 from squirrel import __version__
 from . import _program
@@ -31,6 +33,8 @@ def main(sysargs = sys.argv[1:]):
     io_group.add_argument("--no-temp",action="store_true",help="Output all intermediate files, for dev purposes.")
 
     a_group = parser.add_argument_group("Pipeline options")
+    a_group.add_argument("--seq-qc",action="store_true",help="Flag potentially problematic SNPs and sequences. Default: don't run QC")
+    a_group.add_argument("--assembly-refs",action="store",help="References to check for `calls to reference` against.")
     a_group.add_argument("--no-mask",action="store_true",help="Skip masking of repetitive regions. Default: masks repeat regions")
     a_group.add_argument("--no-itr-mask",action="store_true",help="Skip masking of end ITR. Default: masks ITR")
     a_group.add_argument("--extract-cds",action="store_true",help="Extract coding sequences based on coordinates in the reference")
@@ -64,13 +68,23 @@ def main(sysargs = sys.argv[1:]):
 
     config[KEY_INPUT_FASTA] = io.find_query_file(cwd, config[KEY_TEMPDIR], args.input)
     
+    if args.seq_qc:
+        assembly_refs = qc.find_assembly_refs(cwd,args.assembly_refs,config)
+        config[KEY_INPUT_FASTA] = qc.add_refs_to_input(config[KEY_INPUT_FASTA],assembly_refs,config)
+
     io.phylo_options(args.run_phylo,args.outgroups,config[KEY_INPUT_FASTA],config)
 
     snakefile = get_snakefile(thisdir,"msa")
 
     status = misc.run_snakemake(config,snakefile,args.verbose,config)
 
+
     if status:
+
+        
+        io.run_seq_qc(args.seq_qc,config)
+
+
         if config[KEY_RUN_PHYLO]:
             phylo_snakefile = get_snakefile(thisdir,"reconstruction")
             phylo_stem = ".".join(config[KEY_INPUT_FASTA].split(".")[:-1])

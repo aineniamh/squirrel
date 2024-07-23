@@ -21,6 +21,8 @@ def setup_config_dict(cwd):
             KEY_TEMPDIR:None,
             KEY_NO_TEMP:False,
 
+            KEY_ASSEMBLY_REFERENCES:[],
+
             KEY_TRIM_END:190788,
             KEY_EXTRACT_CDS:False,
             KEY_CONCATENATE:False,
