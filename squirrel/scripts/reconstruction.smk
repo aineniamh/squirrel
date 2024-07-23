@@ -42,10 +42,9 @@ rule prune_outgroup:
         tree = os.path.join(config[KEY_OUTDIR],config[KEY_PHYLOGENY])
     shell:
         """
-        cd {params.outdir:q}
-        jclusterfunk prune  -i "{params.treefile}" \
-                            -o "{params.outtree}" \
-                            -t "{params.outgroup}"
+        jclusterfunk prune  -i "{input.tree}" \
+                            -o "{output.tree}" \
+                            -t '{params.outgroup}'
         """
 
 
@@ -64,5 +63,3 @@ rule reconstruction_analysis:
         height = recon.get_fig_height(input.alignment)
 
         recon.run_full_analysis(directory, input.alignment, input.tree,config,width,height)
-
-

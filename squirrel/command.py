@@ -33,7 +33,7 @@ def main(sysargs = sys.argv[1:]):
     io_group.add_argument("--no-temp",action="store_true",help="Output all intermediate files, for dev purposes.")
 
     a_group = parser.add_argument_group("Pipeline options")
-    a_group.add_argument("--seq-qc",action="store_true",help="Flag potentially problematic SNPs and sequences. Default: don't run QC")
+    a_group.add_argument("--seq-qc",action="store_true",help="Flag potentially problematic SNPs and sequences. Note that this will also run phylo mode, so you will need to specify both outgroup sequences and provide an assembly reference file. Default: don't run QC")
     a_group.add_argument("--assembly-refs",action="store",help="References to check for `calls to reference` against.")
     a_group.add_argument("--no-mask",action="store_true",help="Skip masking of repetitive regions. Default: masks repeat regions")
     a_group.add_argument("--no-itr-mask",action="store_true",help="Skip masking of end ITR. Default: masks ITR")
@@ -71,6 +71,7 @@ def main(sysargs = sys.argv[1:]):
     if args.seq_qc:
         assembly_refs = qc.find_assembly_refs(cwd,args.assembly_refs,config)
         config[KEY_INPUT_FASTA] = qc.add_refs_to_input(config[KEY_INPUT_FASTA],assembly_refs,config)
+        args.run_phylo = True
 
     io.phylo_options(args.run_phylo,args.outgroups,config[KEY_INPUT_FASTA],config)
 
@@ -81,13 +82,9 @@ def main(sysargs = sys.argv[1:]):
 
     if status:
 
-        
-        io.run_seq_qc(args.seq_qc,config)
-
-
         if config[KEY_RUN_PHYLO]:
             phylo_snakefile = get_snakefile(thisdir,"reconstruction")
-            phylo_stem = ".".join(config[KEY_INPUT_FASTA].split(".")[:-1])
+            phylo_stem = ".".join(config[KEY_OUTFILENAME].split(".")[:-1])
             phylo_stem=phylo_stem.split("/")[-1]
 
             config[KEY_PHYLOGENY] = f"{phylo_stem}.tree"
@@ -99,5 +96,10 @@ def main(sysargs = sys.argv[1:]):
 
             if status:
                 print(green("Ancestral reconstruction & phylogenetics complete."))
+
+                if args.seq_qc:
+                    state_diff_file = os.path.join(config[KEY_OUTDIR],f"{config[KEY_PHYLOGENY]}.state_differences.csv")
+                    aa_file = os.path.join(config[KEY_OUTDIR],f"{config[KEY_PHYLOGENY]}.amino_acid.reconstruction.csv")
+                    qc.run_seq_qc(state_diff_file,aa_file,config)
         else:
             print(green("Alignment complete."))
