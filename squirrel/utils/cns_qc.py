@@ -454,11 +454,11 @@ def check_for_snp_anomalies(config,h):
     make_convergence_tree_figure(convergence_figure_out,branch_snps,branch_convergence,treefile,25,h)
 
     with open(mask_file,"w") as fw:
-        fw.write("Name,Minimum,Maximum\n")
+        fw.write("Name,Minimum,Maximum,Length\n")
         for i in branch_reversions:
             for j in branch_reversions[i]:
                 site = int(j[:-1])
                 allele = j[-1]
-                fw.write(f"{i} reversion to {allele},{site-1},{site}\n")
+                fw.write(f"{i} reversion to {allele},{site},{site},{1}\n")
 
 
