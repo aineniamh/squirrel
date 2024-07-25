@@ -27,6 +27,7 @@ def setup_config_dict(cwd):
             KEY_TRIM_END:190788,
             KEY_EXTRACT_CDS:False,
             KEY_CONCATENATE:False,
+            KEY_ADDITIONAL_MASK:None,
 
             KEY_VERBOSE: False,
             KEY_THREADS: 1

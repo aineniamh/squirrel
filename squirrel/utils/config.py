@@ -14,6 +14,7 @@ KEY_NO_TEMP="no_temp"
 KEY_VERBOSE="verbose"
 KEY_THREADS = "threads"
 KEY_NO_MASK="no_mask"
+KEY_ADDITIONAL_MASK="additional_mask"
 KEY_TRIM_END="trim_end"
 KEY_EXTRACT_CDS="extract_cds"
 

@@ -43,7 +43,6 @@ def find_assembly_refs(cwd,assembly_refs,config):
         sys.stderr.write(cyan(f'Error: no assembly references supplied.\nMust supply a reference file with one or more assembly references to do sequence QC.\n'))
         sys.exit(-1)
 
-
     refs = []
     ref_ids = []
     path_to_try = os.path.join(cwd,assembly_refs)
@@ -55,10 +54,10 @@ def find_assembly_refs(cwd,assembly_refs,config):
         sys.stderr.write(cyan(f'Error: cannot find/parse reference fasta file at: ') + f'{path_to_try}\n' + cyan('Please check file path and format.\n'))
         sys.exit(-1)
 
-
     config[KEY_ASSEMBLY_REFERENCES] = ref_ids
 
     return refs
+
 def recurse_back(node):
     path = [node.traits["label"]]
     p = node.parent
