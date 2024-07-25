@@ -26,3 +26,5 @@ KEY_PHYLOGENY_SVG="phylogeny_svg"
 KEY_OUTGROUP_STRING="outgroup_string"
 KEY_OUTGROUP_SENTENCE="outgroup_sentence"
 KEY_GRANTHAM_SCORES="grantham_scores"
+
+KEY_FIG_HEIGHT = "fig_height"
