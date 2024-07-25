@@ -38,6 +38,7 @@ def main(sysargs = sys.argv[1:]):
     a_group.add_argument("--assembly-refs",action="store",help="References to check for `calls to reference` against.")
     a_group.add_argument("--no-mask",action="store_true",help="Skip masking of repetitive regions. Default: masks repeat regions")
     a_group.add_argument("--no-itr-mask",action="store_true",help="Skip masking of end ITR. Default: masks ITR")
+    a_group.add_argument("--additional-mask",action="store",help="Masking additional sites provided.")
     a_group.add_argument("--extract-cds",action="store_true",help="Extract coding sequences based on coordinates in the reference")
     a_group.add_argument("--concatenate",action="store_true",help="Concatenate coding sequences for each genome, separated by `NNN`. Default: write out as separate records")
     a_group.add_argument("--clade",action="store",help="Specify whether the alignment is primarily for `cladei` or `cladeii` (will determine reference used for alignment). Default: `cladeii`", default="cladeii")
@@ -65,7 +66,7 @@ def main(sysargs = sys.argv[1:]):
     config[KEY_OUTFILE],config[KEY_CDS_OUTFILE],config[KEY_OUTFILENAME] = io.set_up_outfile(args.outfile,args.input, config[KEY_OUTFILE],config[KEY_OUTDIR])
     io.set_up_tempdir(args.tempdir,args.no_temp,cwd,config[KEY_OUTDIR], config)
 
-    io.pipeline_options(args.no_mask, args.no_itr_mask, args.extract_cds, args.concatenate, config)
+    io.pipeline_options(args.no_mask, args.no_itr_mask, args.additional_mask, args.extract_cds, args.concatenate,cwd,z config)
 
     config[KEY_INPUT_FASTA] = io.find_query_file(cwd, config[KEY_TEMPDIR], args.input)
     
