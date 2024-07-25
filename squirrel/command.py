@@ -70,8 +70,9 @@ def main(sysargs = sys.argv[1:]):
     
     if args.seq_qc:
         assembly_refs = qc.find_assembly_refs(cwd,args.assembly_refs,config)
-        config[KEY_INPUT_FASTA] = qc.add_refs_to_input(config[KEY_INPUT_FASTA],assembly_refs,config)
         args.run_phylo = True
+        # config[KEY_INPUT_FASTA] = qc.add_refs_to_input(config[KEY_INPUT_FASTA],assembly_refs,config)
+
 
     io.phylo_options(args.run_phylo,args.outgroups,config[KEY_INPUT_FASTA],config)
 
@@ -98,8 +99,14 @@ def main(sysargs = sys.argv[1:]):
                 print(green("Ancestral reconstruction & phylogenetics complete."))
 
                 if args.seq_qc:
-                    state_diff_file = os.path.join(config[KEY_OUTDIR],f"{config[KEY_PHYLOGENY]}.state_differences.csv")
-                    aa_file = os.path.join(config[KEY_OUTDIR],f"{config[KEY_PHYLOGENY]}.amino_acid.reconstruction.csv")
-                    qc.run_seq_qc(state_diff_file,aa_file,config)
+                    
+                    state_file = os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILENAME]}.state")
+                    tree_file = os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILENAME]}.treefile")
+                    branch_snps = os.path.join(config[KEY_OUTDIR],f"{config[KEY_PHYLOGENY]}.branch_snps.reconstruction.csv")
+                    reversion_out = os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILENAME]}.reversions.csv")
+                    reversion_figure_out = os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILENAME]}.reversions")
+                    mask_file = os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILENAME]}.suggested_mask.csv")
+
+                    qc.check_for_reversions_to_reference(state_file, branch_snps, tree_file, assembly_refs,mask_file, reversion_out,reversion_figure_out)
         else:
             print(green("Alignment complete."))
