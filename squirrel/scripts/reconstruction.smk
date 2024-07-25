@@ -42,8 +42,9 @@ rule prune_outgroup:
         tree = os.path.join(config[KEY_OUTDIR],config[KEY_PHYLOGENY])
     shell:
         """
-        jclusterfunk prune  -i "{input.tree}" \
-                            -o "{output.tree}" \
+        cd  {params.outdir:q} &&
+        jclusterfunk prune  -i "{params.treefile}" \
+                            -o "{params.outtree}" \
                             -t '{params.outgroup}'
         """
 
