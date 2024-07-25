@@ -17,7 +17,7 @@ jobs:
         with:
           auto-update-conda: false
           environment-file: environment.yml
-          activate-environment: piranha
+          activate-environment: squirrel
           channels: conda-forge,bioconda,defaults
           miniforge-version: latest
       - name: Install squirrel
