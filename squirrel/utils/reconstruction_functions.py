@@ -287,7 +287,7 @@ def make_reconstruction_tree_figure_w_labels(outfile,branch_snps,treefile,width,
     ax.set_yticklabels([])
     ax.set_xticklabels([])
     plt.margins(0.005,0.005,tight=True)
-    plt.savefig(f"{outfile}.svg");
+    plt.savefig(f"{outfile}.svg",bbox_inches='tight');
     plt.savefig(f"{outfile}.png",bbox_inches='tight', 
                    transparent=True);
     

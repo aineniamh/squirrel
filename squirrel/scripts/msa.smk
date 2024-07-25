@@ -66,6 +66,20 @@ rule mask_repetitive_regions:
                     length = int(row["Length"])
                     mask_sites.append((start,end,length))
                     total_masked += length
+            
+            if config[KEY_ADDITIONAL_MASK]:
+                with open(config[KEY_ADDITIONAL_MASK],"r") as f:
+                    reader = csv.DictReader(f)
+                    for row in reader:
+                        start = int(row["Minimum"]) - 1
+                        end = int(row["Maximum"])
+                        if "Length" in row:
+                            length = int(row["Length"])
+                        else:
+                            length = end-start
+                        mask_sites.append((start,end,length))
+                        total_masked += length
+                        
 
             records = 0
             with open(output[0],"w") as fw:

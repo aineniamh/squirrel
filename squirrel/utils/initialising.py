@@ -21,9 +21,13 @@ def setup_config_dict(cwd):
             KEY_TEMPDIR:None,
             KEY_NO_TEMP:False,
 
+            KEY_ASSEMBLY_REFERENCES:[],
+            KEY_FIG_HEIGHT:30,
+
             KEY_TRIM_END:190788,
             KEY_EXTRACT_CDS:False,
             KEY_CONCATENATE:False,
+            KEY_ADDITIONAL_MASK:None,
 
             KEY_VERBOSE: False,
             KEY_THREADS: 1
@@ -46,7 +50,7 @@ def package_data_check(filename,directory,key,config):
         data = pkg_resources.resource_filename('squirrel', package_datafile)
         config[key] = data
     except:
-        sys.stderr.write(colour.cyan(f'Error: Missing package data.')+f'\n\t- {filename}\n')
+        sys.stderr.write(cyan(f'Error: Missing package data.')+f'\n\t- {filename}\n')
         sys.exit(-1)
 
 def get_datafiles(config,clade):
@@ -58,7 +62,7 @@ def get_datafiles(config,clade):
         fasta_filename = "NC_063383.fasta"
         mask_file = "to_mask.cladeii.csv"
     else:
-        sys.stderr.write(colour.cyan(f'Error: invalid clade specified. Please specify one of `cladei` or `cladeii`\n'))
+        sys.stderr.write(cyan(f'Error: invalid clade specified. Please specify one of `cladei` or `cladeii`\n'))
         sys.exit(-1)
 
 

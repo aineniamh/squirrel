@@ -14,8 +14,11 @@ KEY_NO_TEMP="no_temp"
 KEY_VERBOSE="verbose"
 KEY_THREADS = "threads"
 KEY_NO_MASK="no_mask"
+KEY_ADDITIONAL_MASK="additional_mask"
 KEY_TRIM_END="trim_end"
 KEY_EXTRACT_CDS="extract_cds"
+
+KEY_ASSEMBLY_REFERENCES = "assembly_references"
 
 KEY_RUN_PHYLO="run_phylo"
 KEY_OUTGROUPS="outgroups"
@@ -24,3 +27,5 @@ KEY_PHYLOGENY_SVG="phylogeny_svg"
 KEY_OUTGROUP_STRING="outgroup_string"
 KEY_OUTGROUP_SENTENCE="outgroup_sentence"
 KEY_GRANTHAM_SCORES="grantham_scores"
+
+KEY_FIG_HEIGHT = "fig_height"

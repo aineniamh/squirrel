@@ -17,7 +17,7 @@ jobs:
         with:
           auto-update-conda: false
           environment-file: environment.yml
-          activate-environment: piranha
+          activate-environment: squirrel
           channels: conda-forge,bioconda,defaults
           miniforge-version: latest
       - name: Install squirrel
@@ -27,5 +27,7 @@ jobs:
       - name: Run squirrel with test data
         run: squirrel squirrel/data/NC_063383.fasta 2>&1 | tee squirrel.log
       - name: Run squirrel phylo with test data
-        run: squirrel squirrel/data/outgroups.fasta --run-phylo --outgroups 'KJ642617' 2>&1 | tee squirrel_phylo.log
+        run: squirrel squirrel/data/outgroups.fasta --run-phylo --outgroups 'KJ642615|Nigeria|1978' 2>&1 | tee squirrel_phylo.log
+      - name: Run squirrel seq qc with test data
+        run: squirrel squirrel/data/outgroups.fasta --run-phylo --outgroups 'KJ642615|Nigeria|1978' --seq-qc --assembly-refs squirrel/data/ref_seq.fasta 2>&1 | tee squirrel_qc.log
       

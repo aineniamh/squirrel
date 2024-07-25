@@ -4,6 +4,7 @@ import os
 from squirrel.utils.log_colours import green,cyan
 import select
 from Bio import SeqIO
+import csv
 
 import tempfile
 import shutil
@@ -29,10 +30,16 @@ def set_up_outfile(outfile_arg,query_arg, outfile, outdir):
         cds_outstr = ".".join(query_arg[0].split(".")[:-1]) + ".aln.cds.fasta"
         cds_outfile = os.path.join(outdir, cds_outstr)
         outfilename=outfile_arg
-    else:
+    elif query_arg:
         out_str = ".".join(query_arg[0].split(".")[:-1]) + ".aln.fasta"
         outfile = os.path.join(outdir, out_str)
         cds_outstr = ".".join(query_arg[0].split(".")[:-1]) + ".aln.cds.fasta"
+        cds_outfile = os.path.join(outdir, cds_outstr)
+        outfilename=out_str
+    else:
+        out_str = "sequences.aln.fasta"
+        outfile = os.path.join(outdir, out_str)
+        cds_outstr = "sequences.aln.cds.fasta"
         cds_outfile = os.path.join(outdir, cds_outstr)
         outfilename=out_str
 
@@ -111,11 +118,42 @@ def find_query_file(cwd, tempdir, query_arg):
 
     return query
 
-def pipeline_options(no_mask, no_itr_mask, extract_cds,concatenate, config):
+
+def find_additional_mask_file(cwd,additional_mask,config):
+
+    path_to_try = os.path.join(cwd,additional_mask)
+    try:
+        with open(path_to_try,"r") as f:
+            reader = csv.DictReader(f)
+
+            header = reader.fieldnames
+            for i in ["Maximum","Minimum"]:
+                if i not in header:
+                    sys.stderr.write(cyan(f'Error: additional mask file must contain columns `Maximum` and `Minimum`.\n'))
+                    sys.exit(-1)
+            for row in reader:
+                try:
+                    mx = int(row["Maximum"])
+                    mn = int(row["Minimum"])
+                except:
+                    sys.stderr.write(cyan(f'Error: `Maximum` and `Minimum` columns must contain numeric values.\n'))
+                    sys.exit(-1)
+    except:
+        sys.stderr.write(cyan(f'Error: cannot find additional mask file at: ') + f'{path_to_try}\n' + cyan('Please check file path and try again.\n'))
+        sys.exit(-1)
+
+    return path_to_try
+
+
+
+def pipeline_options(no_mask, no_itr_mask, additional_mask,extract_cds,concatenate,cwd, config):
     config[KEY_NO_MASK] = no_mask
     if no_itr_mask:
         config[KEY_TRIM_END] = 197209
     
+    if additional_mask:
+        config[KEY_ADDITIONAL_MASK] = find_additional_mask_file(cwd,additional_mask,config)
+
     config[KEY_EXTRACT_CDS] = extract_cds
     config[KEY_CONCATENATE] = concatenate
 
