@@ -6,6 +6,7 @@ from squirrel.utils.config import *
 from squirrel.utils.initialising import *
 import squirrel.utils.io_parsing as io
 import squirrel.utils.cns_qc as qc
+import squirrel.utils.reconstruction_functions as recon
 
 import squirrel.utils.misc as misc
 from squirrel import __version__
@@ -71,9 +72,10 @@ def main(sysargs = sys.argv[1:]):
     if args.seq_qc:
         assembly_refs = qc.find_assembly_refs(cwd,args.assembly_refs,config)
         args.run_phylo = True
+        
         # config[KEY_INPUT_FASTA] = qc.add_refs_to_input(config[KEY_INPUT_FASTA],assembly_refs,config)
 
-
+    config[KEY_FIG_HEIGHT] = recon.get_fig_height(config[KEY_INPUT_FASTA])
     io.phylo_options(args.run_phylo,args.outgroups,config[KEY_INPUT_FASTA],config)
 
     snakefile = get_snakefile(thisdir,"msa")
@@ -104,9 +106,11 @@ def main(sysargs = sys.argv[1:]):
                     tree_file = os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILENAME]}.treefile")
                     branch_snps = os.path.join(config[KEY_OUTDIR],f"{config[KEY_PHYLOGENY]}.branch_snps.reconstruction.csv")
                     reversion_out = os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILENAME]}.reversions.csv")
-                    reversion_figure_out = os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILENAME]}.reversions")
+                    convergence_out = os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILENAME]}.convergence.csv")
+                    reversion_figure_out = os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILENAME]}.reversions_fig")
+                    convergence_figure_out = os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILENAME]}.convergence_fig")
                     mask_file = os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILENAME]}.suggested_mask.csv")
 
-                    qc.check_for_reversions_to_reference(state_file, branch_snps, tree_file, assembly_refs,mask_file, reversion_out,reversion_figure_out)
+                    qc.check_for_snp_anomalies(state_file, branch_snps, tree_file, assembly_refs,mask_file, convergence_out, reversion_out,convergence_figure_out,reversion_figure_out,config[KEY_FIG_HEIGHT])
         else:
             print(green("Alignment complete."))
