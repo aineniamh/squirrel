@@ -69,7 +69,7 @@ rule mask_repetitive_regions:
             
             if config[KEY_ADDITIONAL_MASK]:
                 with open(config[KEY_ADDITIONAL_MASK],"r") as f:
-                    reader = csv.DictReader(f)
+                    reader = csv.DictReader(filter(lambda row: row[0]!='#', f))
                     for row in reader:
                         start = int(row["Minimum"]) - 1
                         end = int(row["Maximum"])
