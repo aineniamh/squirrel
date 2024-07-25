@@ -4,6 +4,7 @@ import os
 from squirrel.utils.log_colours import green,cyan
 import select
 from Bio import SeqIO
+import csv
 
 import tempfile
 import shutil
@@ -124,6 +125,7 @@ def find_additional_mask_file(cwd,additional_mask,config):
     try:
         with open(path_to_try,"r") as f:
             reader = csv.DictReader(f)
+
             header = reader.fieldnames
             for i in ["Maximum","Minimum"]:
                 if i not in header:
