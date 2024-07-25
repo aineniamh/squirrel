@@ -328,7 +328,7 @@ def make_reversion_tree_figure(outfile,branch_snps,branch_reversions,will_be_rev
     ax.set_yticklabels([])
     ax.set_xticklabels([])
 
-    plt.savefig(f"{outfile}.svg")
+    plt.savefig(f"{outfile}.svg",bbox_inches='tight')
     plt.savefig(f"{outfile}.png",bbox_inches='tight', 
                    transparent=True)
     # plt.show()
@@ -410,12 +410,22 @@ def make_convergence_tree_figure(outfile,branch_snps,branch_convergence,treefile
     ax.set_yticklabels([])
     ax.set_xticklabels([])
 
-    plt.savefig(f"{outfile}.svg")
+    plt.savefig(f"{outfile}.svg",bbox_inches='tight')
     plt.savefig(f"{outfile}.png",bbox_inches='tight', 
                    transparent=True)
 
 
-def check_for_snp_anomalies(state_file, branch_snps, treefile,assembly_refs,mask_file,out_convergence, outfile,conv_outfig,outfig,h):
+def check_for_snp_anomalies(config,h):
+
+    state_file = os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILENAME]}.state")
+    treefile = os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILENAME]}.treefile")
+    branch_snps = os.path.join(config[KEY_OUTDIR],f"{config[KEY_PHYLOGENY]}.branch_snps.reconstruction.csv")
+    reversion_out = os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILENAME]}.reversions.csv")
+    convergence_out = os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILENAME]}.convergence.csv")
+    reversion_figure_out = os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILENAME]}.reversions_fig")
+    convergence_figure_out = os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILENAME]}.convergence_fig")
+    mask_file = os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILENAME]}.suggested_mask.csv")
+
     branch_snp_dict = read_in_branch_snps(branch_snps)
     branch_paths= get_path_to_root(treefile)
 
@@ -425,13 +435,13 @@ def check_for_snp_anomalies(state_file, branch_snps, treefile,assembly_refs,mask
     possible_reversions,branch_reversions,will_be_reverted = flag_reversions(branch_paths, branch_snp_dict, refs, node1)  
     branch_convergence = flag_convergence(treefile, branch_snp_dict)
 
-    with open(out_convergence, "w") as fw:
+    with open(convergence_out, "w") as fw:
         fw.write("branch,snp\n")
         for branch in branch_convergence:
             for snp in branch_convergence[branch]:
                 fw.write(f"{branch},{snp}\n")
 
-    with open(outfile, "w") as fw:
+    with open(reversion_out, "w") as fw:
         writer= csv.DictWriter(fw,lineterminator="\n",fieldnames = ["taxon","site","original_snp","original_branch",
                                                                     "dinucleotide_context",
                                                                     "reversion_snp","reference_alleles",
@@ -441,8 +451,8 @@ def check_for_snp_anomalies(state_file, branch_snps, treefile,assembly_refs,mask
         for i in possible_reversions:
             writer.writerow(i)
             
-    make_reversion_tree_figure(outfig,branch_snps,branch_reversions,will_be_reverted,treefile,25,h)
-    make_convergence_tree_figure(conv_outfig,branch_snps,branch_convergence,treefile,25,h)
+    make_reversion_tree_figure(reversion_figure_out,branch_snps,branch_reversions,will_be_reverted,treefile,25,h)
+    make_convergence_tree_figure(convergence_figure_out,branch_snps,branch_convergence,treefile,25,h)
 
     with open(mask_file,"w") as fw:
         fw.write("Name,Minimum,Maximum\n")

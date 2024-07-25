@@ -101,16 +101,7 @@ def main(sysargs = sys.argv[1:]):
                 print(green("Ancestral reconstruction & phylogenetics complete."))
 
                 if args.seq_qc:
-                    
-                    state_file = os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILENAME]}.state")
-                    tree_file = os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILENAME]}.treefile")
-                    branch_snps = os.path.join(config[KEY_OUTDIR],f"{config[KEY_PHYLOGENY]}.branch_snps.reconstruction.csv")
-                    reversion_out = os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILENAME]}.reversions.csv")
-                    convergence_out = os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILENAME]}.convergence.csv")
-                    reversion_figure_out = os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILENAME]}.reversions_fig")
-                    convergence_figure_out = os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILENAME]}.convergence_fig")
-                    mask_file = os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILENAME]}.suggested_mask.csv")
 
-                    qc.check_for_snp_anomalies(state_file, branch_snps, tree_file, assembly_refs,mask_file, convergence_out, reversion_out,convergence_figure_out,reversion_figure_out,config[KEY_FIG_HEIGHT])
+                    qc.check_for_snp_anomalies(config,config[KEY_FIG_HEIGHT])
         else:
             print(green("Alignment complete."))
