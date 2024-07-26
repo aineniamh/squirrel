@@ -67,7 +67,7 @@ rule mask_repetitive_regions:
                     mask_sites.append((start,end,length))
                     total_masked += length
             
-            if config[KEY_ADDITIONAL_MASK]:
+            if config[KEY_ADDITIONAL_MASK] != 'None':
                 with open(config[KEY_ADDITIONAL_MASK],"r") as f:
                     reader = csv.DictReader(filter(lambda row: row[0]!='#', f))
                     for row in reader:
