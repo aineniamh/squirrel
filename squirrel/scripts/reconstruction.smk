@@ -24,7 +24,6 @@ rule iqtree:
         """
         iqtree  -s {input.aln:q} \
                 -m HKY \
-                --ufboot 1000 \
                 -czb \
                 -nt {params.threads} \
                 -blmin  0.0000000001 \
