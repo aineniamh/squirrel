@@ -25,6 +25,7 @@ rule iqtree:
                 -m HKY \
                 --ufboot 1000 \
                 -czb \
+                -nt AUTO \
                 -blmin  0.0000000001 \
                 -redo \
                 -asr \
