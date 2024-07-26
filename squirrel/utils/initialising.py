@@ -30,7 +30,9 @@ def setup_config_dict(cwd):
             KEY_ADDITIONAL_MASK:None,
 
             KEY_VERBOSE: False,
-            KEY_THREADS: 1
+            KEY_THREADS: 1,
+            KEY_PHYLO_THREADS: "AUTO"
+
             }
     return default_dict
 

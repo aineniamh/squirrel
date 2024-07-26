@@ -16,7 +16,8 @@ rule iqtree:
     input:
         aln = config[KEY_OUTFILE]
     params:
-        outgroup = config[KEY_OUTGROUP_STRING]
+        outgroup = config[KEY_OUTGROUP_STRING],
+        threads = config[KEY_PHYLO_THREADS]
     output:
         tree = f"{config[KEY_OUTFILE]}.treefile"
     shell:
@@ -25,7 +26,7 @@ rule iqtree:
                 -m HKY \
                 --ufboot 1000 \
                 -czb \
-                -nt AUTO \
+                -nt {params.threads} \
                 -blmin  0.0000000001 \
                 -redo \
                 -asr \

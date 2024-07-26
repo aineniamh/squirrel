@@ -11,6 +11,16 @@ import shutil
 
 from squirrel.utils.config import *
 
+def set_up_threads(threads,config):
+    if threads:
+        try:
+            tint = int(threads)
+            config[KEY_THREADS] = threads
+            config[KEY_PHYLO_THREADS] = threads
+        except:
+            sys.stderr.write(cyan(f'Error: threads specified must be an integer'))
+            sys.exit(-1)
+
 
 def set_up_outdir(outdir_arg,cwd,outdir):
     if outdir_arg:

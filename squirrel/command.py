@@ -61,7 +61,7 @@ def main(sysargs = sys.argv[1:]):
     config = setup_config_dict(cwd)
 
     get_datafiles(config,args.clade)
-
+    io.set_up_threads(args.threads,config)
     config[KEY_OUTDIR] = io.set_up_outdir(args.outdir,cwd,config[KEY_OUTDIR])
     config[KEY_OUTFILE],config[KEY_CDS_OUTFILE],config[KEY_OUTFILENAME] = io.set_up_outfile(args.outfile,args.input, config[KEY_OUTFILE],config[KEY_OUTDIR])
     io.set_up_tempdir(args.tempdir,args.no_temp,cwd,config[KEY_OUTDIR], config)
