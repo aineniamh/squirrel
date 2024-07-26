@@ -414,7 +414,7 @@ def make_convergence_tree_figure(outfile,branch_snps,branch_convergence,treefile
                    transparent=True)
 
 
-def check_for_snp_anomalies(config,h):
+def check_for_snp_anomalies(assembly_references,config,h):
 
     state_file = os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILENAME]}.state")
     treefile = os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILENAME]}.treefile")
@@ -428,7 +428,7 @@ def check_for_snp_anomalies(config,h):
     branch_snp_dict = read_in_branch_snps(branch_snps)
     branch_paths= get_path_to_root(treefile)
 
-    refs = load_assembly_refs(assembly_refs)
+    refs = load_assembly_refs(assembly_references)
     node1 = get_seq_at_node(state_file,"Node1")
 
     possible_reversions,branch_reversions,will_be_reverted = flag_reversions(branch_paths, branch_snp_dict, refs, node1)  

@@ -103,6 +103,6 @@ def main(sysargs = sys.argv[1:]):
 
                 if args.seq_qc:
 
-                    qc.check_for_snp_anomalies(config,config[KEY_FIG_HEIGHT])
+                    qc.check_for_snp_anomalies(assembly_refs,config,config[KEY_FIG_HEIGHT])
         else:
             print(green("Alignment complete."))
