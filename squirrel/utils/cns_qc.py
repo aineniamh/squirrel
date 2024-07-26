@@ -460,12 +460,12 @@ def check_for_snp_anomalies(assembly_references,config,h):
             for j in branch_reversions[i]:
                 site = int(j[:-1])
                 allele = j[-1]
-                sites[site].append(["reversion",f"{i} reversion to {allele}\n"])
+                sites[site].append(["reversion",f"{i} reversion to {allele}"])
         
         for branch in branch_convergence:
             for snp in branch_convergence[branch]:
                 site = int(snp[1:-1])
-                sites[site].append(["convergent",f"{snp} convergent at {branch}\n"])
+                sites[site].append(["convergent",f"{snp} convergent at {branch}"])
         for site in sites:
             types = list(set([i[0] for i in sites[site]]))
             name = ";".join(types)
