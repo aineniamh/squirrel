@@ -1,4 +1,5 @@
 Name,Type,Minimum,Maximum,Length,Direction
+repetitive region,misc_feature,10403,10556,154,none
 homopolymeric runs,misc_feature,20449,20470,22,none
 homopolymeric runs,misc_feature,21344,21366,23,none
 repetitive region,misc_feature,31764,31784,21,none
