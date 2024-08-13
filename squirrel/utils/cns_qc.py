@@ -4,6 +4,7 @@ import os
 from squirrel.utils.log_colours import green,cyan
 import select
 from Bio import SeqIO
+from Bio import AlignIO
 import collections
 import csv
 from squirrel.utils.config import *
@@ -414,13 +415,165 @@ def make_convergence_tree_figure(outfile,branch_snps,branch_convergence,treefile
                    transparent=True)
 
 
+def sliding_window(elements, window_size):
+    
+    if len(elements) <= window_size:
+        return elements
+    for i in range(len(elements)):
+        print(elements[i:i+window_size])
+
+
+def check_for_alignment_issues(alignment):
+    bases = ["A","T","G","C"]
+    
+    with open(alignment,"r") as f:
+        aln = AlignIO.read(f, "fasta")
+        aln_len = len(aln[0])
+        
+        snp_cols = set()
+
+        #dict keyed by sequence and values a set of indexes
+        unique_mutations = collections.defaultdict(set)
+        
+        
+        snps_near_n = collections.defaultdict(set)
+
+        for i in range(aln_len):
+            
+            col = set()
+            
+            for s in aln:
+                #find the columns with variable sites
+                if s.seq[i] in bases:
+                    col.add(s.seq[i])
+                    
+            if col:
+                if len(col)>1:
+                    #do this for only the variable sites to save time & memory
+                    snp_cols.add(i)
+                    
+                    col_dict = collections.defaultdict(list)
+                    for s in aln:
+                        col_dict[s.seq[i]].append(s.id)
+                        
+                    
+                    for j in col_dict:
+                        if len(col_dict[j]) == 1:
+                            unique_mutations[col_dict[j][0]].add(i)
+                            
+                    # if the snp is near to an N, may be an issue with coverage/ alignment
+                    for s in aln:
+                        if s[i] != "N":
+                            if "N" in s.seq[i-4:i+5]:
+                                snps_near_n[s.id].add(i)
+    
+        clustered_snps = collections.defaultdict(set)
+        
+        for s in aln:
+            unique = unique_mutations[s.id]
+            s_unique = sorted(unique)
+            for i,val in enumerate(s_unique):
+
+                if len(s_unique) > i+1:
+                    if s_unique[i+1] < val+5:
+                        clustered_snps[s.id].add(val)
+                        clustered_snps[s.id].add(s_unique[i+1])
+
+        
+        sites_to_mask = {}
+        
+        for s in aln:
+
+            if s.id in clustered_snps:
+                sites = sorted(clustered_snps[s.id])
+                for site in sites:
+                    if site not in sites_to_mask:
+                        sites_to_mask[site] = {
+                            "Name": site+1,
+                            "Minimum": site+1,
+                            "Maximum": site+1,
+                            "Length": 1,
+                            "present_in": [s.id],
+                            "note": {"clustered_snps"}
+                        }
+                    else:
+                        sites_to_mask[site]["present_in"].append(s.id)
+                        
+            if s.id in snps_near_n:
+                sites = sorted(snps_near_n[s.id])
+                for site in sites:
+                    if site not in sites_to_mask:
+                        sites_to_mask[site] = {
+                            "Name": site+1,
+                            "Minimum": site+1,
+                            "Maximum": site+1,
+                            "Length": 1,
+                            "present_in": [s.id],
+                            "note": {"N_adjacent"}
+                        }
+                    else:
+                        sites_to_mask[site]["present_in"].append(s.id)
+                        sites_to_mask[site]["note"].add("N_adjacent")
+        
+        return sites_to_mask
+
+def merge_flagged_sites(sites_to_mask,branch_reversions,branch_convergence,out_report):
+
+    for branch in branch_reversions:
+        for j in branch_reversions[branch]:
+            
+            site = int(j[:-1])
+            allele = j[-1]
+            if site not in sites_to_mask:
+                sites_to_mask[site] = {
+                            "Name": site,
+                            "Minimum": site,
+                            "Maximum": site,
+                            "Length": 1,
+                            "present_in": [f"{allele}|{branch}"],
+                            "note": {"reversion"}
+                        }
+            else:
+                sites_to_mask[site]["present_in"].append(f"{j}|{branch}")
+                sites_to_mask[site]["note"].add("reversion")
+    
+    for branch in branch_convergence:
+        for snp in branch_convergence[branch]:
+            site = int(snp[1:-1])
+            if site not in sites_to_mask:
+                sites_to_mask[site] = {
+                            "Name": site,
+                            "Minimum": site,
+                            "Maximum": site,
+                            "Length": 1,
+                            "present_in": [f"{snp}|{branch}"],
+                            "note": {"convergent_snp"}
+                        }
+            else:
+                sites_to_mask[site]["present_in"].append(f"{snp}|{branch}")
+                sites_to_mask[site]["note"].add("convergent_snp")
+
+    with open(out_report,"w") as fw:
+        writer = csv.DictWriter(fw,lineterminator="\n",fieldnames=["Name","Minimum","Maximum","Length","present_in","note"])
+        writer.writeheader()
+
+        for site in sites_to_mask:
+            row = sites_to_mask[site]
+            new_row = row
+            if len(row["present_in"]) > 10:
+                new_row["present_in"] = "many"
+            else:
+                new_row["present_in"] = ";".join(row["present_in"])
+            new_row["note"] = ";".join(row["note"])
+            writer.writerow(new_row)
+
 def check_for_snp_anomalies(assembly_references,config,h):
 
     state_file = os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILENAME]}.state")
     treefile = os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILENAME]}.treefile")
+    alignment = os.path.join(config[KEY_OUTDIR],config[KEY_OUTFILENAME])
+
     branch_snps = os.path.join(config[KEY_OUTDIR],f"{config[KEY_PHYLOGENY]}.branch_snps.reconstruction.csv")
-    reversion_out = os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILENAME]}.reversions.csv")
-    convergence_out = os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILENAME]}.convergence.csv")
     reversion_figure_out = os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILENAME]}.reversions_fig")
     convergence_figure_out = os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILENAME]}.convergence_fig")
     mask_file = os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILENAME]}.suggested_mask.csv")
@@ -431,47 +584,14 @@ def check_for_snp_anomalies(assembly_references,config,h):
     refs = load_assembly_refs(assembly_references)
     node1 = get_seq_at_node(state_file,"Node1")
 
+
     possible_reversions,branch_reversions,will_be_reverted = flag_reversions(branch_paths, branch_snp_dict, refs, node1)  
     branch_convergence = flag_convergence(treefile, branch_snp_dict)
-
-    with open(convergence_out, "w") as fw:
-        fw.write("branch,snp\n")
-        for branch in branch_convergence:
-            for snp in branch_convergence[branch]:
-                fw.write(f"{branch},{snp}\n")
-
-    with open(reversion_out, "w") as fw:
-        writer= csv.DictWriter(fw,lineterminator="\n",fieldnames = ["taxon","site","original_snp","original_branch",
-                                                                    "dinucleotide_context",
-                                                                    "reversion_snp","reference_alleles",
-                                                                    "root_allele","reversion_to","reversion_branch"
-                                                                   ])
-        writer.writeheader()
-        for i in possible_reversions:
-            writer.writerow(i)
-            
     make_reversion_tree_figure(reversion_figure_out,branch_snps,branch_reversions,will_be_reverted,treefile,25,h)
     make_convergence_tree_figure(convergence_figure_out,branch_snps,branch_convergence,treefile,25,h)
 
-    with open(mask_file,"w") as fw:
-        fw.write("Name,Minimum,Maximum,Length,Notes\n")
-        sites= collections.defaultdict(list)
-        for i in branch_reversions:
-            for j in branch_reversions[i]:
-                site = int(j[:-1])
-                allele = j[-1]
-                sites[site].append(["reversion",f"{i} reversion to {allele}"])
-        
-        for branch in branch_convergence:
-            for snp in branch_convergence[branch]:
-                site = int(snp[1:-1])
-                sites[site].append(["convergent",f"{snp} convergent at {branch}"])
-        for site in sites:
-            types = list(set([i[0] for i in sites[site]]))
-            name = ";".join(types)
-            notes = ";".join(list(set([i[1] for i in sites[site]])))
-            fw.write(f"{name},{site},{site},1,{notes}\n")
+    sites_to_mask = check_for_alignment_issues(alignment)
 
-
+    merge_flagged_sites(sites_to_mask,branch_reversions,branch_convergence,mask_file)
 
 
