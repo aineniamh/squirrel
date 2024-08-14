@@ -514,7 +514,7 @@ def check_for_alignment_issues(alignment):
                     else:
                         sites_to_mask[site]["present_in"].append(s.id)
                         sites_to_mask[site]["note"].add("N_adjacent")
-        
+        print(f"{len(sites_to_mask)} potentially problematic sites flagged in the alignment")
         return sites_to_mask
 
 def merge_flagged_sites(sites_to_mask,branch_reversions,branch_convergence,out_report):
@@ -557,7 +557,7 @@ def merge_flagged_sites(sites_to_mask,branch_reversions,branch_convergence,out_r
         writer = csv.DictWriter(fw,lineterminator="\n",fieldnames=["Name","Minimum","Maximum","Length","present_in","note"])
         writer.writeheader()
 
-        for site in sites_to_mask:
+        for site in sorted(sites_to_mask):
             row = sites_to_mask[site]
             new_row = row
             if len(row["present_in"]) > 10:
