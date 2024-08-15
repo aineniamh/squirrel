@@ -1,0 +1,197 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "https://raw.githubusercontent.com/aineniamh/squirrel/main/nextflow_schema.json",
+  "title": "aineniamh/squirrel",
+  "description": "Some QUIck Rearranging to Resolve Evolutionary Links.",
+  "url": "https://github.com/aineniamh/squirrel",
+  "type": "object",
+  "definitions": {
+    "input_options": {
+      "title": "Input Options",
+      "type": "object",
+      "fa_icon": "fas fa-terminal",
+      "description": "Define where the pipeline should find input data and save output data.",
+      "properties": {
+        "fasta": {
+          "type": "string",
+          "format": "path",
+          "title": "FASTA",
+          "description": "",
+          "help_text": ""
+        },
+        "seq_qc": {
+          "type": "boolean",
+          "default": false,
+          "title": "Run Sequence QC",
+          "description": "Flag potentially problematic SNPs and sequences.",
+          "help_text": "Note that this will also run phylo mode, so you will need to specify both outgroup sequences and provide an assembly reference file."
+        },
+        "assembly_refs": {
+          "type": "string",
+          "format": "path",
+          "title": "Assembly References",
+          "description": "References to check for `calls to reference` against.",
+          "help_text": ""
+        },
+        "no_mask": {
+          "type": "boolean",
+          "default": false,
+          "title": "Skip mask of repetitive regions",
+          "description": "",
+          "help_text": ""
+        },
+        "no_itr_mask": {
+          "type": "boolean",
+          "default": false,
+          "title": "Skip mask end of ITR",
+          "description": "",
+          "help_text": ""
+        },
+        "additional_mask": {
+          "type": "string",
+          "format": "path",
+          "title": "Additional Mask",
+          "description": "Masking additional sites provided.",
+          "help_text": ""
+        },
+        "extract_cds": {
+          "type": "boolean",
+          "default": false,
+          "title": "Extract CDS ",
+          "description": "",
+          "help_text": "Extract ccoding sequences based on coordinates in the reference."
+        },
+        "concatenate": {
+          "type": "boolean",
+          "default": false,
+          "title": "Concatenate CDS ",
+          "description": "Concatenate coding sequences for each genome, separated by `NNN`.",
+          "help_text": "Default: write out as separate records."
+        },
+        "clade": {
+          "type": "string",
+          "default": "cladeii",
+          "title": "Clade",
+          "description": "Specify whether the alignment is primarily for `cladei` or `cladeii`.",
+          "enum": [
+            "cladei",
+            "cladeii"
+          ],
+          "help_text": ""
+        },
+        "run_phylo": {
+          "type": "boolean",
+          "default": false,
+          "title": "Run Phylo",
+          "description": "Run phylogenetic reconstruction pipeline",
+          "help_text": ""
+        },
+        "outgroups": {
+          "type": "string",
+          "default": false,
+          "title": "Outgroups",
+          "description": "Specify which MPXV outgroup(s) in the alignment to use in the phylogeny.",
+          "help_text": "These will get pruned out from the final tree."
+        }
+      },
+      "allOf": [
+        {
+          "required": [
+            "fasta"
+          ]
+        }
+      ]
+    },
+    "output_options": {
+      "title": "Output Options",
+      "type": "object",
+      "description": "Parameters for saving and naming workflow outputs.",
+      "properties": {
+        "out_dir": {
+          "type": "string",
+          "format": "directory-path",
+          "default": "output",
+          "title": "Output folder name",
+          "description": "Directory for output of all user-facing files."
+        }
+      }
+    },
+    "advanced_options": {
+      "title": "Advanced Options",
+      "type": "object",
+      "description": "Advanced options for configuring processes inside the workflow.",
+      "default": "",
+      "properties": {
+        "threads": {
+          "type": "integer",
+          "default": 2,
+          "title": "Maximum number of CPU threads",
+          "description": "Maximum number of CPU threads to use per workflow task.",
+          "help_text": "Several tasks in this workflow benefit from using multiple CPU threads. This option sets the number of CPU threads for all such processes. The total CPU resource used by the workflow is constrained by the executor configuration. See server threads parameter for kraken specific threads."
+        }
+      }
+    },
+    "miscellaneous_options": {
+      "title": "Miscellaneous Options",
+      "type": "object",
+      "fa_icon": "fas fa-file-import",
+      "description": "Everything else.",
+      "help_text": "These options are common to all nf-core pipelines and allow you to customise some of the core preferences for how the pipeline runs.\n\nTypically these options would be set in a Nextflow config file loaded for all pipeline runs, such as `~/.nextflow/config`.",
+      "properties": {
+        "help": {
+          "type": "boolean",
+          "title": "Display help text",
+          "fa_icon": "fas fa-question-circle",
+          "hidden": true
+        },
+        "version": {
+          "type": "boolean",
+          "title": "Display version",
+          "description": "Display version and exit.",
+          "fa_icon": "fas fa-question-circle",
+          "hidden": true
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "$ref": "#/definitions/input_options"
+    },
+    {
+      "$ref": "#/definitions/output_options"
+    },
+    {
+      "$ref": "#/definitions/advanced_options"
+    },
+    {
+      "$ref": "#/definitions/miscellaneous_options"
+    }
+  ],
+  "properties": {
+    "aws_image_prefix": {
+      "type": "string",
+      "title": "AWS image prefix",
+      "hidden": true
+    },
+    "aws_queue": {
+      "type": "string",
+      "title": "AWS queue",
+      "hidden": true
+    },
+    "monochrome_logs": {
+      "type": "boolean"
+    },
+    "validate_params": {
+      "type": "boolean",
+      "default": true
+    },
+    "show_hidden_params": {
+      "type": "boolean"
+    }
+  },
+  "docs": {
+    "intro": "\nasquirrel is an analysis tool to run QC and alignment and to construct phylogenetic trees, developed for mpxv.\n\n",
+    "links": "## Useful links\n\n* [nextflow](https://www.nextflow.io/)\n* [docker](https://www.docker.com/products/docker-desktop)"
+  }
+}
