@@ -10,7 +10,7 @@ process squirrel {
     path additional_mask
     
   output:
-    path "${fasta.baseName}.aln.fasta"
+    path "squirrel_output/${fasta.baseName}.aln.fasta"
 
   script:
     extra = ""
@@ -46,13 +46,13 @@ workflow {
   if ( params.assembly_refs ) {
       refs_ch = channel.fromPath("${params.assembly_refs}", checkIfExists:true)
   } else {
-      refs_ch = channel.fromPath("${params.default_assembly_refs}", checkIfExists:true)
+      refs_ch = channel.fromPath("${projectDir}/${params.default_assembly_refs}", checkIfExists:true)
   }
 
 if ( params.additional_mask ) {
       mask_ch = channel.fromPath("${params.additional_mask}", checkIfExists:true)
   } else {
-      mask_ch = channel.fromPath("${params.default_additional_mask}", checkIfExists:true)
+      mask_ch = channel.fromPath("${projectDir}/${params.default_additional_mask}", checkIfExists:true)
   }
   
   fasta_ch = Channel.of(file("${params.fasta}", type: "file", checkIfExists:true))
