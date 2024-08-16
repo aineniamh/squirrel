@@ -62,6 +62,7 @@
         "outgroups": {
           "type": "string",
           "title": "Outgroups",
+          "default": false,
           "description": "Specify which MPXV outgroup(s) in the alignment to use in the phylogeny.",
           "help_text": "These are used only by the phylogenetics module and will get pruned out from the final tree."
         }
@@ -125,6 +126,7 @@
         "threads": {
           "type": "integer",
           "title": "Maximum number of CPU threads",
+          "default": 2,
           "description": "Maximum number of CPU threads to use per workflow task.",
           "help_text": "Several tasks in this workflow benefit from using multiple CPU threads. This option sets the number of CPU threads for all such processes. The total CPU resource used by the workflow is constrained by the executor configuration."
         }
