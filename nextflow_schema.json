@@ -116,13 +116,6 @@
           "title": "Concatenate CDS ",
           "description": "Concatenate coding sequences for each genome, separated by `NNN`.",
           "help_text": "Default: write out as separate records."
-        },
-        "threads": {
-          "type": "integer",
-          "default": 2,
-          "title": "Maximum number of CPU threads",
-          "description": "Maximum number of CPU threads to use per workflow task.",
-          "help_text": "Several tasks in this workflow benefit from using multiple CPU threads. This option sets the number of CPU threads for all such processes. The total CPU resource used by the workflow is constrained by the executor configuration."
         }
       }
     },
