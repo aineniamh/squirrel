@@ -34,7 +34,7 @@ def main(sysargs = sys.argv[1:]):
     io_group.add_argument("--no-temp",action="store_true",help="Output all intermediate files, for dev purposes.")
 
     a_group = parser.add_argument_group("Pipeline options")
-    a_group.add_argument("--seq-qc",action="store_true",help="Flag potentially problematic SNPs and sequences. Note that this will also run phylo mode, so you will need to specify both outgroup sequences and provide an assembly reference file. Default: don't run QC")
+    a_group.add_argument("-qc","--seq-qc",action="store_true",help="Flag potentially problematic SNPs and sequences. Note that this will also run phylo mode, so you will need to specify both outgroup sequences and provide an assembly reference file. Default: don't run QC")
     a_group.add_argument("--assembly-refs",action="store",help="References to check for `calls to reference` against.")
     a_group.add_argument("--no-mask",action="store_true",help="Skip masking of repetitive regions. Default: masks repeat regions")
     a_group.add_argument("--no-itr-mask",action="store_true",help="Skip masking of end ITR. Default: masks ITR")
@@ -70,7 +70,13 @@ def main(sysargs = sys.argv[1:]):
 
     config[KEY_INPUT_FASTA] = io.find_query_file(cwd, config[KEY_TEMPDIR], args.input)
     
+    if args.seq_qc:
+        print(green("QC mode activated. Squirrel will flag:"))
+        print("- Clumps of unique SNPs\n- SNPs adjacent to Ns")
+    
+    assembly_refs = []
     if args.seq_qc and args.run_phylo:
+        print("- Reversions to reference\n- Convergent mutations")
         assembly_refs = qc.find_assembly_refs(cwd,args.assembly_refs,config)
         # args.run_phylo = True
         # config[KEY_INPUT_FASTA] = qc.add_refs_to_input(config[KEY_INPUT_FASTA],assembly_refs,config)
@@ -100,8 +106,9 @@ def main(sysargs = sys.argv[1:]):
             if status:
                 print(green("Ancestral reconstruction & phylogenetics complete."))
 
-                if args.seq_qc:
+        if args.seq_qc:
 
-                    qc.check_for_snp_anomalies(assembly_refs,config,config[KEY_FIG_HEIGHT])
+            qc.check_for_snp_anomalies(assembly_refs,config,config[KEY_FIG_HEIGHT])
+            print(green("Flagged mutations writted to:"), f"{config[KEY_OUTFILENAME]}.suggested_mask.csv")
         else:
             print(green("Alignment complete."))
