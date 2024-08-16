@@ -42,19 +42,26 @@ def find_assembly_refs(cwd,assembly_refs,config):
     refs = []
     ref_ids = []
     if not assembly_refs:
-        print(cyan(f'Note: no assembly references supplied.\nDefaulting to installed assembly references: NC_003310 and NC_063383.'))
+        print(cyan(f'Note: no assembly references supplied.\nDefaulting to installed assembly references:'))
         for record in SeqIO.parse(config[KEY_ASSEMBLY_REFERENCES],"fasta"):
             refs.append(record)
             ref_ids.append(record.id)
+        for i in ref_ids:
+            print(f"- {i}")
     else:
         path_to_try = os.path.join(cwd,assembly_refs)
         try:
             for record in SeqIO.parse(path_to_try,"fasta"):
                 refs.append(record)
                 ref_ids.append(record.id)
+                
         except:
             sys.stderr.write(cyan(f'Error: cannot find/parse reference fasta file at: ') + f'{path_to_try}\n' + cyan('Please check file path and format.\n'))
             sys.exit(-1)
+
+        print(green(f'Assembly references supplied:'))
+        for i in ref_ids:
+            print(f"- {i}")
 
     config[KEY_ASSEMBLY_REFERENCES] = ref_ids
 
@@ -572,7 +579,6 @@ def run_phylo_snp_checks(assembly_references,config,h):
 
     state_file = os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILENAME]}.state")
     treefile = os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILENAME]}.treefile")
-    alignment = os.path.join(config[KEY_OUTDIR],config[KEY_OUTFILENAME])
 
     branch_snps = os.path.join(config[KEY_OUTDIR],f"{config[KEY_PHYLOGENY]}.branch_snps.reconstruction.csv")
     reversion_figure_out = os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILENAME]}.reversions_fig")
@@ -594,7 +600,7 @@ def run_phylo_snp_checks(assembly_references,config,h):
 def check_for_snp_anomalies(assembly_references,config,h):
 
     mask_file = os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILENAME]}.suggested_mask.csv")
-
+    alignment = os.path.join(config[KEY_OUTDIR],config[KEY_OUTFILENAME])
     branch_reversions, branch_convergence = {},{}
 
     if config[KEY_RUN_PHYLO]:
