@@ -210,7 +210,8 @@ def flag_reversions(branch_paths, branch_snp_dict,state_file, refs):
     if branch_reversions:
         print(green("Reversions flagged:"))
         for i in branch_reversions:
-            print(f"- {i} {branch_reversions[i]}")
+            for j in branch_reversions[i]:
+                print(f"- {j} ({i})")
     return possible_reversions,branch_reversions,will_be_reverted
 
 
