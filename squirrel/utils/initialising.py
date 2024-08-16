@@ -80,7 +80,10 @@ def get_datafiles(config,clade):
             "filename":"gene_boundaries.csv"},
             {"key":KEY_GRANTHAM_SCORES,
             "directory":"data",
-            "filename":"grantham_score.txt"}
+            "filename":"grantham_score.txt"},
+            {"key":KEY_ASSEMBLY_REFERENCES,
+            "directory":"data",
+            "filename":"ref_seq.fasta"}
             ]
 
     for resource in resources:
