@@ -37,13 +37,6 @@
           "description": "Flag potentially problematic SNPs and sequences.",
           "help_text": "Note that if run_phylo is also selected this additionally run qc based on the phylogenetic tree."
         },
-        "assembly_refs": {
-          "type": "string",
-          "format": "path",
-          "title": "Assembly References",
-          "description": "References to check for `calls to reference` against, used only by the sequence QC process.",
-          "help_text": ""
-        },
         "additional_mask": {
           "type": "string",
           "format": "path",
@@ -60,18 +53,20 @@
         },
         "outgroups": {
           "type": "string",
-          "default": null,
           "title": "Outgroups",
           "description": "Specify which MPXV outgroup(s) in the alignment to use in the phylogeny.",
           "help_text": "These are used only by the phylogenetics module and will get pruned out from the final tree."
+        },
+        "assembly_refs": {
+          "type": "string",
+          "format": "path",
+          "title": "Assembly References",
+          "description": "References to check for `calls to reference` against, used only by the sequence QC process.",
+          "help_text": ""
         }
       },
-      "allOf": [
-        {
-          "required": [
-            "fasta"
-          ]
-        }
+      "required": [
+        "fasta"
       ]
     },
     "output_options": {
