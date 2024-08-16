@@ -157,7 +157,8 @@ def load_assembly_refs(assembly_refs):
     return refs
 
 
-def flag_reversions(branch_paths, branch_snp_dict, refs, root_node):
+def flag_reversions(branch_paths, branch_snp_dict,state_file, refs):
+    root_node = get_seq_at_node(state_file,"Node1")
     possible_reversions = []
     branch_reversions = collections.defaultdict(set)
     snp_to_branch = {}
@@ -585,12 +586,12 @@ def run_phylo_snp_checks(assembly_references,config,h):
     convergence_figure_out = os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILENAME]}.convergence_fig")
 
     refs = load_assembly_refs(assembly_references)
-    node1 = get_seq_at_node(state_file,"Node1")
+    
 
     branch_snp_dict = read_in_branch_snps(branch_snps)
     branch_paths= get_path_to_root(treefile)
 
-    possible_reversions,branch_reversions,will_be_reverted = flag_reversions(branch_paths, branch_snp_dict, refs, node1)  
+    possible_reversions,branch_reversions,will_be_reverted = flag_reversions(branch_paths, branch_snp_dict,state_file, refs)  
     branch_convergence = flag_convergence(treefile, branch_snp_dict)
     make_reversion_tree_figure(reversion_figure_out,branch_snps,branch_reversions,will_be_reverted,treefile,25,h)
     make_convergence_tree_figure(convergence_figure_out,branch_snps,branch_convergence,treefile,25,h)
