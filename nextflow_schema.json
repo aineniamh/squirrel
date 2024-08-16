@@ -19,58 +19,9 @@
           "description": "",
           "help_text": ""
         },
-        "seq_qc": {
-          "type": "boolean",
-          "default": false,
-          "title": "Run Sequence QC",
-          "description": "Flag potentially problematic SNPs and sequences.",
-          "help_text": "Note that this will also run phylo mode, so you will need to specify both outgroup sequences and provide an assembly reference file."
-        },
-        "assembly_refs": {
-          "type": "string",
-          "format": "path",
-          "title": "Assembly References",
-          "description": "References to check for `calls to reference` against.",
-          "help_text": ""
-        },
-        "no_mask": {
-          "type": "boolean",
-          "default": false,
-          "title": "Skip mask of repetitive regions",
-          "description": "",
-          "help_text": ""
-        },
-        "no_itr_mask": {
-          "type": "boolean",
-          "default": false,
-          "title": "Skip mask end of ITR",
-          "description": "",
-          "help_text": ""
-        },
-        "additional_mask": {
-          "type": "string",
-          "format": "path",
-          "title": "Additional Mask",
-          "description": "Masking additional sites provided.",
-          "help_text": ""
-        },
-        "extract_cds": {
-          "type": "boolean",
-          "default": false,
-          "title": "Extract CDS ",
-          "description": "",
-          "help_text": "Extract ccoding sequences based on coordinates in the reference."
-        },
-        "concatenate": {
-          "type": "boolean",
-          "default": false,
-          "title": "Concatenate CDS ",
-          "description": "Concatenate coding sequences for each genome, separated by `NNN`.",
-          "help_text": "Default: write out as separate records."
-        },
         "clade": {
           "type": "string",
-          "default": "cladeii",
+          "default": "cladei",
           "title": "Clade",
           "description": "Specify whether the alignment is primarily for `cladei` or `cladeii`.",
           "enum": [
@@ -78,6 +29,28 @@
             "cladeii"
           ],
           "help_text": ""
+        },
+        "seq_qc": {
+          "type": "boolean",
+          "default": false,
+          "title": "Run Sequence QC",
+          "description": "Flag potentially problematic SNPs and sequences.",
+          "help_text": "Note that if run_phylo is also selected this additionally run qc based on the phylogenetic tree.",
+
+        },
+        "assembly_refs": {
+          "type": "string",
+          "format": "path",
+          "title": "Assembly References",
+          "description": "References to check for `calls to reference` against, used only by the sequence QC process.",
+          "help_text": ""
+        },
+        "additional_mask": {
+          "type": "string",
+          "format": "path",
+          "title": "Additional Mask",
+          "description": "CSV file describing additional sites to mask.",
+          "help_text": "Squirrel can be run twice, and the sites file generated the first time can be passed back."
         },
         "run_phylo": {
           "type": "boolean",
@@ -88,10 +61,9 @@
         },
         "outgroups": {
           "type": "string",
-          "default": false,
           "title": "Outgroups",
           "description": "Specify which MPXV outgroup(s) in the alignment to use in the phylogeny.",
-          "help_text": "These will get pruned out from the final tree."
+          "help_text": "These are used only by the phylogenetics module and will get pruned out from the final tree."
         }
       },
       "allOf": [
@@ -122,12 +94,39 @@
       "description": "Advanced options for configuring processes inside the workflow.",
       "default": "",
       "properties": {
+        "no_mask": {
+          "type": "boolean",
+          "default": false,
+          "title": "Skip mask of repetitive regions",
+          "description": "",
+          "help_text": ""
+        },
+        "no_itr_mask": {
+          "type": "boolean",
+          "default": false,
+          "title": "Skip mask end of ITR",
+          "description": "",
+          "help_text": ""
+        },
+        "extract_cds": {
+          "type": "boolean",
+          "default": false,
+          "title": "Extract CDS ",
+          "description": "",
+          "help_text": "Extract ccoding sequences based on coordinates in the reference."
+        },
+        "concatenate": {
+          "type": "boolean",
+          "default": false,
+          "title": "Concatenate CDS ",
+          "description": "Concatenate coding sequences for each genome, separated by `NNN`.",
+          "help_text": "Default: write out as separate records."
+        },
         "threads": {
           "type": "integer",
-          "default": 2,
           "title": "Maximum number of CPU threads",
           "description": "Maximum number of CPU threads to use per workflow task.",
-          "help_text": "Several tasks in this workflow benefit from using multiple CPU threads. This option sets the number of CPU threads for all such processes. The total CPU resource used by the workflow is constrained by the executor configuration. See server threads parameter for kraken specific threads."
+          "help_text": "Several tasks in this workflow benefit from using multiple CPU threads. This option sets the number of CPU threads for all such processes. The total CPU resource used by the workflow is constrained by the executor configuration."
         }
       }
     },
