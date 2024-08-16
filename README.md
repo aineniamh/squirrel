@@ -129,11 +129,17 @@ Misc options:
 
 ### What is a FASTA file <a name="fasta"></a>
 
+A FASTA-formatted file contains sequence records. A record minimally contains two pieces of information, the sequence ID (e.g. `sequence1`) and the sequence itself (e.g. `CGATCGAT...ACTGACT`). The sequence ID is stored in the header line, which is denoted by a `>` symbol. The header line may also contain additional information (called the sequence description), which can be found after the first space on the header line (e.g. `some_extra_information` in the example below). This is why it is important that the sequence ID does not contain whitespace (i.e. spaces or ` `). The sequence itself is then stored on the following line. Often the sequence is split across multiple lines for readability, but note that the next record does not start until the next line that begins with `>`. An example of this split line display is below for the record containing sequence2. 
+
+Example FASTA with three sequence records:
 ```
 >sequence1 some_extra_information
 AGCTAGCTAGCGTAGCTAGCGCATTACGTACTACG
 >sequence2 some_MORE_extra_information
 AGCTAGCTAGCGTAGCTAGCGCATTACGTACTACG
+GGCTAGCTAGCGTAGCTAGCGCATTACGTACTACT
+TGCTAGCTAGCGTAGCTAGCGCATTACGTACTACA
+ACGTAGTCATAGTCGTACTGAC
 >sequence3
 AGCTAGCTAGCGTAGCTAGCGCATTACGTACTACG
 ```
