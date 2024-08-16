@@ -70,10 +70,9 @@ def main(sysargs = sys.argv[1:]):
 
     config[KEY_INPUT_FASTA] = io.find_query_file(cwd, config[KEY_TEMPDIR], args.input)
     
-    if args.seq_qc:
+    if args.seq_qc and args.run_phylo:
         assembly_refs = qc.find_assembly_refs(cwd,args.assembly_refs,config)
-        args.run_phylo = True
-        
+        # args.run_phylo = True
         # config[KEY_INPUT_FASTA] = qc.add_refs_to_input(config[KEY_INPUT_FASTA],assembly_refs,config)
 
     config[KEY_FIG_HEIGHT] = recon.get_fig_height(config[KEY_INPUT_FASTA])

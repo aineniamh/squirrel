@@ -485,13 +485,13 @@ def check_for_alignment_issues(alignment):
         for s in aln:
 
             if s.id in clustered_snps:
-                sites = sorted(clustered_snps[s.id])
+                sites = [i+1 for i in sorted(clustered_snps[s.id])]
                 for site in sites:
                     if site not in sites_to_mask:
                         sites_to_mask[site] = {
-                            "Name": site+1,
-                            "Minimum": site+1,
-                            "Maximum": site+1,
+                            "Name": site,
+                            "Minimum": site,
+                            "Maximum": site,
                             "Length": 1,
                             "present_in": [s.id],
                             "note": {"clustered_snps"}
@@ -500,13 +500,13 @@ def check_for_alignment_issues(alignment):
                         sites_to_mask[site]["present_in"].append(s.id)
                         
             if s.id in snps_near_n:
-                sites = sorted(snps_near_n[s.id])
+                sites = [i+1 for i in sorted(snps_near_n[s.id])]
                 for site in sites:
                     if site not in sites_to_mask:
                         sites_to_mask[site] = {
-                            "Name": site+1,
-                            "Minimum": site+1,
-                            "Maximum": site+1,
+                            "Name": site,
+                            "Minimum": site,
+                            "Maximum": site,
                             "Length": 1,
                             "present_in": [s.id],
                             "note": {"N_adjacent"}
