@@ -39,21 +39,22 @@ def add_refs_to_input(input_fasta,assembly_refs,config):
 
 
 def find_assembly_refs(cwd,assembly_refs,config):
-
-    if not assembly_refs:
-        sys.stderr.write(cyan(f'Error: no assembly references supplied.\nMust supply a reference file with one or more assembly references to do sequence QC.\n'))
-        sys.exit(-1)
-
     refs = []
     ref_ids = []
-    path_to_try = os.path.join(cwd,assembly_refs)
-    try:
-        for record in SeqIO.parse(path_to_try,"fasta"):
+    if not assembly_refs:
+        print(cyan(f'Note: no assembly references supplied.\nDefaulting to installed assembly references: NC_003310 and NC_063383.'))
+        for record in SeqIO.parse(config[KEY_ASSEMBLY_REFERENCES],"fasta"):
             refs.append(record)
             ref_ids.append(record.id)
-    except:
-        sys.stderr.write(cyan(f'Error: cannot find/parse reference fasta file at: ') + f'{path_to_try}\n' + cyan('Please check file path and format.\n'))
-        sys.exit(-1)
+    else:
+        path_to_try = os.path.join(cwd,assembly_refs)
+        try:
+            for record in SeqIO.parse(path_to_try,"fasta"):
+                refs.append(record)
+                ref_ids.append(record.id)
+        except:
+            sys.stderr.write(cyan(f'Error: cannot find/parse reference fasta file at: ') + f'{path_to_try}\n' + cyan('Please check file path and format.\n'))
+            sys.exit(-1)
 
     config[KEY_ASSEMBLY_REFERENCES] = ref_ids
 
@@ -567,7 +568,7 @@ def merge_flagged_sites(sites_to_mask,branch_reversions,branch_convergence,out_r
             new_row["note"] = ";".join(row["note"])
             writer.writerow(new_row)
 
-def check_for_snp_anomalies(assembly_references,config,h):
+def run_phylo_snp_checks(assembly_references,config,h):
 
     state_file = os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILENAME]}.state")
     treefile = os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILENAME]}.treefile")
@@ -576,19 +577,28 @@ def check_for_snp_anomalies(assembly_references,config,h):
     branch_snps = os.path.join(config[KEY_OUTDIR],f"{config[KEY_PHYLOGENY]}.branch_snps.reconstruction.csv")
     reversion_figure_out = os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILENAME]}.reversions_fig")
     convergence_figure_out = os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILENAME]}.convergence_fig")
-    mask_file = os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILENAME]}.suggested_mask.csv")
-
-    branch_snp_dict = read_in_branch_snps(branch_snps)
-    branch_paths= get_path_to_root(treefile)
 
     refs = load_assembly_refs(assembly_references)
     node1 = get_seq_at_node(state_file,"Node1")
 
+    branch_snp_dict = read_in_branch_snps(branch_snps)
+    branch_paths= get_path_to_root(treefile)
 
     possible_reversions,branch_reversions,will_be_reverted = flag_reversions(branch_paths, branch_snp_dict, refs, node1)  
     branch_convergence = flag_convergence(treefile, branch_snp_dict)
     make_reversion_tree_figure(reversion_figure_out,branch_snps,branch_reversions,will_be_reverted,treefile,25,h)
     make_convergence_tree_figure(convergence_figure_out,branch_snps,branch_convergence,treefile,25,h)
+
+    return branch_reversions, branch_convergence
+
+def check_for_snp_anomalies(assembly_references,config,h):
+
+    mask_file = os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILENAME]}.suggested_mask.csv")
+
+    branch_reversions, branch_convergence = {},{}
+
+    if config[KEY_RUN_PHYLO]:
+        branch_reversions, branch_convergence = run_phylo_snp_checks(assembly_references,config,h)
 
     sites_to_mask = check_for_alignment_issues(alignment)
 
