@@ -2,11 +2,33 @@
 
 **S**ome **QUI**ck **R**earranging to **R**esolve **E**volutionary **L**inks
 
-## Generate a quick mpox alignment
-
+## Generate a quick MPXV alignment
+> To align MPXV Clade II sequences, run:
 ```
 squirrel <your-sequences.fasta>
 ```
+
+>To align MPXV Clade I sequences, run:
+
+```
+squirrel --clade cladeii <your-sequences.fasta>
+```
+where `<your-sequences.fasta>` is the name of your input FASTA sequence file. Click [here](#fasta) see what a FASTA formatted file looks like. 
+
+### How it works - alignment and options
+
+
+
+Squirrel maps each query genome in the input file against the NC_063383 reference genome using [minimap2](https://academic.oup.com/bioinformatics/article/34/18/3094/4994778). 
+
+Using [gofasta](https://academic.oup.com/bioinformatics/article/38/16/4033/6631223), the mapping file is then converted into a multiple sequence alignment. 
+
+It then trims to 190788 at the end of the genome to mask out one of the ITR regions and pads the end of the genome with `N`. It performs masking (replacement with `N`) on low-complexity or repetitive regions, defined in [to_mask.cladeii.csv](https://github.com/aineniamh/squirrel/blob/main/squirrel/data/to_mask.cladeii.csv). The masking is on by default but can be toggled off (with `--no-mask`) and the 
+
+
+Squirrel by default creates a single alignment fasta file. Using the genbank coordinates for `NC_063383` it also has the ability to extract the aligned coding sequences either as separate records or as a concatenated alignment. This can facilitate codon-aware phylogenetic or sequence analysis.
+
+## 
 
 ## Run reconstruction
 
@@ -15,13 +37,6 @@ squirrel <your-sequences.fasta> --run-phylo --outgroups outgroup_id1,outgroup_id
 ```
 Note: the sequence file you provide must have the specified outgroups in it, with the IDs matching those you provide. This pipeline can accept one or more outgroup IDs.
 
-
-## How it works - alignment
-
-Squirrel maps each query genome in the input file against the NC_063383 reference genome using [minimap2](https://academic.oup.com/bioinformatics/article/34/18/3094/4994778). It then trims to 190788 at the end of the genome to mask out one of the ITR regions and pads the end of the genome with `N`. It performs masking (replacement with `N`) on low-complexity or repetitive regions, defined [here](https://github.com/aineniamh/squirrel/blob/main/squirrel/data/to_mask.csv). The masking can be toggled on and off.
-Using [gofasta](https://academic.oup.com/bioinformatics/article/38/16/4033/6631223), the map file is then converted into a multiple sequence alignment. 
-
-Squirrel by default creates a single alignment fasta file. Using the genbank coordinates for NC_063383 it also has the ability to extract the aligned coding sequences either as separate records or as a concatenated alignment. This can facilitate codon-aware phylogenetic or sequence analysis.
 
 ## How it works - phylogeny & reconstruction
 
@@ -70,10 +85,17 @@ Input-Output options:
   --no-temp             Output all intermediate files, for dev purposes.
 
 Pipeline options:
+  -qc, --seq-qc         Flag potentially problematic SNPs and sequences. Note that this will also run phylo mode, so you will need to specify both outgroup sequences and provide an assembly reference file. Default: don't run
+                        QC
+  --assembly-refs ASSEMBLY_REFS
+                        References to check for `calls to reference` against.
   --no-mask             Skip masking of repetitive regions. Default: masks repeat regions
   --no-itr-mask         Skip masking of end ITR. Default: masks ITR
+  --additional-mask ADDITIONAL_MASK
+                        Masking additional sites provided.
   --extract-cds         Extract coding sequences based on coordinates in the reference
   --concatenate         Concatenate coding sequences for each genome, separated by `NNN`. Default: write out as separate records
+  --clade CLADE         Specify whether the alignment is primarily for `cladei` or `cladeii` (will determine reference used for alignment). Default: `cladeii`
   -p, --run-phylo       Run phylogenetic reconstruction pipeline
   --outgroups OUTGROUPS
                         Specify which MPXV outgroup(s) in the alignment to use in the phylogeny. These will get pruned out from the final tree.
@@ -83,4 +105,15 @@ Misc options:
   --verbose             Print lots of stuff to screen
   -t THREADS, --threads THREADS
                         Number of threads
+```
+
+### What is a FASTA file <a name="fasta"></a>
+
+```
+>sequence1 some_extra_information
+AGCTAGCTAGCGTAGCTAGCGCATTACGTACTACG
+>sequence2 some_MORE_extra_information
+AGCTAGCTAGCGTAGCTAGCGCATTACGTACTACG
+>sequence3
+AGCTAGCTAGCGTAGCTAGCGCATTACGTACTACG
 ```
