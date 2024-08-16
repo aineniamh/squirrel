@@ -27,7 +27,7 @@ jobs:
       - name: Run squirrel with test data
         run: squirrel squirrel/data/NC_063383.fasta 2>&1 | tee squirrel.log
       - name: Run squirrel phylo with test data
-        run: squirrel test/c1_test.fasta --clade cladei --run-phylo --outgroups 'JX878419' 2>&1 | tee squirrel_phylo.log
+        run: squirrel ./test/c1_test.fasta --clade cladei --run-phylo --outgroups 'JX878419' 2>&1 | tee squirrel_phylo.log
       - name: Run squirrel seq qc with test data
-        run: squirrel test/c1_test.fasta --clade cladei  --run-phylo --outgroups 'JX878419' --seq-qc --assembly-refs squirrel/data/ref_seq.fasta 2>&1 | tee squirrel_qc.log
+        run: squirrel ./test/c1_test.fasta --clade cladei  --run-phylo --outgroups 'JX878419' --seq-qc --assembly-refs squirrel/data/ref_seq.fasta 2>&1 | tee squirrel_qc.log
       
