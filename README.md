@@ -73,9 +73,10 @@ Squirrel also flags any reversions to reference that occur in the phylogeny, whi
 ## Installation
 
 1. Clone this repository and ``cd squirrel``
-2. ``conda env create -f environment.yml`` (or `mamba` if you have it installed)
-3. ``conda activate squirrel``
-4. ``pip install .``
+2. if `mamba` is not installed, run `conda install -n base mamba`
+3. ``mamba env create -f environment.yml``
+4. ``conda activate squirrel``
+5. ``pip install .``
 
 ## Check the install worked
 
