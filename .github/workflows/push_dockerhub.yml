@@ -28,19 +28,19 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Build new docker image
-        run: docker build --no-cache . -t rmcolq/squirrel:latest
+        run: docker build --no-cache . -t articnetworkorg/squirrel:latest
 
       - name: Push Docker image to DockerHub (dev)
         if: ${{ github.event_name == 'push' }}
         run: |
           echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
-          docker tag rmcolq/squirrel:latest rmcolq/squirrel:dev
-          docker push rmcolq/squirrel:dev
+          docker tag articnetworkorg/squirrel:latest articnetworkorg/squirrel:dev
+          docker push articnetworkorg/squirrel:dev
       - name: Push Docker image to DockerHub (release)
         if: ${{ github.event_name == 'release' }}
         run: |
           echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
-          docker push rmcolq/squirrel:latest
-          docker tag rmcolq/squirrel:latest rmcolq/squirrel:${{ github.event.release.tag_name }}
-          docker push rmcolq/squirrel:${{ github.event.release.tag_name }}
+          docker push articnetworkorg/squirrel:latest
+          docker tag articnetworkorg/squirrel:latest articnetworkorg/squirrel:${{ github.event.release.tag_name }}
+          docker push articnetworkorg/squirrel:${{ github.event.release.tag_name }}
         
