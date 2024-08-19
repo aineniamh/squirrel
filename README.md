@@ -57,7 +57,7 @@ KJ642617,KJ642615
 So as an example, to run phylogenetics mode on a Clade I dataset, include KJ642617, KJ642615 and KJ642616 in your test sequence file and run:
 
 ```
-squirrel --clade cladei --run-phylo --outgroups KJ642617,KJ642615,KJ642616 ./test/cladeI_test.fasta
+squirrel --clade cladei --run-phylo --outgroups KJ642617,KJ642615 ./test/cladeI_test.fasta
 ```
 
 ### How it works - phylogeny & reconstruction
