@@ -34,8 +34,8 @@ jobs:
         if: ${{ github.event_name == 'push' }}
         run: |
           echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
-          docker tag articnetworkorg/squirrel:latest articnetworkorg/squirrel:${{ github.event.release.tag_name }}_dev
-          docker push articnetworkorg/squirrel:${{ github.event.release.tag_name }}_dev
+          docker tag articnetworkorg/squirrel:latest articnetworkorg/squirrel:dev
+          docker push articnetworkorg/squirrel:dev
       - name: Push Docker image to DockerHub (release)
         if: ${{ github.event_name == 'release' }}
         run: |
