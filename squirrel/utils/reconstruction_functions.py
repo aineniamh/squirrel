@@ -1,4 +1,5 @@
 import os
+os.environ[ 'MPLCONFIGDIR' ] = '.matplotlib_tmp'
 from squirrel.utils.config import *
 from squirrel.utils.log_colours import green,cyan
 import warnings
