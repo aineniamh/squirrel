@@ -10,6 +10,6 @@ RUN pip install git+https://github.com/aineniamh/squirrel.git
 
 ENV MPLCONFIGDIR="."
 ENV XDG_CACHE_HOME="./.cache"
-ENV TEMPDIR="./.tmp"
+ENV TMPDIR="./.tmp"
 
 CMD ["/bin/bash"]
