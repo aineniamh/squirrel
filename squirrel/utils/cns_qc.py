@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 import sys
 import os
-os.environ[ 'MPLCONFIGDIR' ] = '.matplotlib_tmp'
 from squirrel.utils.log_colours import green,cyan
 import select
 from Bio import SeqIO
