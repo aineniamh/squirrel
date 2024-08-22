@@ -579,8 +579,8 @@ def merge_flagged_sites(sites_to_mask,branch_reversions,branch_convergence,out_r
 
 def run_phylo_snp_checks(assembly_references,config,h):
 
-    state_file = os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILENAME]}.state")
-    treefile = os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILENAME]}.treefile")
+    state_file = os.path.join(config[KEY_OUTDIR],f"{config[KEY_PHYLOGENY]}.state")
+    treefile = os.path.join(config[KEY_OUTDIR],f"{config[KEY_PHYLOGENY]}")
 
     branch_snps = os.path.join(config[KEY_OUTDIR],f"{config[KEY_PHYLOGENY]}.branch_snps.reconstruction.csv")
     reversion_figure_out = os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILENAME]}.reversions_fig")
@@ -601,7 +601,7 @@ def run_phylo_snp_checks(assembly_references,config,h):
 
 def check_for_snp_anomalies(assembly_references,config,h):
 
-    mask_file = os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILENAME]}.suggested_mask.csv")
+    mask_file = os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILE_STEM]}.suggested_mask.csv")
     alignment = os.path.join(config[KEY_OUTDIR],config[KEY_OUTFILENAME])
     branch_reversions, branch_convergence = {},{}
 
@@ -611,5 +611,6 @@ def check_for_snp_anomalies(assembly_references,config,h):
     sites_to_mask = check_for_alignment_issues(alignment)
 
     merge_flagged_sites(sites_to_mask,branch_reversions,branch_convergence,mask_file)
+    return mask_file
 
 
