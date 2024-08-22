@@ -30,6 +30,7 @@ def setup_config_dict(cwd):
             KEY_EXTRACT_CDS:False,
             KEY_CONCATENATE:False,
             KEY_ADDITIONAL_MASK:None,
+            KEY_SEQ_QC:False,
 
             KEY_VERBOSE: False,
             KEY_THREADS: 1,
