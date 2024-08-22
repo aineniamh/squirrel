@@ -9,7 +9,7 @@
     <meta name="author" content="">
     <link rel="icon" href="https://raw.githubusercontent.com/cov-ert/civet/master/docs/virus.svg">
 
-    <title>MPXV squirrel report</title>
+    <title>squirrel</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ" crossorigin="anonymous"></script>
     <link href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css" />
@@ -39,6 +39,9 @@
       body {
         padding-top: 50px;
         font-family: "ArialNova-Light","HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+      }
+      table td{
+        overflow: scroll;
       }
       table text{
           font-family: "ArialNova-Light","HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; 
@@ -529,7 +532,7 @@
       <div>
         <header class="civet-header">
             squirrel | 
-            <small class="text-muted">Best-practice phylogenetics for MPXV analysis</small>
+            <small class="text-muted">Some QUIck Reconstruction to Resolve Evolutionary Links</small>
             <hr>
         </header>
         
@@ -537,13 +540,27 @@
             <small class="text-muted" style="color:${themeColor}">${date}</small>
         </h1> 
         <hr>
+        <h3>Best-practice phylogenetics for MPXV analysis</h3>
         <br>
         </div>
     <br>
-
-        <h2>2. Phylo image</h2>
-
-
+    <% section_count = 1 %>
+    <h2>${section_count}. Alignment</h2>
+    <% section_count +=1 %>
+      <p>
+        Output alignment written to <a href="${config['alignment_file']}">${config['alignment_file'].split('/')[-1]}</a> 
+      </p>
+    
+    <% figure_count = 0 %>
+    
+    %if config["run_phylo"]:
+        <h2>${section_count}. Tree file</h2>
+        <% section_count +=1 %>
+        <p>
+          Output tree file written to <a href="${config['phylogeny']}">${config['phylogeny']}</a> 
+        </p>
+        <h2>${section_count}. Phylo image</h2>
+        <% section_count +=1 %>
         <br>
         <button class="accordion">Export image</button>
             <div class="panel">
@@ -569,48 +586,56 @@
         <% figure_count +=1 %>
         <h3><strong>Figure ${figure_count}</strong> | Phyogenetic tree with APOBEC3 reconstruction</h3>
                 <hr>  
+    %endif
+    %if config["seq_qc"]:
 
-        <h3><strong>Table 1</strong> | Summary of taxa in sample </h3>
-          <button class="accordion">Table options</button>
-          <div class="panel">
-            <div class="row">
-              <div class="col-sm-2">
-                <strong>Show columns:</strong>
-              </div>
+      <h2>${section_count}. Suggested sites to mask</h2>
+      <% section_count +=1 %>
 
-              <% col_no=0 %>
-              %for col in ["sequence","notes"]:
-                
-                <div class="col-sm-1">
-                  <a class="toggle-vis" data-column="${col_no}" style="color:${themeColor}">${col.title().replace("_"," ")}</a> 
-                </div>
-                <% col_no +=1 %>
+      <table class="display nowrap" id="myTable1">
+        <thead>
+          <tr>
+           <% header = ["Name","note","present_in"] %>
+            %for col in header:
+              <th>${col.title().replace("_"," ")}</th>
+            %endfor
+          </tr>
+        </thead>
+        <tbody>
+          <% import collections %>
+          % for row in data_for_report["mask_csv"]:
+            <tr>
+              %for col in header:
+                %if col == "present_in":
+                  <td>${row[col].replace(";"," ")}</td>
+                %else:
+                <td>${row[col]}</td>
+                %endif
               %endfor
+            </tr>
+          % endfor
+        </tbody>
+      </table>
+      <script type="text/javascript">
+        $(document).ready( function () {
+            var table = $('#myTable1').DataTable({
+              select: {
+                      style: 'multi'
+                  },
+              'iDisplayLength': 100,
+              "paging": false,
+              "border-bottom":false,
+              "bInfo" : false,
+              dom: 'frtip',
+              buttons: ["copy","csv","print"]
+            });
+            table.buttons().container().appendTo( $('#tableExportID1') );
+            
+          } );
+      </script>
 
-          </div>
-          <div class="row">
-            <div class="col-sm-2" ><strong>Export table: </strong></div>
-            <div class="col-sm-8" id="tableExportID"></div>
-          </div>
-          </div>
-          <table class="display nowrap" id="myTable">
-            <thead>
-              <tr>
-              %for col in data_for_report["table_columns"]:
-              <th style="width:10%;">${col.title().replace("_"," ")}</th>
-              %endfor
-              </tr>
-            </thead>
-            <tbody>
-              % for row in data_for_report["taxa_table"]:
-                  <tr>
-                    %for col in data_for_report["table_columns"]:
-                      <td>${row[col]}</td>
-                    %endfor
-                  </tr>
-              % endfor
-              </tbody>
-            </table>
+    %endif
+        
             
             <script type="text/javascript">
               $(document).ready( function () {
