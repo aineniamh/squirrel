@@ -78,6 +78,7 @@ def main(sysargs = sys.argv[1:]):
     if args.seq_qc:
         print(green("QC mode activated. Squirrel will flag:"))
         print("- Clumps of unique SNPs\n- SNPs adjacent to Ns")
+        config[KEY_SEQ_QC] = True
     
     assembly_refs = []
     if args.seq_qc and args.run_phylo:
@@ -115,7 +116,7 @@ def main(sysargs = sys.argv[1:]):
             print(green("Flagged mutations writted to:"), f"{mask_file}")
         else:
             print(green("Alignment complete."))
-
+            mask_file = ""
         # get the inputs for making the overall report
         report =os.path.join(config[KEY_OUTDIR],"report.html")
-        make_output_report(report,config)
+        make_output_report(report,mask_file,config)

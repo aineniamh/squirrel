@@ -541,75 +541,34 @@
         </div>
     <br>
 
-        <h2>1. All sequencing reads</h2>
-        <p><strong>Read count:</strong> ${data_for_report["total_reads"]} </p>
-        <p><strong>Reads classified:</strong> ${data_for_report["total_classified"]} </p>
-        <p><strong>Proportion of reads classified:</strong> ${data_for_report["total_prop_classified"]} </p>
-        <% figure_count = 0 %>
+        <h2>2. Phylo image</h2>
 
-            <br>
-            <button class="accordion">Export image</button>
-                <div class="panel">
-                <div class="row">
-                    <div class="column">
-                    <button id="total_classified_svg">SVG</button>
-                    </div>
-                    <div class="column">
-                    <button id="total_classified_png">PNG</button>
-                    </div>
-                </div>
-                </div>
-                <div id="total_classified">
-                ${data_for_report["histogram1"]}
-                </div>
-            <script type="text/javascript">
-            exportImageSVG("#total_classified_svg","#total_classified", "total_classified_chart");
-            </script>
-            <script type="text/javascript">
-            exportImagePNG("#total_classified_png","#total_classified", "total_classified_chart");
-            </script>
-            <% figure_count +=1 %>
-                <h3><strong>Figure ${figure_count}</strong> | Read length distribution plot for Sequence ID ${barcode}</h3>
-                <hr>        
-        <h2>2. Classification of unfiltered reads</h2>
 
-        <h2>3. Filtered sequencing reads</h2>
-        <p><strong>Min length:</strong> ${config["min_length"]} </p>
-        <p><strong>Max length:</strong> ${config["max_length"]} </p>
-        <p><strong>Read count post filtering:</strong> ${data_for_report["filtered_reads"]} </p>
-        <p><strong>Reads classified post filtering:</strong> ${data_for_report["filtered_classified"]} </p>
-        <p><strong>Proportion of reads classified:</strong> ${data_for_report["filtered_prop_classified"]} </p>
-        
         <br>
         <button class="accordion">Export image</button>
             <div class="panel">
             <div class="row">
                 <div class="column">
-                <button id="total_classified_svg">SVG</button>
+                <button id="phylo_svg">SVG</button>
                 </div>
                 <div class="column">
-                <button id="total_classified_png">PNG</button>
+                <button id="phylo_png">PNG</button>
                 </div>
             </div>
             </div>
-            <div id="total_classified">
-            ${data_for_report["histogram2"]}
-            </div>
+            <div style="width: 90%" id="phylo_div"> 
+              ${data_for_report["phylo_svg_string"]}
+            </div>  
+
         <script type="text/javascript">
-        exportImageSVG("#total_classified_svg","#total_classified", "total_classified_chart");
+        exportImageSVG("#phylo_svg","#phylo_div", "phylo_image");
         </script>
         <script type="text/javascript">
-        exportImagePNG("#total_classified_png","#total_classified", "total_classified_chart");
+        exportImagePNG("#phylo_png","#phylo_div", "phylo_image");
         </script>
         <% figure_count +=1 %>
-        <h3><strong>Figure ${figure_count}</strong> | Filtered read length distribution plot for sequence id ${barcode}</h3>
+        <h3><strong>Figure ${figure_count}</strong> | Phyogenetic tree with APOBEC3 reconstruction</h3>
                 <hr>  
-        <h2>4. Classification of filtered reads</h2>
-
-        <h2>5. Taxa with consensus sequences generated.</h2>
-        <p><strong>Note:</strong> consensus generation was run for taxa with more than ${config["min_reads"]} classified reads between 500-1000 base pairs in length. 
-            A sequence may not be available if the group of reads for a given taxonomic id were too diverse.</p>
-        <br>
 
         <h3><strong>Table 1</strong> | Summary of taxa in sample </h3>
           <button class="accordion">Table options</button>
@@ -620,7 +579,7 @@
               </div>
 
               <% col_no=0 %>
-              %for col in data_for_report["table_columns"]:
+              %for col in ["sequence","notes"]:
                 
                 <div class="col-sm-1">
                   <a class="toggle-vis" data-column="${col_no}" style="color:${themeColor}">${col.title().replace("_"," ")}</a> 
@@ -699,7 +658,7 @@
         </div>
 
       <div class="col-sm-11" style="text-align: right;">
-        squirrel | <small class="text-muted">Animal diversity and evolution</small> <br><small class="text-muted">GNU General Public License v3.0</small></div>
+        squirrel | <small class="text-muted">Some QUIck Reconstruction to Resolve Evolutionary Links </small> <br><small class="text-muted">GNU General Public License v3.0</small></div>
 
         <br><br>
         </p>

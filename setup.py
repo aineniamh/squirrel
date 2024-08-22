@@ -22,7 +22,7 @@ setup(name='squirrel',
             'seaborn',
             'pandas'
         ],
-      description='Some QUIck Rearranging to Resolve Evolutionary Links',
+      description='Some QUIck Reconstruction to Resolve Evolutionary Links',
       url='https://github.com/cov-lineages/squirrel',
       author='Aine OToole',
       author_email='aine.otoole@ed.ac.uk',
