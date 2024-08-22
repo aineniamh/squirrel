@@ -7,7 +7,7 @@
 
     <meta name="description" content="">
     <meta name="author" content="">
-    <link rel="icon" href="https://raw.githubusercontent.com/cov-ert/civet/master/docs/virus.svg">
+    <link rel="icon" href="https://raw.githubusercontent.com/artic-network/website/master/assets/images/artic-logo-small.svg">
 
     <title>squirrel</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
@@ -657,6 +657,18 @@
                 } );
             </script>
 
+<script>
+  function exportImageSVG(buttonID,svgID,name){
+      document.querySelector(buttonID).onclick = function(){
+          svgExport.downloadSvg(document.querySelector(svgID), name);
+      };
+  };
+  function exportImagePNG(buttonID,svgID,name){
+      document.querySelector(buttonID).onclick = function(){
+          svgExport.downloadPng(document.querySelector(svgID), name);
+      };
+  };
+</script>
     <script>
         var acc = document.getElementsByClassName("accordion");
         var i;
@@ -673,19 +685,23 @@
             }
     </script>
 
-    <footer class="page-footer">
-      <div class="container-fluid text-right text-md-right">
-        <hr>
-        <div class="row">
-        </div>
+<footer class="page-footer">
+  <div class="container-fluid text-right text-md-right">
+    <hr>
+    <div class="row">
+      <div class="col-sm-1">
+        <p>
+        <img class="piranha-logo" src="https://raw.githubusercontent.com/aineniamh/piranha/main/docs/piranha.svg?token=GHSAT0AAAAAABHOJJPRFXUJULWKXQA5SVOMYP46NBA" vertical-align="left" width="50" height="50"></img>
+        <p>
+    </div>
 
-      <div class="col-sm-11" style="text-align: right;">
-        squirrel | <small class="text-muted">Some QUIck Reconstruction to Resolve Evolutionary Links </small> <br><small class="text-muted">GNU General Public License v3.0</small></div>
+  <div class="col-sm-11" style="text-align: right;">
+    squirrel ${config['version']} | <small class="text-muted">Some QUIck Reconstruction to Resolve Evolutionary Links</small> <br><small class="text-muted">GNU General Public License v3.0</small></div>
 
-        <br><br>
-        </p>
-      </div>
-    </footer>
+    <br><br>
+    </p>
+  </div>
+</footer>
     </div>
   </body>
 </html>
