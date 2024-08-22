@@ -8,4 +8,6 @@ ENV PATH=/opt/conda/envs/squirrel/bin:$PATH
 
 RUN pip install git+https://github.com/aineniamh/squirrel.git
 
+ENV MPLCONFIGDIR="."
+
 CMD ["/bin/bash"]

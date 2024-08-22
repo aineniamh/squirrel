@@ -11,9 +11,11 @@ squirrel <your-sequences.fasta>
 >To align MPXV Clade I sequences, run:
 
 ```
-squirrel --clade cladeii <your-sequences.fasta>
+squirrel --clade cladei <your-sequences.fasta>
 ```
 where `<your-sequences.fasta>` is the name of your input FASTA sequence file. Click [here](#fasta) see what a FASTA formatted file looks like.
+
+Note, an EPI2ME wrapper for squirrel with the same options is available [here](https://github.com/artic-network/squirrel-nf).
 
 ### How it works - alignment
 

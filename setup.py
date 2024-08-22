@@ -17,7 +17,7 @@ setup(name='squirrel',
             "biopython>=1.70",
             'tabulate==0.8.10',
             'baltic',
-            'matplotlib',
+            'matplotlib>=3.3.1',
             'seaborn',
             'pandas'
         ],
