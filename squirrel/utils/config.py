@@ -34,6 +34,7 @@ KEY_GRANTHAM_SCORES="grantham_scores"
 
 KEY_FIG_HEIGHT = "fig_height"
 
+VALUE_VALID_CLADES = ["cladei","cladeia","cladeib","cladeii","cladeiia","cladeiib"]
 OUTGROUP_DICT = {
     "cladei":["KJ642615|W-Nigeria|Nigeria|1978"],
     "cladeia":["KJ642615|W-Nigeria|Nigeria|1978"],
