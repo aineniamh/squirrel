@@ -175,15 +175,14 @@ def add_background_to_input(input_fasta,background,clade,config):
     in_name = input_fasta.rstrip("fasta").split("/")[-1]
     new_input_fasta = os.path.join(config[KEY_TEMPDIR], f"{in_name}.background_included.fasta")
 
+    added = set()
     with open(new_input_fasta,"w") as fw:
-        for record in SeqIO.parse(input_fasta,"fasta"):
-            fw.write(f">{record.description}\n{record.seq}\n")
-
         for record in SeqIO.parse(background,"fasta"):
             # include the outgroup seq
             if record.id in config[KEY_OUTGROUPS]:
                 print("writing outgroup",record.id)
                 fw.write(f">{record.id}\n{record.seq}\n")
+                added.add(record.id)
             else:
                 # include the relevant clade seqs
                 c = ""
@@ -198,12 +197,24 @@ def add_background_to_input(input_fasta,background,clade,config):
                 if clade == "cladei":
                     if c in ["cladei","cladeia","cladeib"]:
                         fw.write(f">{record.id}\n{record.seq}\n")
+                        added.add(record.id)
                 elif clade == "cladeii":
                     if c in ["cladeii","cladeiia","cladeiib"]:
                         fw.write(f">{record.id}\n{record.seq}\n")
+                        added.add(record.id)
                 else:
                     if c == clade:
                         fw.write(f">{record.id}\n{record.seq}\n")
+                        added.add(record.id)
+
+        for record in SeqIO.parse(input_fasta,"fasta"):
+            for_iqtree = record.description.replace(" ","_")
+            if for_iqtree in added:
+                sys.stderr.write(cyan(
+                        f'Error: duplicate sequence name `{for_iqtree}` in background and supplied file.\nPlease modify sequence name and try again.\n'))
+                    sys.exit(-1)
+            fw.write(f">{record.description}\n{record.seq}\n")
+            
 
     return new_input_fasta
 
