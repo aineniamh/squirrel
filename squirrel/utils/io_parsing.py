@@ -210,9 +210,8 @@ def add_background_to_input(input_fasta,background,clade,config):
         for record in SeqIO.parse(input_fasta,"fasta"):
             for_iqtree = record.description.replace(" ","_")
             if for_iqtree in added:
-                sys.stderr.write(cyan(
-                        f'Error: duplicate sequence name `{for_iqtree}` in background and supplied file.\nPlease modify sequence name and try again.\n'))
-                    sys.exit(-1)
+                sys.stderr.write(cyan(f'Error: duplicate sequence name `{for_iqtree}` in background and supplied file.\nPlease modify sequence name and try again.\n'))
+                sys.exit(-1)
             fw.write(f">{record.description}\n{record.seq}\n")
             
 
