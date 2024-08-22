@@ -32,4 +32,5 @@ jobs:
         run: squirrel ./test/cI_test.with_og.fasta --clade cladei  --run-phylo --outgroups 'JX878419' --seq-qc --assembly-refs squirrel/data/ref_seq.fasta 2>&1 | tee squirrel_qc.log
       - name: Run squirrel --include-background with test data
         run: squirrel ./test/cI_test.fasta --clade cladei  --run-phylo --include-background 2>&1 | tee squirrel_bg.log
-      
+      - name: Run squirrel --include-background with test data and outdir specified and seqqc
+        run: squirrel ./test/cI_test.fasta --clade cladei -o squirrel_output --run-phylo --seq-qc --include-background 2>&1 | tee squirrel_bg.log
