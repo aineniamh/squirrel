@@ -16,7 +16,7 @@ def setup_config_dict(cwd):
             KEY_INPUT_FASTA:None,
             KEY_OUTFILENAME:None,
 
-            KEY_CLADE:"cladeii"
+            KEY_CLADE:"cladeii",
 
             KEY_OUTDIR:cwd,
             KEY_OUTFILE:None,
