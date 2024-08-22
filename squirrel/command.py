@@ -7,6 +7,7 @@ from squirrel.utils.initialising import *
 import squirrel.utils.io_parsing as io
 import squirrel.utils.cns_qc as qc
 import squirrel.utils.reconstruction_functions as recon
+from squirrel.utils.make_report import *
 
 import squirrel.utils.misc as misc
 from squirrel import __version__
@@ -64,6 +65,7 @@ def main(sysargs = sys.argv[1:]):
     if args.clade:
         config[KEY_CLADE] = args.clade
 
+    config["version"] = __version__
     get_datafiles(config)
     io.set_up_threads(args.threads,config)
     config[KEY_OUTDIR] = io.set_up_outdir(args.outdir,cwd,config[KEY_OUTDIR])
@@ -77,6 +79,7 @@ def main(sysargs = sys.argv[1:]):
     if args.seq_qc:
         print(green("QC mode activated. Squirrel will flag:"))
         print("- Clumps of unique SNPs\n- SNPs adjacent to Ns")
+        config[KEY_SEQ_QC] = True
     
     assembly_refs = []
     if args.seq_qc and args.run_phylo:
@@ -114,3 +117,7 @@ def main(sysargs = sys.argv[1:]):
             print(green("Flagged mutations writted to:"), f"{mask_file}")
         else:
             print(green("Alignment complete."))
+            mask_file = ""
+        # get the inputs for making the overall report
+        report =os.path.join(config[KEY_OUTDIR],"report.html")
+        make_output_report(report,mask_file,config)

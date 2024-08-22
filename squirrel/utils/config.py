@@ -20,7 +20,7 @@ KEY_NO_MASK="no_mask"
 KEY_ADDITIONAL_MASK="additional_mask"
 KEY_TRIM_END="trim_end"
 KEY_EXTRACT_CDS="extract_cds"
-
+KEY_SEQ_QC = "seq_qc"
 KEY_ASSEMBLY_REFERENCES = "assembly_references"
 
 KEY_CLADE = "clade"

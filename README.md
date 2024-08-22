@@ -1,6 +1,6 @@
 # squirrel
 
-**S**ome **QUI**ck **R**earranging to **R**esolve **E**volutionary **L**inks
+**S**ome **QUI**ck **R**econstruction to **R**esolve **E**volutionary **L**inks
 
 ## Generate a quick MPXV alignment
 > To align MPXV Clade II sequences, run:
