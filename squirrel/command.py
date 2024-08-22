@@ -67,7 +67,7 @@ def main(sysargs = sys.argv[1:]):
     get_datafiles(config)
     io.set_up_threads(args.threads,config)
     config[KEY_OUTDIR] = io.set_up_outdir(args.outdir,cwd,config[KEY_OUTDIR])
-    config[KEY_OUTFILE],config[KEY_CDS_OUTFILE],config[KEY_OUTFILENAME] = io.set_up_outfile(args.outfile,args.input, config[KEY_OUTFILE],config[KEY_OUTDIR])
+    config[KEY_OUTFILE],config[KEY_CDS_OUTFILE],config[KEY_OUTFILENAME],config[KEY_OUTFILE_STEM] = io.set_up_outfile(args.outfile,args.input, config[KEY_OUTFILE],config[KEY_OUTDIR])
     io.set_up_tempdir(args.tempdir,args.no_temp,cwd,config[KEY_OUTDIR], config)
 
     io.pipeline_options(args.no_mask, args.no_itr_mask, args.additional_mask, args.extract_cds, args.concatenate,cwd, config)
@@ -99,7 +99,6 @@ def main(sysargs = sys.argv[1:]):
             phylo_snakefile = get_snakefile(thisdir,"reconstruction")
             phylo_stem = ".".join(config[KEY_OUTFILENAME].split(".")[:-1])
             phylo_stem=phylo_stem.split("/")[-1]
-
             config[KEY_PHYLOGENY] = f"{phylo_stem}.tree"
             config[KEY_PHYLOGENY_SVG] = f"{phylo_stem}.tree.svg"
             config[KEY_OUTGROUP_STRING] = ",".join(config[KEY_OUTGROUPS])
@@ -111,8 +110,7 @@ def main(sysargs = sys.argv[1:]):
                 print(green("Ancestral reconstruction & phylogenetics complete."))
 
         if args.seq_qc:
-
-            qc.check_for_snp_anomalies(assembly_refs,config,config[KEY_FIG_HEIGHT])
-            print(green("Flagged mutations writted to:"), f"{config[KEY_OUTFILENAME]}.suggested_mask.csv")
+            mask_file = qc.check_for_snp_anomalies(assembly_refs,config,config[KEY_FIG_HEIGHT])
+            print(green("Flagged mutations writted to:"), f"{mask_file}")
         else:
             print(green("Alignment complete."))
