@@ -65,7 +65,7 @@ def main(sysargs = sys.argv[1:]):
     if args.clade:
         config[KEY_CLADE] = args.clade
 
-    config["version"] == __version__
+    config["version"] = __version__
     get_datafiles(config)
     io.set_up_threads(args.threads,config)
     config[KEY_OUTDIR] = io.set_up_outdir(args.outdir,cwd,config[KEY_OUTDIR])
