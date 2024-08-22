@@ -40,9 +40,6 @@
         padding-top: 50px;
         font-family: "ArialNova-Light","HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
       }
-      table td{
-        overflow: scroll;
-      }
       table text{
           font-family: "ArialNova-Light","HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; 
       }
@@ -607,7 +604,7 @@
             <tr>
               %for col in header:
                 %if col == "present_in":
-                  <td>${row[col].replace(";"," ")}</td>
+                  <td>${row[col].replace(";","<br>")}</td>
                 %else:
                 <td>${row[col]}</td>
                 %endif
