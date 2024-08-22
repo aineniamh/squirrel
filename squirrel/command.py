@@ -62,7 +62,7 @@ def main(sysargs = sys.argv[1:]):
     config = setup_config_dict(cwd)
     
     if args.clade:
-        config[KEY_CLADE] == args.clade
+        config[KEY_CLADE] = args.clade
 
     get_datafiles(config)
     io.set_up_threads(args.threads,config)
