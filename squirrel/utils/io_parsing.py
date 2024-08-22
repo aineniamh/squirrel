@@ -166,10 +166,50 @@ def pipeline_options(no_mask, no_itr_mask, additional_mask,extract_cds,concatena
     config[KEY_EXTRACT_CDS] = extract_cds
     config[KEY_CONCATENATE] = concatenate
 
-def phylo_options(run_phylo,outgroups,alignment,config):
+
+def add_background_to_input(input_fasta,background,clade,config):
+    in_name = input_fasta.rstrip("fasta").split("/")[-1]
+    new_input_fasta = os.path.join(config[KEY_TEMPDIR], f"{in_name}.background_included.fasta")
+
+    with open(new_input_fasta,"w") as fw:
+        for record in SeqIO.parse(input_fasta,"fasta"):
+            fw.write(f">{record.description}\n{record.seq}\n")
+
+        for record in background:
+            # include the outgroup seq
+            if record.id in config[KEY_OUTGROUPS]:
+                fw.write(f">{record.description}\n{record.seq}\n")
+            else:
+                # include the relevant clade seqs
+                info = record.description.split(" ")
+                c = ""
+                for i in info:
+                    if i.startswith("clade"):
+                        c = i.split("=")[1]
+                if clade == "cladei":
+                    if c in ["cladei","cladeia","cladeib"]:
+                        fw.write(f">{record.description}\n{record.seq}\n")
+                elif clade == "cladeii":
+                    if c in ["cladeii","cladeiia","cladeiib"]:
+                        fw.write(f">{record.description}\n{record.seq}\n")
+                else:
+                    if c == clade:
+                        fw.write(f">{record.description}\n{record.seq}\n")
+
+    return new_input_fasta
+
+def phylo_options(run_phylo,outgroups,include_background,input_fasta,config):
     config[KEY_RUN_PHYLO] = run_phylo
 
     if config[KEY_RUN_PHYLO]:
+
+        if include_background:
+            if outgroups:
+                print(cyan('Note: outgroup(s) are selected automatically with using `--include-background` flag.\n'))
+            config[KEY_INCLUDE_BACKGROUND] = "True"
+            clade = config[KEY_CLADE]
+            outgroups = OUTGROUP_DICT[clade]
+            print(green("Outgroup selected:"),outgroups[0])
 
         if not outgroups:
             sys.stderr.write(cyan(
@@ -179,7 +219,12 @@ def phylo_options(run_phylo,outgroups,alignment,config):
             outgroups = outgroups.split(",")
         config[KEY_OUTGROUPS] = outgroups
         
-        seqs = SeqIO.index(alignment,"fasta")
+
+        if include_background:
+            new_input_fasta = add_background_to_input(input_fasta,config[KEY_BACKGROUND_FASTA],config[KEY_CLADE],config)
+            return new_input_fasta
+
+        seqs = SeqIO.index(input_fasta,"fasta")
         not_in = set()
         for outgroup in outgroups:
             if outgroup not in seqs:
@@ -191,3 +236,5 @@ def phylo_options(run_phylo,outgroups,alignment,config):
             for seq in not_in:
                 sys.stderr.write(cyan(f"- {seq}\n"))
             sys.exit(-1)
+
+        return input_fasta
