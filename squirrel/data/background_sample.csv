@@ -3,17 +3,17 @@ MT903346.1|pouched_rat|USA||2003,CladeIIa
 MT724769.1|swamp_rat|DRC||2012,CladeIIa
 AY741551.1|human|Sierra_Leone||,CladeIIa
 KP849470.1|human|Cote_dIvoire||1971,CladeIIa
-DQ011156.1|wild_monkey|Liberia||1970,CladeIIa
+DQ011156.1|monkey|Liberia||1970,CladeIIa
 KJ136820.1|chimp|Cote_dIvoire||2012,CladeIIa
 MN346698.1|chimp|Cote_dIvoire||2017,CladeIIa
-KJ642615|W-Nigeria|Nigeria|1978,CladeIIb
-KJ642617|Nigeria-SE-1971|Nigeria_Abie_State|1971-04-14,CladeIIb
-OP413718|9000360|UK_ex|2022-08,CladeIIb
-MK783027|3018|Nigeria_Rivers_State|2017-11-09,CladeIIb
-MK783033|2920|Nigeria_Rivers_State|2017-10-09,CladeIIb
-MN648051|Israel_2018|Israel_ex_Nigeria|2018-10-04,CladeIIb
-ON563414|MA001|USA|2022-05-19,CladeIIb
-OP415257|MPX_eunRrC_9000312|UK_ex_Nigeria|2022-08,CladeIIb
+KJ642615|human|Nigeria||1978,CladeIIb
+KJ642617|human|Nigeria|Abia|1971-04-14,CladeIIb
+OP413718|human|United_Kingdom||2022-08,CladeIIb
+MK783027|human|Nigeria|Rivers|2017-11-09,CladeIIb
+MK783033|human|Nigeria|Rivers|2017-10-09,CladeIIb
+MN648051|human|Israel|ex_Nigeria|2018-10-04,CladeIIb
+ON563414|human|USA||2022-05-19,CladeIIb
+OP415257|human|United_Kingdom|ex_Nigeria|2022-08,CladeIIb
 24MPX0226V|human|DRC|Sud-Kivu|2023-12-26,CladeIb
 24MPX0207Or|human|DRC|Sud-Kivu|2024-01-23, CladeIb
 KJ642612|human|DRC|Ikubi|1986,CladeIa
@@ -21,7 +21,7 @@ KJ642619|human|Gabon|Lambarene|1987-06,CladeIa
 JX878412|human|DRC|Vangakete|2006-11-30,CladeIa
 JX878413|human|DRC|Lomela|2006-12-14,CladeIa
 DQ011155|human|DRC|Equateur|1978-11-09,CladeIa
-MT724770|Crocidura_littoralis|DRC|Tshopo|2014,CladeIa
+MT724770|shrew|DRC|Tshopo|2014,CladeIa
 KJ642613|human|DRC|Equateur|1970-09-01,CladeIa
 24MPX0194V|human|DRC|Equateur|2024-01-20,CladeIa
 JX878423|human|DRC|Kole|2007-03-25,CladeIa
