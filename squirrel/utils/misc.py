@@ -6,7 +6,7 @@ import datetime as dt
 
 import snakemake
 from squirrel.utils.config import *
-from squirrel.utils.log_colours import green,cyan
+from squirrel.utils.log_colours import green,cyan,red
 
 import squirrel.utils.custom_logger as custom_logger
 

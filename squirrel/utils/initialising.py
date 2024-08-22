@@ -16,6 +16,8 @@ def setup_config_dict(cwd):
             KEY_INPUT_FASTA:None,
             KEY_OUTFILENAME:None,
 
+            KEY_CLADE:"cladeii",
+
             KEY_OUTDIR:cwd,
             KEY_OUTFILE:None,
             KEY_TEMPDIR:None,
@@ -31,7 +33,8 @@ def setup_config_dict(cwd):
 
             KEY_VERBOSE: False,
             KEY_THREADS: 1,
-            KEY_PHYLO_THREADS: "AUTO"
+            KEY_PHYLO_THREADS: "AUTO",
+            KEY_INCLUDE_BACKGROUND:False
 
             }
     return default_dict
@@ -55,20 +58,25 @@ def package_data_check(filename,directory,key,config):
         sys.stderr.write(cyan(f'Error: Missing package data.')+f'\n\t- {filename}\n')
         sys.exit(-1)
 
-def get_datafiles(config,clade):
+def get_datafiles(config):
+    clade = config[KEY_CLADE].lower()
+    config[KEY_CLADE] = clade
     fasta_filename = ""
-    if clade.lower() == "cladei":
+    if clade in ["cladei","cladeia","cladeib"]:
         fasta_filename = "NC_003310.fasta"
         mask_file = "to_mask.cladei.csv"
-    elif clade.lower() == "cladeii":
+    elif clade in ["cladeii","cladeiia","cladeiib"]:
         fasta_filename = "NC_063383.fasta"
         mask_file = "to_mask.cladeii.csv"
     else:
-        sys.stderr.write(cyan(f'Error: invalid clade specified. Please specify one of `cladei` or `cladeii`\n'))
+        sys.stderr.write(cyan(f'Error: invalid clade specified. Please specify one of `cladei`, `cladeia`,`cladeib`, `cladeii`, `cladeiia`,`cladeiib`\n'))
         sys.exit(-1)
 
 
     resources = [
+            {"key":KEY_BACKGROUND_FASTA,
+            "directory":"data",
+            "filename":"background.fasta"},
             {"key":KEY_REFERENCE_FASTA,
             "directory":"data",
             "filename":fasta_filename},

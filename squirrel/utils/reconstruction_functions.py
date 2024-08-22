@@ -664,9 +664,9 @@ def get_root_to_tip_counts_date_in(aa_reconstruction,state_diffs,root_to_tip_cou
                     fw.write(f"{i},{len(seq_snps[i])},0,0,{datestring},{odate},{precision}\n")
 
 
-def run_full_analysis(directory, alignment, treefile,config,width,height):
+def run_full_analysis(directory, alignment, treefile,state_file,config,width,height):
 
-    state_out = f"{alignment}.state"
+    state_out = state_file
     state_differences = f"{treefile}.state_differences.csv"
     branch_snps_out = f"{treefile}.branch_snps.reconstruction.csv"
     amino_acids_out= f"{treefile}.amino_acid.reconstruction.csv"

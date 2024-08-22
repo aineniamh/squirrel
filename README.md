@@ -51,7 +51,7 @@ Note: the sequence file you provide must have the specified outgroups in it, wit
 
 ### Recommended outgroups for phylogeny mode
 - <strong>Clade I</strong>
-KJ642617,KJ642615,KJ642616
+KJ642617,KJ642615
   
 - <strong>Clade IIb</strong>
 KJ642617,KJ642615
