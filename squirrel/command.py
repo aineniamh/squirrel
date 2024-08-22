@@ -41,9 +41,10 @@ def main(sysargs = sys.argv[1:]):
     a_group.add_argument("--additional-mask",action="store",help="Masking additional sites provided.")
     a_group.add_argument("--extract-cds",action="store_true",help="Extract coding sequences based on coordinates in the reference")
     a_group.add_argument("--concatenate",action="store_true",help="Concatenate coding sequences for each genome, separated by `NNN`. Default: write out as separate records")
-    a_group.add_argument("--clade",action="store",help="Specify whether the alignment is primarily for `cladei` or `cladeii` (will determine reference used for alignment). Default: `cladeii`", default="cladeii")
+    a_group.add_argument("--clade",action="store",help="Specify whether the alignment is primarily for `cladei` or `cladeii` (can also specify a or b, e.g. `cladeia`, `cladeiib`). This will determine reference used for alignment, mask file and background set used if `--include-background` flag used in conjunction with the `--run-phylo` option. Default: `cladeii`")
     a_group.add_argument("-p","--run-phylo",action="store_true",help="Run phylogenetic reconstruction pipeline")
     a_group.add_argument("--outgroups",action="store",help="Specify which MPXV outgroup(s) in the alignment to use in the phylogeny. These will get pruned out from the final tree.")
+    a_group.add_argument("-bg","--include-background",action="store_true",help="Include a default background set of sequences for the phylogenetics pipeline. The set will be determined by the `--clade` specified.")
 
     m_group = parser.add_argument_group('Misc options')
     m_group.add_argument("-v","--version", action='version', version=f"squirrel {__version__}")
@@ -59,8 +60,11 @@ def main(sysargs = sys.argv[1:]):
 
     # Initialise config dict
     config = setup_config_dict(cwd)
+    
+    if args.clade:
+        config[KEY_CLADE] == args.clade
 
-    get_datafiles(config,args.clade)
+    get_datafiles(config)
     io.set_up_threads(args.threads,config)
     config[KEY_OUTDIR] = io.set_up_outdir(args.outdir,cwd,config[KEY_OUTDIR])
     config[KEY_OUTFILE],config[KEY_CDS_OUTFILE],config[KEY_OUTFILENAME] = io.set_up_outfile(args.outfile,args.input, config[KEY_OUTFILE],config[KEY_OUTDIR])
@@ -82,7 +86,7 @@ def main(sysargs = sys.argv[1:]):
         # config[KEY_INPUT_FASTA] = qc.add_refs_to_input(config[KEY_INPUT_FASTA],assembly_refs,config)
 
     config[KEY_FIG_HEIGHT] = recon.get_fig_height(config[KEY_INPUT_FASTA])
-    io.phylo_options(args.run_phylo,args.outgroups,config[KEY_INPUT_FASTA],config)
+    config[KEY_INPUT_FASTA] = io.phylo_options(args.run_phylo,args.outgroups,args.include_background,config[KEY_INPUT_FASTA],config)
 
     snakefile = get_snakefile(thisdir,"msa")
 
