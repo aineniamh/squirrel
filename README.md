@@ -66,6 +66,25 @@ squirrel --clade cladei --run-phylo --outgroups KJ642617,KJ642615 ./test/cladeI_
 
 Squirrel also has an optional `--run-phylo` mode that will take the newly generated alignment and build a maximum likelihood phylogeny using [IQTREE2](https://doi.org/10.1093/molbev/msaa015). It runs IQTREE ancestral state reconstruction (`-asr`), and parses the output state files, providing a branch-mapped summary of SNPs that have occurred across the phylogeny, and an output phylogeny figure with SNPs plotted along branches, coloured by whether SNPs are consistent with APOBEC3-editing or not. An outgroup (or multiple outgroups) must be specified to ensure correct rooting for the ancestral state reconstruction.
 
+### Automatically include background and outgroups with `--include-background`
+
+The squirrel software has a set of publically available MPXV genome sequences that include representatives of CladeIa, CladeIb, Clade IIa and CladeIIb. The sequences, the Genbank accession numbers and their clade annotations can be found in [background_sample.csv](https://github.com/aineniamh/squirrel/blob/main/squirrel/data/background_sample.csv) and [background.fasta](https://github.com/aineniamh/squirrel/blob/main/squirrel/data/background.fasta).
+
+If `--include-background` is run with the squirrel command, squirrel will automatically pull out the background sequences from the relevant clade and select the appropriate outgroup from the background set. 
+
+For example,  if `squirrel --clade cladei --include-background <sequences.fasta>` is run, squirrel will combine all Clade I background sequences with the input `<sequences.fasta>` file and also include a Clade II outgroup sequence to correctly root the tree. This outgroup will be pruned from the final output tree, so will not be seen in the output file.
+
+The respective outgroups automatically selected from the background set are:
+```
+    cladei: "KJ642615|W-Nigeria|Nigeria|1978"
+    cladeia: "KJ642615|W-Nigeria|Nigeria|1978"
+    cladeib: "KJ642613|human|DRC|Equateur|1970-09-01"
+    cladeii: "KJ642613|human|DRC|Equateur|1970-09-01"
+    cladeiia: "KJ642613|human|DRC|Equateur|1970-09-01"
+    cladeiib: "KJ642615|W-Nigeria|Nigeria|1978"
+```
+>Note that in this mode, if outgroups are specified in the supplied input file, they will not be used and they will remain in the final tree.
+
 ### Phylogeny-informed quality control
 If you specify `-qc` when also running in phylogenetics mode (so both the `-qc` and `--run-phylo` flags), additional checks with be performed after the reconstruction. Firstly, any mutations that occur multiple times across the phylogeny (convergent mutations) are flagged for investigation, as they may highlight an issue with the tree structure or underlying sequences. 
 
