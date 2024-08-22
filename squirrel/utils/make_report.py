@@ -33,7 +33,7 @@ def make_output_report(report_to_generate,mask_file,config):
     
     data_for_report = {}
     if config[KEY_RUN_PHYLO]:
-        tree_image_file = os.path.join(config[KEY_PHYLOGENY_SVG])
+        tree_image_file = os.path.join(config[KEY_OUTDIR],config[KEY_PHYLOGENY_SVG])
         data_for_report["phylo_svg_string"] = get_tree_svg(tree_image_file)
     else:
         data_for_report["phylo_svg_string"] = ""
