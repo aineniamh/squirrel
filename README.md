@@ -15,6 +15,8 @@ squirrel --clade cladei <your-sequences.fasta>
 ```
 where `<your-sequences.fasta>` is the name of your input FASTA sequence file. Click [here](#fasta) see what a FASTA formatted file looks like.
 
+Note, an EPI2ME wrapper for squirrel with the same options is available [here](https://github.com/artic-network/squirrel-nf).
+
 ### How it works - alignment
 
 Squirrel maps each query genome in the input file against a reference genome specific to each clade using [minimap2](https://academic.oup.com/bioinformatics/article/34/18/3094/4994778). Using [gofasta](https://academic.oup.com/bioinformatics/article/38/16/4033/6631223), the mapping file is then converted into a multiple sequence alignment. 
