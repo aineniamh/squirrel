@@ -7,6 +7,7 @@ from squirrel.utils.initialising import *
 import squirrel.utils.io_parsing as io
 import squirrel.utils.cns_qc as qc
 import squirrel.utils.reconstruction_functions as recon
+from squirrel.utils.make_report import *
 
 import squirrel.utils.misc as misc
 from squirrel import __version__
@@ -114,3 +115,7 @@ def main(sysargs = sys.argv[1:]):
             print(green("Flagged mutations writted to:"), f"{mask_file}")
         else:
             print(green("Alignment complete."))
+
+        # get the inputs for making the overall report
+        report =os.path.join(config[KEY_OUTDIR],"report.html")
+        make_output_report(report,config)

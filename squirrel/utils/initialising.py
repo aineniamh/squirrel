@@ -74,6 +74,9 @@ def get_datafiles(config):
 
 
     resources = [
+            {"key":KEY_REPORT_TEMPLATE,
+            "directory":"data",
+            "filename":"report.mako"},
             {"key":KEY_BACKGROUND_FASTA,
             "directory":"data",
             "filename":"background.fasta"},
