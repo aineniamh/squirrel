@@ -119,5 +119,5 @@ def main(sysargs = sys.argv[1:]):
             print(green("Alignment complete."))
             mask_file = ""
         # get the inputs for making the overall report
-        report =os.path.join(config[KEY_OUTDIR],"report.html")
+        report =os.path.join(config[KEY_OUTDIR],"squirrel-report.html")
         make_output_report(report,mask_file,config)
