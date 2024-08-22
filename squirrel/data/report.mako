@@ -691,7 +691,7 @@
     <div class="row">
       <div class="col-sm-1">
         <p>
-        <img class="piranha-logo" src="https://raw.githubusercontent.com/aineniamh/piranha/main/docs/piranha.svg?token=GHSAT0AAAAAABHOJJPRFXUJULWKXQA5SVOMYP46NBA" vertical-align="left" width="50" height="50"></img>
+        <img class="piranha-logo" src="https://raw.githubusercontent.com/artic-network/website/master/assets/images/artic-logo-small.svg" vertical-align="left" width="50" height="50"></img>
         <p>
     </div>
 
