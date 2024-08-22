@@ -175,26 +175,31 @@ def add_background_to_input(input_fasta,background,clade,config):
         for record in SeqIO.parse(input_fasta,"fasta"):
             fw.write(f">{record.description}\n{record.seq}\n")
 
-        for record in background:
+        for record in SeqIO.parse(background,"fasta"):
             # include the outgroup seq
             if record.id in config[KEY_OUTGROUPS]:
-                fw.write(f">{record.description}\n{record.seq}\n")
+                print("writing outgroup",record.id)
+                fw.write(f">{record.id}\n{record.seq}\n")
             else:
                 # include the relevant clade seqs
-                info = record.description.split(" ")
                 c = ""
-                for i in info:
-                    if i.startswith("clade"):
-                        c = i.split("=")[1]
+                for field in record.description.split(" "):
+                    if field.startswith("clade"):
+                        c = field.split("=")[1]
+                if c not in VALUE_VALID_CLADES:
+                    sys.stderr.write(cyan(
+                        f'Error: clade must be one of {VALUE_VALID_CLADES}.\n'))
+                    sys.exit(-1)
+
                 if clade == "cladei":
                     if c in ["cladei","cladeia","cladeib"]:
-                        fw.write(f">{record.description}\n{record.seq}\n")
+                        fw.write(f">{record.id}\n{record.seq}\n")
                 elif clade == "cladeii":
                     if c in ["cladeii","cladeiia","cladeiib"]:
-                        fw.write(f">{record.description}\n{record.seq}\n")
+                        fw.write(f">{record.id}\n{record.seq}\n")
                 else:
                     if c == clade:
-                        fw.write(f">{record.description}\n{record.seq}\n")
+                        fw.write(f">{record.id}\n{record.seq}\n")
 
     return new_input_fasta
 
@@ -237,4 +242,4 @@ def phylo_options(run_phylo,outgroups,include_background,input_fasta,config):
                 sys.stderr.write(cyan(f"- {seq}\n"))
             sys.exit(-1)
 
-        return input_fasta
+    return input_fasta
