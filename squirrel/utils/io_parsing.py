@@ -33,7 +33,6 @@ def set_up_outdir(outdir_arg,cwd,outdir):
                 sys.exit(-1)
     return outdir
 
-
 def set_up_outfile(outfile_arg,query_arg, outfile, outdir):
     if outfile_arg:
         outfile = os.path.join(outdir, outfile_arg)
@@ -170,6 +169,36 @@ def pipeline_options(no_mask, no_itr_mask, additional_mask,extract_cds,concatena
     config[KEY_EXTRACT_CDS] = extract_cds
     config[KEY_CONCATENATE] = concatenate
 
+
+def find_background_file(cwd,input_fasta,background_file,config):
+    seqs = set()
+    path_to_try = os.path.join(cwd,background_file)
+
+    new_input_fasta = os.path.join(config[KEY_TEMPDIR], "input.custom_background.combined.fasta")
+    with open(new_input_fasta,"w") as fw:
+        i = 0
+        for record in SeqIO.parse(input_fasta,"fasta"):
+            seqs.add(record.description)
+            fw.write(f">{record.description}\n{record.seq}\n")
+            i+=1
+        c = 0
+        try:
+            for record in SeqIO.parse(path_to_try,"fasta"):
+                if record.description in seqs:
+                    print(cyan("Ignoring duplicate seq in background:"),record.description)
+                    seqs.add(record.description)
+                else:
+                    c +=1
+                    fw.write(f">{record.description}\n{record.seq}\n")
+        except:
+            sys.stderr.write(cyan(f'Error: cannot find/parse background fasta file at: ') + f'{path_to_try}\n' + cyan('Please check file path and format.\n'))
+            sys.exit(-1)
+    
+    print(green("Custom background combined with input FASTA file."))
+    print("Number of input sequences:",i)
+    print("Number of background sequences:",c)
+
+    return new_input_fasta
 
 def add_background_to_input(input_fasta,background,clade,config):
     in_name = input_fasta.rstrip("fasta").split("/")[-1]
