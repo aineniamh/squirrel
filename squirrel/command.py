@@ -46,6 +46,7 @@ def main(sysargs = sys.argv[1:]):
     a_group.add_argument("-p","--run-phylo",action="store_true",help="Run phylogenetic reconstruction pipeline")
     a_group.add_argument("--outgroups",action="store",help="Specify which MPXV outgroup(s) in the alignment to use in the phylogeny. These will get pruned out from the final tree.")
     a_group.add_argument("-bg","--include-background",action="store_true",help="Include a default background set of sequences for the phylogenetics pipeline. The set will be determined by the `--clade` specified.")
+    a_group.add_argument("-bf","--background-file",action="store",help="Include this additional FASTA file as background to the phylogenetics.")
 
     m_group = parser.add_argument_group('Misc options')
     m_group.add_argument("-v","--version", action='version', version=f"squirrel {__version__}")
@@ -76,6 +77,9 @@ def main(sysargs = sys.argv[1:]):
 
     config[KEY_INPUT_FASTA] = io.find_query_file(cwd, config[KEY_TEMPDIR], args.input)
     
+    if args.background_file:
+        config[KEY_INPUT_FASTA] = io.find_background_file(cwd,config[KEY_INPUT_FASTA],args.background_file,config)
+
     if args.seq_qc:
         print(green("QC mode activated. Squirrel will flag:"))
         print("- Clumps of unique SNPs\n- SNPs adjacent to Ns")
@@ -86,7 +90,6 @@ def main(sysargs = sys.argv[1:]):
         print("- Reversions to reference\n- Convergent mutations")
         assembly_refs = qc.find_assembly_refs(cwd,args.assembly_refs,config)
         # args.run_phylo = True
-        # config[KEY_INPUT_FASTA] = qc.add_refs_to_input(config[KEY_INPUT_FASTA],assembly_refs,config)
 
     config[KEY_FIG_HEIGHT] = recon.get_fig_height(config[KEY_INPUT_FASTA])
     config[KEY_INPUT_FASTA] = io.phylo_options(args.run_phylo,args.outgroups,args.include_background,config[KEY_INPUT_FASTA],config)

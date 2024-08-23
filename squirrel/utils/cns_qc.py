@@ -28,16 +28,6 @@ mpl.rcParams.update(new_rc_params)
 plt.rcParams['font.family'] = 'Helvetica'
 
 
-def add_refs_to_input(input_fasta,assembly_refs,config):
-    new_input_fasta = os.path.join(config[KEY_TEMPDIR], "qcref_combined.fasta")
-    with open(new_input_fasta,"w") as fw:
-        for record in SeqIO.parse(input_fasta,"fasta"):
-            fw.write(f">{record.id}\n{record.seq}\n")
-        for record in assembly_refs:
-            fw.write(f">{record.id}\n{record.seq}\n")
-    return new_input_fasta
-
-
 def find_assembly_refs(cwd,assembly_refs,config):
     refs = []
     ref_ids = []
