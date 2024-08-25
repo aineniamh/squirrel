@@ -155,7 +155,9 @@ Pipeline options:
   --extract-cds         Extract coding sequences based on coordinates in the reference
   --concatenate         Concatenate coding sequences for each genome, separated by `NNN`. Default: write out as separate records
   --clade CLADE         Specify whether the alignment is primarily for `cladei` or `cladeii` (will determine reference used for alignment). Default: `cladeii`
-  -p, --run-phylo       Run phylogenetic reconstruction pipeline
+  -p, --run-phylo       Run phylogenetics pipeline
+  -a, --run-apobec3-phylo
+                        Run phylogenetics & APOBEC3-mutation reconstruction pipeline
   --outgroups OUTGROUPS
                         Specify which MPXV outgroup(s) in the alignment to use in the phylogeny. These will get pruned out from the final tree.
 
