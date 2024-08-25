@@ -246,8 +246,12 @@ def add_background_to_input(input_fasta,background,clade,config):
 
     return new_input_fasta
 
-def phylo_options(run_phylo,outgroups,include_background,input_fasta,config):
+def phylo_options(run_phylo,run_apobec3_phylo,outgroups,include_background,input_fasta,config):
     config[KEY_RUN_PHYLO] = run_phylo
+
+    if run_apobec3_phylo:
+        config[KEY_RUN_APOBEC3_PHYLO] = run_apobec3_phylo
+        config[KEY_RUN_PHYLO] = True
 
     if config[KEY_RUN_PHYLO]:
 

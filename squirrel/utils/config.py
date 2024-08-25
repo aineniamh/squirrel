@@ -25,6 +25,7 @@ KEY_ASSEMBLY_REFERENCES = "assembly_references"
 
 KEY_CLADE = "clade"
 KEY_RUN_PHYLO="run_phylo"
+KEY_RUN_APOBEC3_PHYLO = "run_apobec3_phylo"
 KEY_OUTGROUPS="outgroups"
 KEY_PHYLOGENY="phylogeny"
 KEY_PHYLOGENY_SVG="phylogeny_svg"
