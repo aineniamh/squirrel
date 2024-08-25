@@ -10,6 +10,7 @@ setup(name='squirrel',
       packages=find_packages(),
       scripts=[
             'squirrel/scripts/msa.smk',
+            'squirrel/scripts/phylo.smk',
             'squirrel/scripts/reconstruction.smk'
                 ],
       package_data={"squirrel":["data/*"]},

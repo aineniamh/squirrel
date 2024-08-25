@@ -40,12 +40,28 @@ The rationale for this is that N sites are usually a product of low coverage reg
 - <strong>Unique mutations that clump together</strong>
 If mutations are observed in only a single sequence in the genome, they are classed as unique mutations. <it>Usually</it> mutations do not clump closely together and may suggest an alignment or assembly issue. If these mutations are not shared with any other sequences, they are flagged for masking. 
 
-## Run phylogenetic reconstruction
+## Phylogenetics options within squirrel
+
+To build a maximum-likelihood phylogeny with [IQTREE2](https://doi.org/10.1093/molbev/msaa015) with the alignment generated, run the following:
+
+```
+squirrel <your-sequences.fasta> --run-phylo --outgroups outgroup_id1,outgroup_id2
+```
+
+If you wish to include a background set of sequences and not have to specify an outgroup, run the following:
+
+```
+squirrel <your-sequences.fasta> --run-phylo --include-background
+```
+
+More details on `--include-background` can be found [here](#automatically-include-background-and-outgroups-with-include-background-mode).
+
+
 
 Signatures of APOBEC3-editing are characteristic of MPXV evolution when sustained transmission in the human population (see [O'Toole et al 2023](https://www.science.org/doi/10.1126/science.adg8116)). To also run the maximum-likelihood phylogenetics and ancestral reconstruction pipeline that characterises the APOBEC3-like and non-APOBEC3 mutations that have occurred across the evolutionary history of the virus sequences provided, run the following:
 
 ```
-squirrel <your-sequences.fasta> --run-phylo --outgroups outgroup_id1,outgroup_id2
+squirrel <your-sequences.fasta> --run-apobec3-phylo --outgroups outgroup_id1,outgroup_id2
 ```
 Note: the sequence file you provide must have the specified outgroups in it, with the IDs matching those you provide. This pipeline can accept one or more outgroup IDs. The outgroups help to root the phylogeny so that ancestral reconstruction can be performed in the appropriate direction. 
 
@@ -62,11 +78,12 @@ So as an example, to run phylogenetics mode on a Clade I dataset, include KJ6426
 squirrel --clade cladei --run-phylo --outgroups KJ642617,KJ642615 ./test/cladeI_test.fasta
 ```
 
+
 ### How it works - phylogeny & reconstruction
 
-Squirrel also has an optional `--run-phylo` mode that will take the newly generated alignment and build a maximum likelihood phylogeny using [IQTREE2](https://doi.org/10.1093/molbev/msaa015). It runs IQTREE ancestral state reconstruction (`-asr`), and parses the output state files, providing a branch-mapped summary of SNPs that have occurred across the phylogeny, and an output phylogeny figure with SNPs plotted along branches, coloured by whether SNPs are consistent with APOBEC3-editing or not. An outgroup (or multiple outgroups) must be specified to ensure correct rooting for the ancestral state reconstruction.
+Squirrel has the optional `--run-phylo` and `--run-apobec3-phylo` modes that will take the newly generated alignment and build a maximum likelihood phylogeny using [IQTREE2](https://doi.org/10.1093/molbev/msaa015). With  `--run-apobec3-phylo` mode, it also runs IQTREE ancestral state reconstruction (`-asr`), and parses the output state files, providing a branch-mapped summary of SNPs that have occurred across the phylogeny, and an output phylogeny figure with SNPs plotted along branches, coloured by whether SNPs are consistent with APOBEC3-editing or not. An outgroup (or multiple outgroups) must be specified (although this is handled internally in `--include-background` mode) to ensure correct rooting for the ancestral state reconstruction. If `--cns-qc` mode is on in conjunction with phylogenetics, reversions to reference and convergent SNPs are also flagged using the reconstruction.
 
-### Automatically include background and outgroups with `--include-background`
+### Automatically include background and outgroups with include-background mode 
 
 The squirrel software has a set of publically available MPXV genome sequences that include representatives of CladeIa, CladeIb, Clade IIa and CladeIIb. The sequences, the Genbank accession numbers and their clade annotations can be found in [background_sample.csv](https://github.com/aineniamh/squirrel/blob/main/squirrel/data/background_sample.csv) and [background.fasta](https://github.com/aineniamh/squirrel/blob/main/squirrel/data/background.fasta).
 

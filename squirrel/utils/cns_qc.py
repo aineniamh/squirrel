@@ -595,7 +595,7 @@ def check_for_snp_anomalies(assembly_references,config,h):
     alignment = os.path.join(config[KEY_OUTDIR],config[KEY_OUTFILENAME])
     branch_reversions, branch_convergence = {},{}
 
-    if config[KEY_RUN_PHYLO]:
+    if config[KEY_RUN_APOBEC3_PHYLO]:
         branch_reversions, branch_convergence = run_phylo_snp_checks(assembly_references,config,h)
 
     sites_to_mask = check_for_alignment_issues(alignment)

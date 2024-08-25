@@ -556,33 +556,35 @@
         <p>
           Output tree file written to <a href="${config['phylogeny']}">${config['phylogeny']}</a> 
         </p>
-        <h2>${section_count}. Phylo image</h2>
-        <% section_count +=1 %>
-        <br>
-        <button class="accordion">Export image</button>
-            <div class="panel">
-            <div class="row">
-                <div class="column">
-                <button id="phylo_svg">SVG</button>
-                </div>
-                <div class="column">
-                <button id="phylo_png">PNG</button>
-                </div>
-            </div>
-            </div>
-            <div style="width: 90%" id="phylo_div"> 
-              ${data_for_report["phylo_svg_string"]}
-            </div>  
+        %if config["run_apobec3_phylo"]:
+          <h2>${section_count}. Phylo image</h2>
+          <% section_count +=1 %>
+          <br>
+          <button class="accordion">Export image</button>
+              <div class="panel">
+              <div class="row">
+                  <div class="column">
+                  <button id="phylo_svg">SVG</button>
+                  </div>
+                  <div class="column">
+                  <button id="phylo_png">PNG</button>
+                  </div>
+              </div>
+              </div>
+              <div style="width: 90%" id="phylo_div"> 
+                ${data_for_report["phylo_svg_string"]}
+              </div>  
 
-        <script type="text/javascript">
-        exportImageSVG("#phylo_svg","#phylo_div", "phylo_image");
-        </script>
-        <script type="text/javascript">
-        exportImagePNG("#phylo_png","#phylo_div", "phylo_image");
-        </script>
-        <% figure_count +=1 %>
-        <h3><strong>Figure ${figure_count}</strong> | Phyogenetic tree with APOBEC3 reconstruction</h3>
-                <hr>  
+          <script type="text/javascript">
+          exportImageSVG("#phylo_svg","#phylo_div", "phylo_image");
+          </script>
+          <script type="text/javascript">
+          exportImagePNG("#phylo_png","#phylo_div", "phylo_image");
+          </script>
+          <% figure_count +=1 %>
+          <h3><strong>Figure ${figure_count}</strong> | Phyogenetic tree with APOBEC3 reconstruction</h3>
+                  <hr>  
+        %endif
     %endif
     %if config["seq_qc"]:
 
@@ -629,33 +631,30 @@
             table.buttons().container().appendTo( $('#tableExportID1') );
             
           } );
-      </script>
-
     %endif
         
-            
-            <script type="text/javascript">
-              $(document).ready( function () {
-                  var table = $('#myTable').DataTable({
-                    "scrollY": "300px",
-                    "paging": false,
-                    "border-bottom":false,
-                    dom: 'frtip',
-                    buttons: ["copy","csv","print"]
-                  });
-                  table.buttons().container().appendTo( $('#tableExportID') );
-                  $('a.toggle-vis').on( 'click', function (e) {
-                      e.preventDefault();
-              
-                      // Get the column API object
-                      var column = table.column( $(this).attr('data-column') );
-              
-                      // Toggle the visibility
-                      column.visible( ! column.visible() );
-                  } );
+  <script type="text/javascript">
+    $(document).ready( function () {
+        var table = $('#myTable').DataTable({
+          "scrollY": "300px",
+          "paging": false,
+          "border-bottom":false,
+          dom: 'frtip',
+          buttons: ["copy","csv","print"]
+        });
+        table.buttons().container().appendTo( $('#tableExportID') );
+        $('a.toggle-vis').on( 'click', function (e) {
+            e.preventDefault();
     
-                } );
-            </script>
+            // Get the column API object
+            var column = table.column( $(this).attr('data-column') );
+    
+            // Toggle the visibility
+            column.visible( ! column.visible() );
+        } );
+
+      } );
+  </script>
 
 <script>
   function exportImageSVG(buttonID,svgID,name){

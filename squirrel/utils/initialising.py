@@ -31,6 +31,9 @@ def setup_config_dict(cwd):
             KEY_CONCATENATE:False,
             KEY_ADDITIONAL_MASK:None,
             KEY_SEQ_QC:False,
+            KEY_RUN_PHYLO:False,
+            KEY_RUN_APOBEC3_PHYLO:False,
+
 
             KEY_VERBOSE: False,
             KEY_THREADS: 1,
