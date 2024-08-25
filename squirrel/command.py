@@ -43,7 +43,8 @@ def main(sysargs = sys.argv[1:]):
     a_group.add_argument("--extract-cds",action="store_true",help="Extract coding sequences based on coordinates in the reference")
     a_group.add_argument("--concatenate",action="store_true",help="Concatenate coding sequences for each genome, separated by `NNN`. Default: write out as separate records")
     a_group.add_argument("--clade",action="store",help="Specify whether the alignment is primarily for `cladei` or `cladeii` (can also specify a or b, e.g. `cladeia`, `cladeiib`). This will determine reference used for alignment, mask file and background set used if `--include-background` flag used in conjunction with the `--run-phylo` option. Default: `cladeii`")
-    a_group.add_argument("-p","--run-phylo",action="store_true",help="Run phylogenetic reconstruction pipeline")
+    a_group.add_argument("-p","--run-phylo",action="store_true",help="Run phylogenetics pipeline")
+    a_group.add_argument("-a","--run-apobec3-phylo",action="store_true",help="Run phylogenetics & APOBEC3-mutation reconstruction pipeline")
     a_group.add_argument("--outgroups",action="store",help="Specify which MPXV outgroup(s) in the alignment to use in the phylogeny. These will get pruned out from the final tree.")
     a_group.add_argument("-bg","--include-background",action="store_true",help="Include a default background set of sequences for the phylogenetics pipeline. The set will be determined by the `--clade` specified.")
     a_group.add_argument("-bf","--background-file",action="store",help="Include this additional FASTA file as background to the phylogenetics.")
@@ -92,7 +93,7 @@ def main(sysargs = sys.argv[1:]):
         # args.run_phylo = True
 
     config[KEY_FIG_HEIGHT] = recon.get_fig_height(config[KEY_INPUT_FASTA])
-    config[KEY_INPUT_FASTA] = io.phylo_options(args.run_phylo,args.outgroups,args.include_background,config[KEY_INPUT_FASTA],config)
+    config[KEY_INPUT_FASTA] = io.phylo_options(args.run_phylo,args.run_apobec3_phylo,args.outgroups,args.include_background,config[KEY_INPUT_FASTA],config)
 
     snakefile = get_snakefile(thisdir,"msa")
 
@@ -102,18 +103,25 @@ def main(sysargs = sys.argv[1:]):
     if status:
 
         if config[KEY_RUN_PHYLO]:
-            phylo_snakefile = get_snakefile(thisdir,"reconstruction")
+            phylo_snakefile = get_snakefile(thisdir,"phylo")
             phylo_stem = ".".join(config[KEY_OUTFILENAME].split(".")[:-1])
             phylo_stem=phylo_stem.split("/")[-1]
             config[KEY_PHYLOGENY] = f"{phylo_stem}.tree"
-            config[KEY_PHYLOGENY_SVG] = f"{phylo_stem}.tree.svg"
+            
             config[KEY_OUTGROUP_STRING] = ",".join(config[KEY_OUTGROUPS])
             config[KEY_OUTGROUP_SENTENCE] = " ".join(config[KEY_OUTGROUPS])
+
+            if config[KEY_RUN_APOBEC3_PHYLO]:
+                config[KEY_PHYLOGENY_SVG] = f"{phylo_stem}.tree.svg"
+                phylo_snakefile = get_snakefile(thisdir,"reconstruction")
 
             status = misc.run_snakemake(config,phylo_snakefile,args.verbose,config)
 
             if status:
-                print(green("Ancestral reconstruction & phylogenetics complete."))
+                if config[KEY_RUN_APOBEC3_PHYLO]:
+                    print(green("Ancestral reconstruction & phylogenetics complete."))
+                else:
+                    print(green("Phylogenetics complete."))
 
         if args.seq_qc:
             mask_file = qc.check_for_snp_anomalies(assembly_refs,config,config[KEY_FIG_HEIGHT])
