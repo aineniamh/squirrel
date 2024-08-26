@@ -2,6 +2,16 @@
 
 **S**ome **QUI**ck **R**econstruction to **R**esolve **E**volutionary **L**inks
 
+Why use squirrel? 
+
+The MPXV genome is pretty challenging to work with and do reliable phylogenetics on. It is large (~200kb), has tracts of low complexity and repetitive regions, and has large deletions, which can lead to difficulties producing a reliable alignment. With squirrel, we provide a rapid way of producing reliable [alignments](#how-it-works---alignment) for MPXV and also enable maximum-likelihood [phylogenetics pipeline](#phylogenetics-options-within-squirrel) tree estimation. 
+
+The reliability of tree estimation is determined by the quality of the input genome sequences. In QC mode, squirrel can flag potential issues in the MPXV sequences that have been provided for alignment (e.g. SNPS near tracts of N, clusters of unique SNPs, reversions to reference alleles and convergent mutations) and outputs these in a mask file for investigation. We suggest you use this information to examine the alignment and pay close attention to the regions flagged. Squirrel can then accept this file with suggested masks and apply it to the sequences before doing phylogenetics. 
+
+Enrichment of APOBEC3-mutations in the MPXV population are a signature of sustained human-to-human transmission. Identifying APOBEC3-like mutations in MPXV genomes from samples in a new outbreak can be a piece of evidence to support sustained human transmission of mpox. Squirrel can run an [APOBEC3-reconstruction](#phylogenetics-options-within-squirrel) and map these mutations onto the phylogeny.
+
+Squirrel produces a HTML report summarising some of the key outputs.
+
 ## Generate a quick MPXV alignment
 > To align MPXV Clade II sequences, run:
 ```
