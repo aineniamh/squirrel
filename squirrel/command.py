@@ -35,7 +35,7 @@ def main(sysargs = sys.argv[1:]):
     io_group.add_argument("--no-temp",action="store_true",help="Output all intermediate files, for dev purposes.")
 
     a_group = parser.add_argument_group("Pipeline options")
-    a_group.add_argument("-qc","--seq-qc",action="store_true",help="Flag potentially problematic SNPs and sequences. Note that this will also run phylo mode, so you will need to specify both outgroup sequences and provide an assembly reference file. Default: don't run QC")
+    a_group.add_argument("-qc","--seq-qc",action="store_true",help="Flag potentially problematic SNPs and sequences. Note that in phylo mode this will run additional phylogenetic QC. Default: don't run QC")
     a_group.add_argument("--assembly-refs",action="store",help="References to check for `calls to reference` against.")
     a_group.add_argument("--no-mask",action="store_true",help="Skip masking of repetitive regions. Default: masks repeat regions")
     a_group.add_argument("--no-itr-mask",action="store_true",help="Skip masking of end ITR. Default: masks ITR")

@@ -142,7 +142,7 @@ usage: squirrel <input> [options]
 
 squirrel: Some QUIck Rearranging to Resolve Evolutionary Links
 
-optional arguments:
+options:
   -h, --help            show this help message and exit
 
 Input-Output options:
@@ -154,8 +154,8 @@ Input-Output options:
   --no-temp             Output all intermediate files, for dev purposes.
 
 Pipeline options:
-  -qc, --seq-qc         Flag potentially problematic SNPs and sequences. Note that this will also run phylo mode, so you will need to specify both outgroup sequences and provide an assembly reference file. Default: don't run
-                        QC
+  -qc, --seq-qc         Flag potentially problematic SNPs and sequences. Note that this will also run phylo mode, so you will need to specify both outgroup sequences and provide an assembly
+                        reference file. Default: don't run QC
   --assembly-refs ASSEMBLY_REFS
                         References to check for `calls to reference` against.
   --no-mask             Skip masking of repetitive regions. Default: masks repeat regions
@@ -164,12 +164,17 @@ Pipeline options:
                         Masking additional sites provided.
   --extract-cds         Extract coding sequences based on coordinates in the reference
   --concatenate         Concatenate coding sequences for each genome, separated by `NNN`. Default: write out as separate records
-  --clade CLADE         Specify whether the alignment is primarily for `cladei` or `cladeii` (will determine reference used for alignment). Default: `cladeii`
+  --clade CLADE         Specify whether the alignment is primarily for `cladei` or `cladeii` (can also specify a or b, e.g. `cladeia`, `cladeiib`). This will determine reference used for
+                        alignment, mask file and background set used if `--include-background` flag used in conjunction with the `--run-phylo` option. Default: `cladeii`
   -p, --run-phylo       Run phylogenetics pipeline
   -a, --run-apobec3-phylo
                         Run phylogenetics & APOBEC3-mutation reconstruction pipeline
   --outgroups OUTGROUPS
                         Specify which MPXV outgroup(s) in the alignment to use in the phylogeny. These will get pruned out from the final tree.
+  -bg, --include-background
+                        Include a default background set of sequences for the phylogenetics pipeline. The set will be determined by the `--clade` specified.
+  -bf BACKGROUND_FILE, --background-file BACKGROUND_FILE
+                        Include this additional FASTA file as background to the phylogenetics.
 
 Misc options:
   -v, --version         show program's version number and exit
