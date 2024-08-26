@@ -120,6 +120,10 @@ Squirrel also flags any reversions to reference that occur in the phylogeny, whi
 
 ## Installation
 
+Install from bioconda with `conda` or `mamba`, e.g. `conda create -c bioconda -c conda-forge -n squirrel -y squirrel`.
+
+Or:
+
 1. Clone this repository and ``cd squirrel``
 2. if `mamba` is not installed, run `conda install -n base mamba`
 3. ``mamba env create -f environment.yml``
