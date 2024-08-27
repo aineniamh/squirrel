@@ -461,23 +461,31 @@ def check_for_alignment_issues(alignment):
                         if len(col_dict[j]) == 1:
                             unique_mutations[col_dict[j][0]].add(i)
                             
-                    # if the snp is near to an N, may be an issue with coverage/ alignment
+                    # if the snp is within a couple bases of an N, may be an issue with coverage/ alignment
                     for s in aln:
                         if s[i] != "N":
-                            if "N" in s.seq[i-4:i+5]:
+                            if "N" in s.seq[i-2:i+3]:
                                 snps_near_n[s.id].add(i)
     
         clustered_snps = collections.defaultdict(set)
-        
+        clustered_sites = set()
         for s in aln:
             unique = unique_mutations[s.id]
             s_unique = sorted(unique)
             for i,val in enumerate(s_unique):
 
                 if len(s_unique) > i+1:
-                    if s_unique[i+1] < val+5:
+                    # if a second snp is within a couple bases
+                    if s_unique[i+1] < val+2:
                         clustered_snps[s.id].add(val)
                         clustered_snps[s.id].add(s_unique[i+1])
+
+                if len(s_unique) > i+2:
+                    # if three snps are within 10 bases
+                    if s_unique[i+2] < val+10:
+                        clustered_snps[s.id].add(val)
+                        clustered_snps[s.id].add(s_unique[i+1])
+                        clustered_snps[s.id].add(s_unique[i+2])
 
         
         sites_to_mask = {}
