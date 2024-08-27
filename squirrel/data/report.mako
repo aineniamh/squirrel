@@ -633,27 +633,6 @@
           } );
     %endif
         
-  <script type="text/javascript">
-    $(document).ready( function () {
-        var table = $('#myTable').DataTable({
-          "scrollY": "300px",
-          "paging": false,
-          "border-bottom":false,
-          dom: 'frtip',
-          buttons: ["copy","csv","print"]
-        });
-        table.buttons().container().appendTo( $('#tableExportID') );
-        $('a.toggle-vis').on( 'click', function (e) {
-            e.preventDefault();
-    
-            // Get the column API object
-            var column = table.column( $(this).attr('data-column') );
-    
-            // Toggle the visibility
-            column.visible( ! column.visible() );
-        } );
-
-      } );
   </script>
 
 <script>
