@@ -124,7 +124,7 @@ def main(sysargs = sys.argv[1:]):
                 if config[KEY_RUN_APOBEC3_PHYLO]:
                     if args.binary_partition_mask:
                         outfile = os.path.join(config[KEY_OUTDIR],f"{phylo_stem}.binary_partition_mask.csv")
-                        recon.find_binary_partition_mask(f"{config[KEY_PHYLOGENY]}.branch_snps.reconstruction.csv",config[KEY_REFERENCE_FASTA],outfile)
+                        recon.find_binary_partition_mask(f"{phylo_stem}.branch_snps.reconstruction.csv",config[KEY_REFERENCE_FASTA],outfile)
                     print(green("Ancestral reconstruction & phylogenetics complete."))
                 else:
                     print(green("Phylogenetics complete."))
