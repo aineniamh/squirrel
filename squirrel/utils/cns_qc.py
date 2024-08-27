@@ -437,6 +437,7 @@ def check_for_alignment_issues(alignment):
         
         
         snps_near_n = collections.defaultdict(set)
+        snps_near_gap = collections.default_dict(set)
 
         for i in range(aln_len):
             
@@ -466,6 +467,10 @@ def check_for_alignment_issues(alignment):
                         if s[i] != "N":
                             if "N" in s.seq[i-2:i+3]:
                                 snps_near_n[s.id].add(i)
+                    for s in aln:
+                        if s[i] != "N":
+                            if "-" in s.seq[i-1:i+2]:
+                                snps_near_gap[s.id].add(i)
     
         clustered_snps = collections.defaultdict(set)
         clustered_sites = set()
@@ -522,6 +527,23 @@ def check_for_alignment_issues(alignment):
                     else:
                         sites_to_mask[site]["present_in"].append(s.id)
                         sites_to_mask[site]["note"].add("N_adjacent")
+            
+            if s.id in snps_near_gap:
+                sites = [i+1 for i in sorted(snps_near_gap[s.id])]
+                for site in sites:
+                    if site not in sites_to_mask:
+                        sites_to_mask[site] = {
+                            "Name": site,
+                            "Minimum": site,
+                            "Maximum": site,
+                            "Length": 1,
+                            "present_in": [s.id],
+                            "note": {"gap_adjacent"}
+                        }
+                    else:
+                        sites_to_mask[site]["present_in"].append(s.id)
+                        sites_to_mask[site]["note"].add("gap_adjacent")
+
         print(f"{len(sites_to_mask)} potentially problematic sites flagged in the alignment")
         return sites_to_mask
 
