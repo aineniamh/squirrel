@@ -125,6 +125,7 @@ def main(sysargs = sys.argv[1:]):
                     if args.binary_partition_mask:
                         outfile = os.path.join(config[KEY_OUTDIR],f"{phylo_stem}.binary_partition_mask.csv")
                         recon.find_binary_partition_mask(f"{phylo_stem}.branch_snps.reconstruction.csv",config[KEY_REFERENCE_FASTA],outfile)
+                        print(green(f"Binary partition mask string written to: "),f"{phylo_stem}.binary_partition_mask.csv")
                     print(green("Ancestral reconstruction & phylogenetics complete."))
                 else:
                     print(green("Phylogenetics complete."))
