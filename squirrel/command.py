@@ -90,7 +90,7 @@ def main(sysargs = sys.argv[1:]):
         config[KEY_SEQ_QC] = True
     
     assembly_refs = []
-    if args.seq_qc and args.run_phylo:
+    if args.seq_qc and args.run_apobec3_phylo:
         print("- Reversions to reference\n- Convergent mutations")
         assembly_refs = qc.find_assembly_refs(cwd,args.assembly_refs,config)
         # args.run_phylo = True
