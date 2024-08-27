@@ -16,6 +16,7 @@ import csv
 import baltic as bt
 import matplotlib as mpl
 import matplotlib.pyplot as plt
+import numpy as np
 import seaborn as sns
 import collections
 import pandas as pd
