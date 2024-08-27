@@ -5,6 +5,7 @@ from squirrel.utils.log_colours import green,cyan
 import select
 from Bio import SeqIO
 from Bio import AlignIO
+from Bio.Align.AlignInfo import SummaryInfo
 import collections
 import csv
 from squirrel.utils.config import *
@@ -13,7 +14,6 @@ import baltic as bt
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import seaborn as sns
-import collections
 import pandas as pd
 
 plt.switch_backend('Agg') 
@@ -422,7 +422,6 @@ def sliding_window(elements, window_size):
     for i in range(len(elements)):
         print(elements[i:i+window_size])
 
-
 def check_for_alignment_issues(alignment):
     bases = ["A","T","G","C"]
     
@@ -435,9 +434,9 @@ def check_for_alignment_issues(alignment):
         #dict keyed by sequence and values a set of indexes
         unique_mutations = collections.defaultdict(set)
         
-        
+
         snps_near_n = collections.defaultdict(set)
-        snps_near_gap = collections.default_dict(set)
+        snps_near_gap = collections.defaultdict(set)
 
         for i in range(aln_len):
             
@@ -461,10 +460,17 @@ def check_for_alignment_issues(alignment):
                     for j in col_dict:
                         if len(col_dict[j]) == 1:
                             unique_mutations[col_dict[j][0]].add(i)
-                            
+                    
+                    #get majority base for that site
+                    col_counter = collections.Counter()
+                    for s in aln:
+                        col_counter[s[i]]+=1
+                    cns = col_counter.most_common(1)[0][0]
+
                     # if the snp is within a couple bases of an N, may be an issue with coverage/ alignment
                     for s in aln:
-                        if s[i] != "N":
+                        # if the variant itself isn't n and isn't the majority base
+                        if s[i] != "N" and s[i] != cns:
                             if "N" in s.seq[i-2:i+3]:
                                 snps_near_n[s.id].add(i)
                     for s in aln:
