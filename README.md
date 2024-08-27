@@ -2,6 +2,16 @@
 
 **S**ome **QUI**ck **R**econstruction to **R**esolve **E**volutionary **L**inks
 
+Why use squirrel? 
+
+The MPXV genome is pretty challenging to work with and do reliable phylogenetics on. It is large (~200kb), has tracts of low complexity and repetitive regions, and has large deletions, which can lead to difficulties producing a reliable alignment. With squirrel, we provide a rapid way of producing reliable [alignments](#how-it-works---alignment) for MPXV and also enable maximum-likelihood [phylogenetics pipeline](#phylogenetics-options-within-squirrel) tree estimation. 
+
+The reliability of tree estimation is determined by the quality of the input genome sequences. In [QC mode](#alignment-quality-control), squirrel can flag potential issues in the MPXV sequences that have been provided for alignment (e.g. SNPS near tracts of N, clusters of unique SNPs, reversions to reference alleles and convergent mutations) and outputs these in a mask file for investigation. We suggest you use this information to examine the alignment and pay close attention to the regions flagged. Squirrel can then accept this file with suggested masks and apply it to the sequences before doing phylogenetics. 
+
+Enrichment of APOBEC3-mutations in the MPXV population are a signature of sustained human-to-human transmission. Identifying APOBEC3-like mutations in MPXV genomes from samples in a new outbreak can be a piece of evidence to support sustained human transmission of mpox. Squirrel can run an [APOBEC3-reconstruction](#phylogenetics-options-within-squirrel) and map these mutations onto the phylogeny.
+
+Squirrel produces a HTML report summarising some of the key outputs.
+
 ## Generate a quick MPXV alignment
 > To align MPXV Clade II sequences, run:
 ```
@@ -110,6 +120,10 @@ Squirrel also flags any reversions to reference that occur in the phylogeny, whi
 
 ## Installation
 
+Install from bioconda with `conda` or `mamba`, e.g. `conda create -c bioconda -c conda-forge -n squirrel -y squirrel`.
+
+Or:
+
 1. Clone this repository and ``cd squirrel``
 2. if `mamba` is not installed, run `conda install -n base mamba`
 3. ``mamba env create -f environment.yml``
@@ -132,7 +146,7 @@ usage: squirrel <input> [options]
 
 squirrel: Some QUIck Rearranging to Resolve Evolutionary Links
 
-optional arguments:
+options:
   -h, --help            show this help message and exit
 
 Input-Output options:
@@ -144,8 +158,8 @@ Input-Output options:
   --no-temp             Output all intermediate files, for dev purposes.
 
 Pipeline options:
-  -qc, --seq-qc         Flag potentially problematic SNPs and sequences. Note that this will also run phylo mode, so you will need to specify both outgroup sequences and provide an assembly reference file. Default: don't run
-                        QC
+  -qc, --seq-qc         Flag potentially problematic SNPs and sequences. Note that this will also run phylo mode, so you will need to specify both outgroup sequences and provide an assembly
+                        reference file. Default: don't run QC
   --assembly-refs ASSEMBLY_REFS
                         References to check for `calls to reference` against.
   --no-mask             Skip masking of repetitive regions. Default: masks repeat regions
@@ -154,10 +168,17 @@ Pipeline options:
                         Masking additional sites provided.
   --extract-cds         Extract coding sequences based on coordinates in the reference
   --concatenate         Concatenate coding sequences for each genome, separated by `NNN`. Default: write out as separate records
-  --clade CLADE         Specify whether the alignment is primarily for `cladei` or `cladeii` (will determine reference used for alignment). Default: `cladeii`
-  -p, --run-phylo       Run phylogenetic reconstruction pipeline
+  --clade CLADE         Specify whether the alignment is primarily for `cladei` or `cladeii` (can also specify a or b, e.g. `cladeia`, `cladeiib`). This will determine reference used for
+                        alignment, mask file and background set used if `--include-background` flag used in conjunction with the `--run-phylo` option. Default: `cladeii`
+  -p, --run-phylo       Run phylogenetics pipeline
+  -a, --run-apobec3-phylo
+                        Run phylogenetics & APOBEC3-mutation reconstruction pipeline
   --outgroups OUTGROUPS
                         Specify which MPXV outgroup(s) in the alignment to use in the phylogeny. These will get pruned out from the final tree.
+  -bg, --include-background
+                        Include a default background set of sequences for the phylogenetics pipeline. The set will be determined by the `--clade` specified.
+  -bf BACKGROUND_FILE, --background-file BACKGROUND_FILE
+                        Include this additional FASTA file as background to the phylogenetics.
 
 Misc options:
   -v, --version         show program's version number and exit
