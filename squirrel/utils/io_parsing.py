@@ -256,8 +256,8 @@ def phylo_options(run_phylo,run_apobec3_phylo,outgroups,include_background,binar
     if binary_partition_mask and not run_apobec3_phylo:
         sys.stderr.write(cyan(
                         f'Error: binary partition mask file can only be written if APOBEC3 reconstruction mode is on.\n'))
-            sys.exit(-1)
-            
+        sys.exit(-1)
+
     if config[KEY_RUN_PHYLO]:
 
         if include_background:
