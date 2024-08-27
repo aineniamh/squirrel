@@ -219,7 +219,6 @@ def get_fig_height(alignment):
 def make_reconstruction_tree_figure_w_labels(outfile,branch_snps,treefile,width,height):
     
     branch_snps_dict = read_in_branch_snps(branch_snps)
-    print(len(branch_snps_dict),"branches")
     
     my_tree=bt.loadNewick(treefile,absoluteTime=False)
     plt.switch_backend('Agg') 
