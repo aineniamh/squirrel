@@ -132,6 +132,46 @@ def find_query_file(cwd, tempdir, query_arg):
     return query
 
 
+def find_exclude_file(cwd,input_fasta,exclude_file,config):
+
+    path_to_try = os.path.join(cwd,exclude_file)
+    if not os.path.exists(path_to_try):
+        sys.stderr.write(cyan(f'Error: cannot find exclude file at: ') + f'{path_to_try}\n' + cyan('Please check file path and try again.\n'))
+        sys.exit(-1)
+
+    to_exclude = set()
+    with open(path_to_try,"r") as f:
+        reader = csv.DictReader(f)
+        header = reader.fieldnames
+
+        if "name" not in header:
+            sys.stderr.write(cyan(f'Error: exclude must contain column `name`.\n'))
+            sys.exit(-1)
+        for row in reader:
+            if row["name"]:
+                to_exclude.add(row["name"])
+            else:
+                sys.stderr.write(cyan(f'Error: empty lines or missing sequence names in the exclude file\n'))
+                sys.exit(-1)
+    print(green(f"Note: {len(to_exclude)} sequences to exclude"))
+
+    new_input_fasta = os.path.join(config[KEY_TEMPDIR], "input.excluded.fasta")
+    with open(new_input_fasta,"w") as fw:
+        i = 0
+        ex +=1
+        for record in SeqIO.parse(input_fasta,"fasta"):
+            if record.description in to_exclude or record.id in to_exclude:
+                ex +=1
+            else:
+                fw.write(f">{record.description}\n{record.seq}\n")
+                i+=1
+    
+    print(green("Input FASTA file filtered by exclude file."))
+    print("Number of excluded sequences:",ex)
+    print("Number of sequences remaining in alignment:",i)
+
+    return new_input_fasta
+    
 def find_additional_mask_file(cwd,additional_mask,config):
 
     path_to_try = os.path.join(cwd,additional_mask)

@@ -414,6 +414,23 @@ def make_convergence_tree_figure(outfile,branch_snps,branch_convergence,treefile
     plt.savefig(f"{outfile}.png",bbox_inches='tight', 
                    transparent=True)
 
+def check_flag_N_content(input_fasta,exclude_file,config):
+    with open(exclude_file,"w") as fw:
+        writer=csv.DictWriter(fw, fieldnames = ["name","note"],delimiter=",",lineterminator="\n")
+        writer.writeheader()
+        c =0
+        for record in SeqIO.parse(input_fasta,"fasta"):
+            n_count = str(record.seq).upper().count("N")
+            n_content = round(n_count/len(record),3)
+            if n_content > 0.2:
+                c +=1
+                row = {
+                    "name": record.description,
+                    "note": f"N content is {n_content}"
+                    }
+                writer.writerow(row)
+        print(green(f"{c} sequences flagged as high N content (>0.2): "),exclude_file)
+
 
 def sliding_window(elements, window_size):
     
@@ -550,7 +567,7 @@ def check_for_alignment_issues(alignment):
                         sites_to_mask[site]["present_in"].append(s.id)
                         sites_to_mask[site]["note"].add("gap_adjacent")
 
-        print(f"{len(sites_to_mask)} potentially problematic sites flagged in the alignment")
+        print(green(f"Number of possibly problematic SNPs: "),len(sites_to_mask))
         return sites_to_mask
 
 def merge_flagged_sites(sites_to_mask,branch_reversions,branch_convergence,out_report):

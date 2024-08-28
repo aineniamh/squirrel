@@ -590,7 +590,7 @@
 
       <h2>${section_count}. Suggested sites to mask</h2>
       <% section_count +=1 %>
-
+    
       <table class="display nowrap" id="myTable1">
         <thead>
           <tr>
@@ -631,9 +631,11 @@
             table.buttons().container().appendTo( $('#tableExportID1') );
             
           } );
-    %endif
-        
+                  
   </script>
+
+    %endif
+
 
 <script>
   function exportImageSVG(buttonID,svgID,name){
