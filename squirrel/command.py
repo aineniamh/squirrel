@@ -35,11 +35,12 @@ def main(sysargs = sys.argv[1:]):
     io_group.add_argument("--no-temp",action="store_true",help="Output all intermediate files, for dev purposes.")
 
     a_group = parser.add_argument_group("Alignment options")
-    a_group.add_argument("-qc","--seq-qc",action="store_true",help="Flag potentially problematic SNPs and sequences. Note that this will also run phylo mode, so you will need to specify both outgroup sequences and provide an assembly reference file. Default: don't run QC")
+    a_group.add_argument("-qc","--seq-qc",action="store_true",help="Flag potentially problematic SNPs and sequences. Default: don't run QC")
     a_group.add_argument("--assembly-refs",action="store",help="References to check for `calls to reference` against.")
     a_group.add_argument("--no-mask",action="store_true",help="Skip masking of repetitive regions. Default: masks repeat regions")
     a_group.add_argument("--no-itr-mask",action="store_true",help="Skip masking of end ITR. Default: masks ITR")
     a_group.add_argument("--additional-mask",action="store",help="Masking additional sites provided.")
+    a_group.add_argument("-ex","--exclude",action="store",help="Supply a csv file listing sequences that should be excluded from the analysis.")
     a_group.add_argument("--extract-cds",action="store_true",help="Extract coding sequences based on coordinates in the reference")
     a_group.add_argument("--concatenate",action="store_true",help="Concatenate coding sequences for each genome, separated by `NNN`. Default: write out as separate records")
     a_group.add_argument("--clade",action="store",help="Specify whether the alignment is primarily for `cladei` or `cladeii` (can also specify a or b, e.g. `cladeia`, `cladeiib`). This will determine reference used for alignment, mask file and background set used if `--include-background` flag used in conjunction with the `--run-phylo` option. Default: `cladeii`")
@@ -84,10 +85,15 @@ def main(sysargs = sys.argv[1:]):
     if args.background_file:
         config[KEY_INPUT_FASTA] = io.find_background_file(cwd,config[KEY_INPUT_FASTA],args.background_file,config)
 
+    if args.exclude:
+        config[KEY_INPUT_FASTA] = io.find_exclude_file(cwd,config[KEY_INPUT_FASTA],args.exclude,config)
+
     if args.seq_qc:
         print(green("QC mode activated. Squirrel will flag:"))
-        print("- Clumps of unique SNPs\n- SNPs adjacent to Ns")
+        print("- Clumps of unique SNPs\n- SNPs adjacent to Ns\n- Sequences with high N content")
         config[KEY_SEQ_QC] = True
+        exclude_file = os.path.join(config[KEY_OUTDIR],"suggested_to_exclude.csv")
+        qc.check_flag_N_content(config[KEY_INPUT_FASTA],exclude_file,config)
     
     assembly_refs = []
     if args.seq_qc and args.run_apobec3_phylo:
