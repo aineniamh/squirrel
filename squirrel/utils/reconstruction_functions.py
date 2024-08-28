@@ -16,6 +16,7 @@ import csv
 import baltic as bt
 import matplotlib as mpl
 import matplotlib.pyplot as plt
+import numpy as np
 import seaborn as sns
 import collections
 import pandas as pd
@@ -219,7 +220,6 @@ def get_fig_height(alignment):
 def make_reconstruction_tree_figure_w_labels(outfile,branch_snps,treefile,width,height):
     
     branch_snps_dict = read_in_branch_snps(branch_snps)
-    print(len(branch_snps_dict),"branches")
     
     my_tree=bt.loadNewick(treefile,absoluteTime=False)
     plt.switch_backend('Agg') 
@@ -682,3 +682,48 @@ def run_full_analysis(directory, alignment, treefile,state_file,config,width,hei
     grantham_scores_file = config[KEY_GRANTHAM_SCORES]
     gene_boundaries_file = config[KEY_GENE_BOUNDARIES]
     get_reconstruction_amino_acids(alignment,grantham_scores_file,gene_boundaries_file,branch_snps_out,state_out,amino_acids_out,node_states)
+
+def find_binary_partition_mask(branch_reconstruction,reference,outfile):
+
+    apobec_variable = set()
+    non_apobec_variable =  set()
+
+    with open(branch_reconstruction,"r") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            if row["dimer"] in ["GA","TC"]:
+                apobec_variable.add(int(row['site']))
+            else:
+                non_apobec_variable.add(int(row['site']))
+
+    ref = str(SeqIO.read(reference, 'fasta').seq)
+    pos = np.arange(len(ref))
+
+    apo_keep_0index = set()
+    for i in pos:
+        if ref[i:i+2]=="GA":
+            if i+1 not in non_apobec_variable:
+                apo_keep_0index.add(i)
+        elif ref[i:i+2]=="TC":
+            if i+2 not in non_apobec_variable:
+                apo_keep_0index.add(i+1)
+
+    for i in apobec_variable:
+        apo_keep_0index.add(i-1)
+
+    apo_masked = 0
+    non_apo_masked = 0
+    
+    mask_string = ""
+    
+    for i in range(len(ref)):
+        if i not in apo_keep_0index:
+            mask_string+="0"
+            non_apo_masked +=1
+        else:
+            mask_string+="1"
+            apo_masked +=1
+
+    with open(outfile,"w") as fw:
+        fw.write(mask_string + "\n")
+    

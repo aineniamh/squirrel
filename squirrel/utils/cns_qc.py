@@ -5,6 +5,7 @@ from squirrel.utils.log_colours import green,cyan
 import select
 from Bio import SeqIO
 from Bio import AlignIO
+from Bio.Align.AlignInfo import SummaryInfo
 import collections
 import csv
 from squirrel.utils.config import *
@@ -13,7 +14,6 @@ import baltic as bt
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import seaborn as sns
-import collections
 import pandas as pd
 
 plt.switch_backend('Agg') 
@@ -422,7 +422,6 @@ def sliding_window(elements, window_size):
     for i in range(len(elements)):
         print(elements[i:i+window_size])
 
-
 def check_for_alignment_issues(alignment):
     bases = ["A","T","G","C"]
     
@@ -435,8 +434,9 @@ def check_for_alignment_issues(alignment):
         #dict keyed by sequence and values a set of indexes
         unique_mutations = collections.defaultdict(set)
         
-        
+
         snps_near_n = collections.defaultdict(set)
+        snps_near_gap = collections.defaultdict(set)
 
         for i in range(aln_len):
             
@@ -460,24 +460,43 @@ def check_for_alignment_issues(alignment):
                     for j in col_dict:
                         if len(col_dict[j]) == 1:
                             unique_mutations[col_dict[j][0]].add(i)
-                            
-                    # if the snp is near to an N, may be an issue with coverage/ alignment
+                    
+                    #get majority base for that site
+                    col_counter = collections.Counter()
+                    for s in aln:
+                        col_counter[s[i]]+=1
+                    cns = col_counter.most_common(1)[0][0]
+
+                    # if the snp is within a couple bases of an N, may be an issue with coverage/ alignment
+                    for s in aln:
+                        # if the variant itself isn't n and isn't the majority base
+                        if s[i] != "N" and s[i] != cns:
+                            if "N" in s.seq[i-2:i+3]:
+                                snps_near_n[s.id].add(i)
                     for s in aln:
                         if s[i] != "N":
-                            if "N" in s.seq[i-4:i+5]:
-                                snps_near_n[s.id].add(i)
+                            if "-" in s.seq[i-1:i+2]:
+                                snps_near_gap[s.id].add(i)
     
         clustered_snps = collections.defaultdict(set)
-        
+        clustered_sites = set()
         for s in aln:
             unique = unique_mutations[s.id]
             s_unique = sorted(unique)
             for i,val in enumerate(s_unique):
 
                 if len(s_unique) > i+1:
-                    if s_unique[i+1] < val+5:
+                    # if a second snp is within a couple bases
+                    if s_unique[i+1] < val+2:
                         clustered_snps[s.id].add(val)
                         clustered_snps[s.id].add(s_unique[i+1])
+
+                if len(s_unique) > i+2:
+                    # if three snps are within 10 bases
+                    if s_unique[i+2] < val+10:
+                        clustered_snps[s.id].add(val)
+                        clustered_snps[s.id].add(s_unique[i+1])
+                        clustered_snps[s.id].add(s_unique[i+2])
 
         
         sites_to_mask = {}
@@ -514,6 +533,23 @@ def check_for_alignment_issues(alignment):
                     else:
                         sites_to_mask[site]["present_in"].append(s.id)
                         sites_to_mask[site]["note"].add("N_adjacent")
+            
+            if s.id in snps_near_gap:
+                sites = [i+1 for i in sorted(snps_near_gap[s.id])]
+                for site in sites:
+                    if site not in sites_to_mask:
+                        sites_to_mask[site] = {
+                            "Name": site,
+                            "Minimum": site,
+                            "Maximum": site,
+                            "Length": 1,
+                            "present_in": [s.id],
+                            "note": {"gap_adjacent"}
+                        }
+                    else:
+                        sites_to_mask[site]["present_in"].append(s.id)
+                        sites_to_mask[site]["note"].add("gap_adjacent")
+
         print(f"{len(sites_to_mask)} potentially problematic sites flagged in the alignment")
         return sites_to_mask
 
