@@ -211,10 +211,10 @@ def get_fig_height(alignment):
     seqs = SeqIO.index(alignment,"fasta")
 
     height = 0.5*len(seqs)
-    if height >30:
+    if height >15:
         return height
     else:
-        return 30
+        return 15
 
 
 def make_reconstruction_tree_figure_w_labels(outfile,branch_snps,treefile,width,height):
