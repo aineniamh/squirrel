@@ -257,7 +257,7 @@ def add_background_to_input(input_fasta,background,clade,config):
                 c = ""
                 for field in record.description.split(" "):
                     if field.startswith("clade"):
-                        c = field.split("=")[1]
+                        c = field.split("=")[1].lower()
                 if c not in VALUE_VALID_CLADES:
                     sys.stderr.write(cyan(
                         f'Error: clade must be one of {VALUE_VALID_CLADES}.\n'))
