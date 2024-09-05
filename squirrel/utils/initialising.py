@@ -66,10 +66,11 @@ def get_datafiles(config):
     clade = config[KEY_CLADE].lower()
     config[KEY_CLADE] = clade
     fasta_filename = ""
+    gene_boundaries_file = ""
     if clade in ["cladei","cladeia","cladeib"]:
         fasta_filename = "NC_003310.fasta"
         mask_file = "to_mask.cladei.csv"
-        gene_boundaries_file = "gene_boundaries.cladeii.csv"
+        gene_boundaries_file = "gene_boundaries.cladei.csv"
     elif clade in ["cladeii","cladeiia","cladeiib"]:
         fasta_filename = "NC_063383.fasta"
         mask_file = "to_mask.cladeii.csv"
