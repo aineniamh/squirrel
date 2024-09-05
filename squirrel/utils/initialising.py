@@ -69,9 +69,11 @@ def get_datafiles(config):
     if clade in ["cladei","cladeia","cladeib"]:
         fasta_filename = "NC_003310.fasta"
         mask_file = "to_mask.cladei.csv"
+        gene_boundaries_file = "gene_boundaries.cladeii.csv"
     elif clade in ["cladeii","cladeiia","cladeiib"]:
         fasta_filename = "NC_063383.fasta"
         mask_file = "to_mask.cladeii.csv"
+        gene_boundaries_file = "gene_boundaries.cladeii.csv"
     else:
         sys.stderr.write(cyan(f'Error: invalid clade specified. Please specify one of `cladei`, `cladeia`,`cladeib`, `cladeii`, `cladeiia`,`cladeiib`\n'))
         sys.exit(-1)
@@ -92,7 +94,7 @@ def get_datafiles(config):
             "filename":mask_file},
             {"key":KEY_GENE_BOUNDARIES,
             "directory":"data",
-            "filename":"gene_boundaries.csv"},
+            "filename":gene_boundaries_file},
             {"key":KEY_GRANTHAM_SCORES,
             "directory":"data",
             "filename":"grantham_score.txt"},
