@@ -57,13 +57,15 @@ def find_assembly_refs(cwd,assembly_refs,config):
 
     return refs
 
-def recurse_back(node):
+def recurse_back(node,root_node):
     path = [node.traits["label"]]
     p = node.parent
-    while p.traits["label"] != "Node1":
+    root_name = root_node.traits["label"]
+    while p.traits["label"] != root_name:
         path.append(p.traits["label"])
         p = p.parent
-    path.append("Node1")
+
+    path.append(root_name)
     return path
 
 def get_path_to_root(treefile):
@@ -74,10 +76,13 @@ def get_path_to_root(treefile):
     phylo path from root to tip
 
     """
-    my_tree=bt.loadNewick(treefile,absoluteTime=False)
-
+    my_tree=bt.loadNexus(treefile,absoluteTime=False)
+    root_node = ""
     for k in my_tree.Objects:
         current_node = k
+        if not root_node:
+            root_node = k
+
         if k.branchType == 'leaf':
             current_node.traits["label"]=k.name
             
@@ -86,14 +91,14 @@ def get_path_to_root(treefile):
                 parent_name = current_node.parent.traits["label"]
             except:
                 continue
+            
     
     branch_paths = {}
     
     for k in my_tree.Objects:
         current_node = k
-        
         if current_node.branchType == 'leaf':
-            path = recurse_back(current_node)
+            path = recurse_back(current_node,root_node)
             branch_path = []
             for i in range(len(path)-1, 0, -1):
                 try:
