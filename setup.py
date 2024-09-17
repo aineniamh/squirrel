@@ -15,7 +15,7 @@ setup(name='squirrel',
                 ],
       package_data={"squirrel":["data/*"]},
       install_requires=[
-            "biopython>=1.70",
+            "biopython>=1.74",
             'tabulate==0.8.10',
             'baltic',
             'matplotlib>=3.3.1',

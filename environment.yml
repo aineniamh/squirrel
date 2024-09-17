@@ -5,9 +5,9 @@ channels:
   - defaults
 dependencies:
   - biopython>=1.74
-  - minimap2>=2.16
-  - python=3.10
-  - snakemake-minimal=7.32
+  - minimap2>=2.17
+  - python
+  - snakemake-minimal
   - matplotlib>=3.3.1
   - gofasta
   - iqtree>=2.1
