@@ -71,7 +71,7 @@ def set_up_outfile(outfile_arg,query_arg, outfile, outdir):
         
         # get the file stem & name
         outfile_stem = ".".join(query_file.split(".")[:-1])
-        outfile_name f"{outfile_stem}.aln.fasta"
+        outfile_name = f'{outfile_stem}.aln.fasta'
         
     else:
         outfile_stem = "sequences"
