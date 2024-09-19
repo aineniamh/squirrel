@@ -33,7 +33,7 @@ def set_up_outdir(outdir_arg,cwd,outdir):
                 sys.exit(-1)
     return outdir
 
-def set_up_outfile(outfile_arg,query_arg, outfile, outdir):
+def set_up_outfile(outfile_arg,cwd,query_arg, outfile, outdir):
     outfile_stem = ""
     outfile_name = ""
 
@@ -64,18 +64,17 @@ def set_up_outfile(outfile_arg,query_arg, outfile, outdir):
             except:
                 sys.stderr.write(cyan(f'Error: cannot create output directory for outfile {outdir}.\n'))
                 sys.exit(-1)
-        
-    elif query_arg:
-        # get the file name
-        query_file = query_arg[0].split("/")[-1]
-        
-        # get the file stem & name
-        outfile_stem = ".".join(query_file.split(".")[:-1])
-        outfile_name = f'{outfile_stem}.aln.fasta'
-        
     else:
-        outfile_stem = "sequences"
-        outfile_name = "sequences.aln.fasta"
+        if not os.path.exists(os.path.join(cwd, query_arg[0])):
+            outfile_stem = "sequences"
+            outfile_name = "sequences.aln.fasta"
+        else:
+            # get the file name
+            query_file = query_arg[0].split("/")[-1]
+            
+            # get the file stem & name
+            outfile_stem = ".".join(query_file.split(".")[:-1])
+            outfile_name = f'{outfile_stem}.aln.fasta'
 
     outfile = os.path.join(outdir, outfile_name)
 
