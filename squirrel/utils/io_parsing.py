@@ -33,31 +33,55 @@ def set_up_outdir(outdir_arg,cwd,outdir):
                 sys.exit(-1)
     return outdir
 
-def set_up_outfile(outfile_arg,query_arg, outfile, outdir):
+def set_up_outfile(outfile_arg,cwd,query_arg, outfile, outdir):
+    outfile_stem = ""
+    outfile_name = ""
+
     if outfile_arg:
-        outfile = os.path.join(outdir, outfile_arg)
-        outfile_stem = outfile_arg
-        cds_outstr = f"{outfile_arg}.aln.cds.fasta"
-        cds_outfile = os.path.join(outdir, cds_outstr)
-        outfilename=outfile_arg
-    elif query_arg:
-        query_file = query_arg[0].split("/")[-1]
-        out_str = ".".join(query_file.split(".")[:-1]) + ".aln.fasta"
-        outfile = os.path.join(outdir, out_str)
-        cds_outstr = ".".join(query_file.split(".")[:-1]) + ".aln.cds.fasta"
-        cds_outfile = os.path.join(outdir, cds_outstr)
-        outfilename=out_str
-        outfile_stem = ".".join(query_file.split(".")[:-1])
+        outfile_arg_dir = ""
+        if "/" in outfile_arg:
+            # figure out if a path was provided
+            p = outfile_arg.split("/")
+            outfile_arg_dir = "/".join(p[:-1])
+            outfile_arg = p[-1]
+
+        if "." in outfile_arg:
+            # strip off extension if provided to get stem, keep for the name variable
+            outfile_stem = ".".join(outfile_arg.split(".""")[:-1])
+            outfile_name = outfile_arg
+        else:
+            # add a stem to the aln outfile
+            outfile_stem = outfile_arg
+            outfile_name = f"{outfile_stem}.aln.fasta"
+            
+        if outfile_arg_dir:
+            # if the outfile provided was a path, join that path to the outdir
+            
+            outdir = os.path.join(outdir,outfile_arg_dir)
+            try:
+                if not os.path.exists(outdir):
+                    os.mkdir(outdir)
+            except:
+                sys.stderr.write(cyan(f'Error: cannot create output directory for outfile {outdir}.\n'))
+                sys.exit(-1)
     else:
-        out_str = "sequences.aln.fasta"
-        outfile = os.path.join(outdir, out_str)
-        cds_outstr = "sequences.aln.cds.fasta"
-        cds_outfile = os.path.join(outdir, cds_outstr)
-        outfilename=out_str
-        outfile_stem = "sequences"
+        if not os.path.exists(os.path.join(cwd, query_arg[0])):
+            outfile_stem = "sequences"
+            outfile_name = "sequences.aln.fasta"
+        else:
+            # get the file name
+            query_file = query_arg[0].split("/")[-1]
+            
+            # get the file stem & name
+            outfile_stem = ".".join(query_file.split(".")[:-1])
+            outfile_name = f'{outfile_stem}.aln.fasta'
 
-    return outfile,cds_outfile,outfilename,outfile_stem
+    outfile = os.path.join(outdir, outfile_name)
 
+    cds_outstr = f"{outfile_stem}.aln.cds.fasta"
+    cds_outfile = os.path.join(outdir, cds_outstr)
+
+    return outfile,cds_outfile,outfile_name,outfile_stem,outdir
 
 def set_up_tempdir(tempdir_arg,no_temp_arg,cwd,outdir,config):
 
