@@ -75,7 +75,7 @@ def main(sysargs = sys.argv[1:]):
     get_datafiles(config)
     io.set_up_threads(args.threads,config)
     config[KEY_OUTDIR] = io.set_up_outdir(args.outdir,cwd,config[KEY_OUTDIR])
-    config[KEY_OUTFILE],config[KEY_CDS_OUTFILE],config[KEY_OUTFILENAME],config[KEY_OUTFILE_STEM] = io.set_up_outfile(args.outfile,cwd,args.input, config[KEY_OUTFILE],config[KEY_OUTDIR])
+    config[KEY_OUTFILE],config[KEY_CDS_OUTFILE],config[KEY_OUTFILENAME],config[KEY_OUTFILE_STEM],config[KEY_OUTDIR] = io.set_up_outfile(args.outfile,cwd,args.input, config[KEY_OUTFILE],config[KEY_OUTDIR])
     io.set_up_tempdir(args.tempdir,args.no_temp,cwd,config[KEY_OUTDIR], config)
 
     io.pipeline_options(args.no_mask, args.no_itr_mask, args.additional_mask, args.extract_cds, args.concatenate,cwd, config)
@@ -113,15 +113,13 @@ def main(sysargs = sys.argv[1:]):
 
         if config[KEY_RUN_PHYLO]:
             phylo_snakefile = get_snakefile(thisdir,"phylo")
-            phylo_stem = ".".join(config[KEY_OUTFILENAME].split(".")[:-1])
-            phylo_stem=phylo_stem.split("/")[-1]
-            config[KEY_PHYLOGENY] = f"{phylo_stem}.tree"
+            config[KEY_PHYLOGENY] = f"{config[KEY_OUTFILE_STEM]}.tree"
             
             config[KEY_OUTGROUP_STRING] = ",".join(config[KEY_OUTGROUPS])
             config[KEY_OUTGROUP_SENTENCE] = " ".join(config[KEY_OUTGROUPS])
 
             if config[KEY_RUN_APOBEC3_PHYLO]:
-                config[KEY_PHYLOGENY_SVG] = f"{phylo_stem}.tree.svg"
+                config[KEY_PHYLOGENY_SVG] = f"{config[KEY_OUTFILE_STEM]}.tree.svg"
                 phylo_snakefile = get_snakefile(thisdir,"reconstruction")
 
             status = misc.run_snakemake(config,phylo_snakefile,args.verbose,config)
@@ -129,8 +127,8 @@ def main(sysargs = sys.argv[1:]):
             if status:
                 if config[KEY_RUN_APOBEC3_PHYLO]:
                     if args.binary_partition_mask:
-                        outfile = os.path.join(config[KEY_OUTDIR],f"{phylo_stem}.binary_partition_mask.csv")
-                        branch_reconstruction = os.path.join(config[KEY_OUTDIR],f"{config[KEY_PHYLOGENY]}.branch_snps.reconstruction.csv")
+                        outfile = os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILE_STEM]}.binary_partition_mask.csv")
+                        branch_reconstruction = os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILE_STEM]}.branch_snps.reconstruction.csv")
                         recon.find_binary_partition_mask(branch_reconstruction,config[KEY_REFERENCE_FASTA],outfile)
                         print(green(f"Binary partition mask string written to: "),outfile)
                     print(green("Ancestral reconstruction & phylogenetics complete."))
@@ -144,5 +142,5 @@ def main(sysargs = sys.argv[1:]):
             print(green("Alignment complete."))
             mask_file = ""
         # get the inputs for making the overall report
-        report =os.path.join(config[KEY_OUTDIR],"squirrel-report.html")
+        report =os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILE_STEM]}.report.html")
         make_output_report(report,mask_file,config)

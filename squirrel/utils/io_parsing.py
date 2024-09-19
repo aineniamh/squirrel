@@ -81,7 +81,7 @@ def set_up_outfile(outfile_arg,cwd,query_arg, outfile, outdir):
     cds_outstr = f"{outfile_stem}.aln.cds.fasta"
     cds_outfile = os.path.join(outdir, cds_outstr)
 
-    return outfile,cds_outfile,outfile_name,outfile_stem
+    return outfile,cds_outfile,outfile_name,outfile_stem,outdir
 
 def set_up_tempdir(tempdir_arg,no_temp_arg,cwd,outdir,config):
 
