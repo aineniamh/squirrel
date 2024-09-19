@@ -46,9 +46,11 @@ Squirrel can also accept an additional mask file in csv format (`--additional-ma
 ## Alignment Quality Control
 Squirrel can run quality control (QC) on the alignment and flag certain sites to the user that may need to be masked. We recommend that the user looks at these sites in an alignment viewer to judge whether the sites should be masked or not. If `-qc` mode is toggled on, squirrel with check within the alignment for:
 - <strong>Mutations that are adjacent to N bases</strong>
-The rationale for this is that N sites are usually a product of low coverage regions. Mutations that occur directly adjacent to low coverage regions may be a result of mis-alignment prior to the low coverage masking and may not be real SNPs. 
+The rationale for this is that N sites are usually a product of low coverage regions. Mutations that occur directly adjacent to low coverage regions may be a result of mis-alignment prior to the low coverage masking and may not be real SNPs. In squirrel, non-majority alleles that are present next to an N are flagged as potential sites for masking. 
 - <strong>Unique mutations that clump together</strong>
-If mutations are observed in only a single sequence in the genome, they are classed as unique mutations. <it>Usually</it> mutations do not clump closely together and may suggest an alignment or assembly issue. If these mutations are not shared with any other sequences, they are flagged for masking. 
+If mutations are observed in only a single sequence in the genome, they are classed as unique mutations. <it>Usually</it> mutations do not clump closely together and may suggest an alignment or assembly issue. If these mutations are not shared with any other sequences, they are flagged for masking.
+- <strong>Sequences with a high N content</strong>
+Sequences that have many ambiguous bases in them are flagged that they may want to be excluded in further analysis. This may not always be appropriate, often genomes that have a lot of ambiguity can still be informative, however if there is something unusual about a sequence, having lots of ambiguities can be a flag for wider problems (like low read count during assembly).
 
 ## Phylogenetics options within squirrel
 
