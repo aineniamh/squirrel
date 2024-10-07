@@ -582,7 +582,7 @@
           exportImagePNG("#phylo_png","#phylo_div", "phylo_image");
           </script>
           <% figure_count +=1 %>
-          <h3><strong>Figure ${figure_count}</strong> | Phyogenetic tree with APOBEC3 reconstruction</h3>
+          <h3><strong>Figure ${figure_count}</strong> | Phylogenetic tree with APOBEC3 reconstruction</h3>
                   <hr>  
         %endif
     %endif
