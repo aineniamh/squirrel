@@ -19,7 +19,7 @@ setup(name='squirrel',
             'tabulate==0.8.10',
             'baltic',
             'matplotlib>=3.3.1',
-            'mako==1.2',
+            'mako',
             'seaborn',
             'pandas'
         ],
