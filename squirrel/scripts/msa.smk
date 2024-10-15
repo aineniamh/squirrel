@@ -79,7 +79,16 @@ rule mask_repetitive_regions:
                             length = end-start
                         mask_sites.append((start,end,length))
                         total_masked += length
+            
+            mask_seqs = collections.defaultdict(set)
+            if config[KEY_SEQUENCE_MASK] != 'None':
+                with open(config[KEY_SEQUENCE_MASK],"r") as f:
+                    reader = csv.DictReader(filter(lambda row: row[0]!='#', f))
+                    for row in reader:
+                        seq = row["sequence"]
+                        site = int(row["site"])
                         
+                        mask_seqs[seq].add(site)
 
             records = 0
             with open(output[0],"w") as fw:
@@ -88,6 +97,9 @@ rule mask_repetitive_regions:
                     new_seq = str(record.seq)
                     for site in mask_sites:
                         new_seq = new_seq[:site[0]] + ("N"*site[2]) + new_seq[site[1]:]
+                    if record.id in mask_seqs:
+                        for site in mask_seqs[record.id]:##here maybe doesn't work
+                            new_seq = new_seq[:site-1] + "N" + new_seq[site:]
                     n_diff = str(record.seq).count("N") - new_seq.count("N")
                     fw.write(f">{record.description}\n{new_seq}\n")
             
