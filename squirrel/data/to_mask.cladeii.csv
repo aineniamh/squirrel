@@ -1,16 +1,16 @@
-Name,Type,Minimum,Maximum,Length,Direction
-repetitive region,misc_feature,16609,16622,14,none
-repetitive region,misc_feature,29749,29762,14,none
-homopolymeric runs,misc_feature,148334,148351,18,none
-repetitive region,misc_feature,163190,163214,25,none
-repetitive region,misc_feature,174518,174545,28,none
-repetitive region,misc_feature,173274,173317,44,none
-repetitive region,misc_feature,169721,169774,54,none
-repetitive region,misc_feature,136513,136569,57,none
-repetitive region,misc_feature,146848,146912,65,none
-repetitive region,misc_feature,150542,150628,87,none
-repetitive region,misc_feature,192404,192529,126,none
-repetitive region,misc_feature,4680,4806,127,none
-repetitive region,misc_feature,179057,179245,189,none
-homopolymeric runs,misc_feature,592,596,5,none
-homopolymeric runs,misc_feature,133071,133115,45,none
+Reference,Name,Type,Minimum,Maximum,Length,Direction
+NC_063383,repetitive region,misc_feature,16609,16622,14,none
+NC_063383,repetitive region,misc_feature,29749,29762,14,none
+NC_063383,homopolymeric runs,misc_feature,148334,148351,18,none
+NC_063383,repetitive region,misc_feature,163190,163214,25,none
+NC_063383,repetitive region,misc_feature,174518,174545,28,none
+NC_063383,repetitive region,misc_feature,173274,173317,44,none
+NC_063383,repetitive region,misc_feature,169721,169774,54,none
+NC_063383,repetitive region,misc_feature,136513,136569,57,none
+NC_063383,repetitive region,misc_feature,146848,146912,65,none
+NC_063383,repetitive region,misc_feature,150542,150628,87,none
+NC_063383,repetitive region,misc_feature,192404,192529,126,none
+NC_063383,repetitive region,misc_feature,4680,4806,127,none
+NC_063383,repetitive region,misc_feature,179057,179245,189,none
+NC_063383,homopolymeric runs,misc_feature,592,596,5,none
+NC_063383,homopolymeric runs,misc_feature,133071,133115,45,none
