@@ -467,6 +467,7 @@ def check_for_alignment_issues(alignment):
             for s in aln:
                 #find the columns with variable sites
                 if s.seq[i] in bases:
+
                     col.add(s.seq[i])
                     
             if col:
@@ -475,28 +476,29 @@ def check_for_alignment_issues(alignment):
                     snp_cols.add(i)
                     
                     col_dict = collections.defaultdict(list)
+                    #get majority base for that site
+                    col_counter = collections.Counter()
                     for s in aln:
                         col_dict[s.seq[i]].append(s.id)
+                        if s.seq[i] in bases:
+                            col_counter[s[i]]+=1
                         
-                    
+                    cns = col_counter.most_common(1)[0][0]
+
                     for j in col_dict:
                         if len(col_dict[j]) == 1:
                             unique_mutations[col_dict[j][0]].add(i)
                     
-                    #get majority base for that site
-                    col_counter = collections.Counter()
-                    for s in aln:
-                        col_counter[s[i]]+=1
-                    cns = col_counter.most_common(1)[0][0]
-
                     # if the snp is within a couple bases of an N, may be an issue with coverage/ alignment
                     for s in aln:
                         # if the variant itself isn't n and isn't the majority base
-                        if s[i] != "N" and s[i] != cns:
+                        if s[i] != "N" and s[i] != cns and s[i]!="-":
+                            
                             if "N" in s.seq[i-2:i+3]:
                                 snps_near_n[s.id].add(i)
+
                     for s in aln:
-                        if s[i] != "N":
+                        if s[i] != "N" and s[i] != cns and s[i]!="-":
                             if "-" in s.seq[i-1:i+2]:
                                 snps_near_gap[s.id].add(i)
     
