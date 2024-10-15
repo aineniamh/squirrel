@@ -180,6 +180,7 @@ def find_exclude_file(cwd,input_fasta,exclude_file,config):
     print(green(f"Note: {len(to_exclude)} sequences to exclude"))
 
     new_input_fasta = os.path.join(config[KEY_TEMPDIR], "input.excluded.fasta")
+    ex = 0
     with open(new_input_fasta,"w") as fw:
         i = 0
         ex +=1

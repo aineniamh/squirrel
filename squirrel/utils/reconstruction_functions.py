@@ -324,8 +324,8 @@ def get_gene_boundaries(gene_boundaries_file):
         for row in reader:
             gene_id +=1
             name = f"{row['Name'].replace(' ','_')}_{gene_id}"
-            start = int(row["Minimum"]) - 1
-            end = int(row["Maximum"])
+            start = int(row["Minimum"])
+            end = int(row["Maximum"])+1
             length = int(row["Length"])
             direction = row["Direction"]
             genes[(start,end)]=(name,length,direction)
