@@ -40,7 +40,7 @@ def main(sysargs = sys.argv[1:]):
     a_group.add_argument("--no-mask",action="store_true",help="Skip masking of repetitive regions. Default: masks repeat regions")
     a_group.add_argument("--no-itr-mask",action="store_true",help="Skip masking of end ITR. Default: masks ITR")
     a_group.add_argument("--additional-mask",action="store",help="Masking additional sites provided as a csv. Needs columns `Maximum` and `Minimum` in 1-base.")
-     a_group.add_argument("--sequence-mask",action="store",help="Mask sites in specific sequences in the alignment as a csv, rather than the whole alignment column. Needs `sequence` and `site` (1-based) column.")
+    a_group.add_argument("--sequence-mask",action="store",help="Mask sites in specific sequences in the alignment as a csv, rather than the whole alignment column. Needs `sequence` and `site` (1-based) column.")
     a_group.add_argument("-ex","--exclude",action="store",help="Supply a csv file listing sequences that should be excluded from the analysis.")
     a_group.add_argument("--extract-cds",action="store_true",help="Extract coding sequences based on coordinates in the reference")
     a_group.add_argument("--concatenate",action="store_true",help="Concatenate coding sequences for each genome, separated by `NNN`. Default: write out as separate records")
