@@ -4,7 +4,7 @@ from Bio import SeqIO
 from Bio.Seq import Seq
 import csv
 from squirrel.utils.log_colours import green,cyan
-
+import collections
 
 if config[KEY_EXTRACT_CDS]:
     rule all:
