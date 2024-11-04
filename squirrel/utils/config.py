@@ -38,6 +38,7 @@ KEY_GRANTHAM_SCORES="grantham_scores"
 KEY_REPORT_TEMPLATE = "report_template"
 
 KEY_FIG_HEIGHT = "fig_height"
+KEY_POINT_STYLE = "point_style"
 
 VALUE_VALID_CLADES = ["cladei","cladeia","cladeib","cladeii","cladeiia","cladeiib"]
 OUTGROUP_DICT = {
