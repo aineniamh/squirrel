@@ -129,7 +129,7 @@ def main(sysargs = sys.argv[1:]):
                 if config[KEY_RUN_APOBEC3_PHYLO]:
                     if args.binary_partition_mask:
                         outfile = os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILE_STEM]}.binary_partition_mask.csv")
-                        branch_reconstruction = os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILE_STEM]}.branch_snps.reconstruction.csv")
+                        branch_reconstruction = os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILE_STEM]}.tree.branch_snps.reconstruction.csv")
                         recon.find_binary_partition_mask(branch_reconstruction,config[KEY_REFERENCE_FASTA],outfile)
                         print(green(f"Binary partition mask string written to: "),outfile)
                     print(green("Ancestral reconstruction & phylogenetics complete."))
