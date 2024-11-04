@@ -69,8 +69,9 @@ rule reconstruction_analysis:
         tree = os.path.join(config[KEY_OUTDIR],config[KEY_PHYLOGENY_SVG])
     run:
         directory = params.outdir
+        point_style = config[KEY_POINT_STYLE]
         width= 25
 
         height = recon.get_fig_height(input.alignment)
 
-        recon.run_full_analysis(directory, input.alignment, input.tree,input.state_file,config,width,height)
+        recon.run_full_analysis(directory, input.alignment, input.tree,input.state_file,config,point_style,width,height)

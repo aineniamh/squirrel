@@ -20,6 +20,8 @@ import numpy as np
 import seaborn as sns
 import collections
 import pandas as pd
+import matplotlib.patches as patches
+
 
 plt.switch_backend('Agg') 
 
@@ -218,13 +220,11 @@ def get_fig_height(alignment):
 
 
 def make_reconstruction_tree_figure_w_labels(outfile,branch_snps,treefile,width,height,point_style):
-    
     branch_snps_dict = read_in_branch_snps(branch_snps)
     
     my_tree=bt.loadNewick(treefile,absoluteTime=False)
     plt.switch_backend('Agg') 
 
-    fig,ax = plt.subplots(figsize=(width,height),facecolor='w')
 
     x_attr=lambda k: k.height ## x coordinate of branches will be absoluteTime attribute
     su_func=lambda k: 50-30*k.height/my_tree.treeHeight ## size of tips
@@ -235,6 +235,16 @@ def make_reconstruction_tree_figure_w_labels(outfile,branch_snps,treefile,width,
     
     r2t = 200000*my_tree.treeHeight #rough number of snps root to tip
     increment = my_tree.treeHeight/(r2t*2) # divide the tree height by about twice the num of r2t snps
+    if r2t < 50:
+        width = r2t/2
+    else:
+        width = 25
+
+    if my_tree.ySpan < 400:
+        height = 0.1*my_tree.ySpan
+    else:
+        height = 40
+    fig,ax = plt.subplots(figsize=(width,height),facecolor='w')
 
     my_tree.plotTree(ax,x_attr=x_attr) ## plot branches
     my_tree.plotPoints(ax,size=s_func,colour=c_func,x_attr=x_attr) ## plot circles at tips
@@ -310,7 +320,7 @@ def generate_reconstruction_files(alignment, state_out, state_differences):
 
     return node_states
     
-def load_info(directory, alignment, treefile, state_out, state_differences, branch_snps_out, treefigureout, node_states="",point_style,width=25,height=30):
+def load_info(directory, alignment, treefile, state_out, state_differences, branch_snps_out, treefigureout,point_style, node_states="",width=25,height=30):
     
     if not node_states:
         node_states = get_node_states_all_sites(state_out, alignment)
@@ -687,7 +697,7 @@ def run_full_analysis(directory, alignment, treefile,state_file,config,point_sty
                                   state_differences)
 
     tree_fig = f"{treefile}"
-    load_info(directory,alignment,treefile,state_out,state_differences,branch_snps_out,tree_fig,node_states,point_style,width,height)
+    load_info(directory,alignment,treefile,state_out,state_differences,branch_snps_out,tree_fig,point_style,node_states,width,height)
 
 
     grantham_scores_file = config[KEY_GRANTHAM_SCORES]
