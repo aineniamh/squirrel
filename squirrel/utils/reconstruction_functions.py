@@ -683,46 +683,68 @@ def run_full_analysis(directory, alignment, treefile,state_file,config,width,hei
     gene_boundaries_file = config[KEY_GENE_BOUNDARIES]
     get_reconstruction_amino_acids(alignment,grantham_scores_file,gene_boundaries_file,branch_snps_out,state_out,amino_acids_out,node_states)
 
-def find_binary_partition_mask(branch_reconstruction,reference,outfile):
+def find_binary_partition_mask(branch_reconstruction,sep_status,reference,outfile):
 
-    apobec_variable = set()
+    apobec_variable_ga = set()
+    apobec_variable_tc = set()
     non_apobec_variable =  set()
+
+    if sep_status:
+        tc_mask = "2"
+    else:
+        tc_mask = "1"
 
     with open(branch_reconstruction,"r") as f:
         reader = csv.DictReader(f)
         for row in reader:
-            if row["dimer"] in ["GA","TC"]:
-                apobec_variable.add(int(row['site']))
+            if row["dimer"] == "GA":
+                apobec_variable_ga.add(int(row['site']))
+            elif row["dimer"] == "TC":
+                apobec_variable_tc.add(int(row['site']))
             else:
                 non_apobec_variable.add(int(row['site']))
 
     ref = str(SeqIO.read(reference, 'fasta').seq)
     pos = np.arange(len(ref))
-
-    apo_keep_0index = set()
+    
+    apo_ga_keep_0index = set()
+    apo_tc_keep_0index = set()
     for i in pos:
         if ref[i:i+2]=="GA":
             if i+1 not in non_apobec_variable:
-                apo_keep_0index.add(i)
+                apo_ga_keep_0index.add(i)
         elif ref[i:i+2]=="TC":
             if i+2 not in non_apobec_variable:
-                apo_keep_0index.add(i+1)
+                apo_tc_keep_0index.add(i+1)
 
-    for i in apobec_variable:
-        apo_keep_0index.add(i-1)
+    for i in apobec_variable_ga:
+        apo_ga_keep_0index.add(i-1)
+
+    for i in apobec_variable_tc:
+        apo_tc_keep_0index.add(i-1)
 
     apo_masked = 0
     non_apo_masked = 0
-    
+    tc_masked = 0
+    ga_masked = 0
     mask_string = ""
     
     for i in range(len(ref)):
-        if i not in apo_keep_0index:
+        if i not in apo_ga_keep_0index and i not in apo_tc_keep_0index:
             mask_string+="0"
             non_apo_masked +=1
-        else:
+        elif i in apo_ga_keep_0index:
             mask_string+="1"
             apo_masked +=1
+            ga_masked +=1
+        elif i in apo_tc_keep_0index:
+            mask_string+=tc_mask
+            apo_masked +=1
+            tc_masked +=1
+    print("TC sites",tc_masked)
+    print("GA sites",ga_masked)
+    print("All APOBEC3 sites",apo_masked)
+    print("Non APOBEC3 sites",non_apo_masked)
 
     with open(outfile,"w") as fw:
         fw.write(mask_string + "\n")
