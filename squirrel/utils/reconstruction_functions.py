@@ -22,7 +22,7 @@ import collections
 import pandas as pd
 import matplotlib.patches as patches
 
-
+import math
 plt.switch_backend('Agg') 
 
 
@@ -234,16 +234,18 @@ def make_reconstruction_tree_figure_w_labels(outfile,branch_snps,treefile,width,
     c_func=lambda k: 'steelblue' if "_" in k.name else 'dimgrey' 
     
     r2t = 200000*my_tree.treeHeight #rough number of snps root to tip
-    increment = my_tree.treeHeight/(r2t*2) # divide the tree height by about twice the num of r2t snps
-    if r2t < 50:
-        width = r2t/2
+    increment = my_tree.treeHeight/(r2t*0.75) # divide the tree height by about twice the num of r2t snps
+    if r2t < 200:
+        width = math.sqrt(r2t)*3
     else:
         width = 25
 
-    if my_tree.ySpan < 400:
-        height = 0.1*my_tree.ySpan
+    
+    if my_tree.ySpan < 300:
+        height = math.sqrt(my_tree.ySpan)*2
     else:
         height = 40
+
     fig,ax = plt.subplots(figsize=(width,height),facecolor='w')
 
     my_tree.plotTree(ax,x_attr=x_attr) ## plot branches
