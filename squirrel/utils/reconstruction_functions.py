@@ -683,11 +683,16 @@ def run_full_analysis(directory, alignment, treefile,state_file,config,width,hei
     gene_boundaries_file = config[KEY_GENE_BOUNDARIES]
     get_reconstruction_amino_acids(alignment,grantham_scores_file,gene_boundaries_file,branch_snps_out,state_out,amino_acids_out,node_states)
 
-def find_binary_partition_mask(branch_reconstruction,reference,outfile):
+def find_binary_partition_mask(branch_reconstruction,sep_status,reference,outfile):
 
     apobec_variable_ga = set()
     apobec_variable_tc = set()
     non_apobec_variable =  set()
+
+    if sep_status:
+        tc_mask = "2"
+    else:
+        tc_mask = "1"
 
     with open(branch_reconstruction,"r") as f:
         reader = csv.DictReader(f)
@@ -733,7 +738,7 @@ def find_binary_partition_mask(branch_reconstruction,reference,outfile):
             apo_masked +=1
             ga_masked +=1
         elif i in apo_tc_keep_0index:
-            mask_string+="2"
+            mask_string+=tc_mask
             apo_masked +=1
             tc_masked +=1
     print("TC sites",tc_masked)

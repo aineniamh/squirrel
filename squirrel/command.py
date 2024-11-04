@@ -53,6 +53,7 @@ def main(sysargs = sys.argv[1:]):
     p_group.add_argument("-bg","--include-background",action="store_true",help="Include a default background set of sequences for the phylogenetics pipeline. The set will be determined by the `--clade` specified.")
     p_group.add_argument("-bf","--background-file",action="store",help="Include this additional FASTA file as background to the phylogenetics.")
     p_group.add_argument("-bm","--binary-partition-mask",action="store_true",help="Calculate and write binary partition mask")
+    p_group.add_argument("--bm-separate-dimers",action="store_true",help="Write partition mask with 0 for non-apo, 1 for GA and 2 for TC target sites")
 
     m_group = parser.add_argument_group('Misc options')
     m_group.add_argument("-v","--version", action='version', version=f"squirrel {__version__}")
@@ -130,7 +131,7 @@ def main(sysargs = sys.argv[1:]):
                     if args.binary_partition_mask:
                         outfile = os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILE_STEM]}.binary_partition_mask.csv")
                         branch_reconstruction = os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILE_STEM]}.tree.branch_snps.reconstruction.csv")
-                        recon.find_binary_partition_mask(branch_reconstruction,config[KEY_REFERENCE_FASTA],outfile)
+                        recon.find_binary_partition_mask(branch_reconstruction,args.bm_separate_dimers,config[KEY_REFERENCE_FASTA],outfile)
                         print(green(f"Binary partition mask string written to: "),outfile)
                     print(green("Ancestral reconstruction & phylogenetics complete."))
                 else:
