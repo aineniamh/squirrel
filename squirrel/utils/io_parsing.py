@@ -221,15 +221,40 @@ def find_additional_mask_file(cwd,additional_mask,config):
 
     return path_to_try
 
+def find_sequence_mask_file(cwd,sequence_mask,config):
+
+    path_to_try = os.path.join(cwd,sequence_mask)
+    if not os.path.exists(path_to_try):
+        sys.stderr.write(cyan(f'Error: cannot find sequence mask file at: ') + f'{path_to_try}\n' + cyan('Please check file path and try again.\n'))
+        sys.exit(-1)
+
+    with open(path_to_try,"r") as f:
+        reader = csv.DictReader(f)
+        header = reader.fieldnames
+        for i in ["sequence","site"]:
+            if i not in header:
+                sys.stderr.write(cyan(f'Error: sequence mask file must contain columns `sequence` and `site`.\n'))
+                sys.exit(-1)
+        for row in reader:
+            try:
+                site = int(row["site"])
+            except:
+                sys.stderr.write(cyan(f'Error: `site` column must contain numeric value.\n'))
+                sys.exit(-1)
+
+    return path_to_try
 
 
-def pipeline_options(no_mask, no_itr_mask, additional_mask,extract_cds,concatenate,cwd, config):
+def pipeline_options(no_mask, no_itr_mask, additional_mask,sequence_mask,extract_cds,concatenate,cwd, config):
     config[KEY_NO_MASK] = no_mask
     if no_itr_mask:
         config[KEY_TRIM_END] = 197209
     
     if additional_mask:
         config[KEY_ADDITIONAL_MASK] = find_additional_mask_file(cwd,additional_mask,config)
+
+    if sequence_mask:
+        config[KEY_SEQUENCE_MASK] = find_sequence_mask_file(cwd,sequence_mask,config)
 
     config[KEY_EXTRACT_CDS] = extract_cds
     config[KEY_CONCATENATE] = concatenate
