@@ -217,7 +217,7 @@ def get_fig_height(alignment):
         return 15
 
 
-def make_reconstruction_tree_figure_w_labels(outfile,branch_snps,treefile,width,height):
+def make_reconstruction_tree_figure_w_labels(outfile,branch_snps,treefile,width,height,point_style):
     
     branch_snps_dict = read_in_branch_snps(branch_snps)
     
@@ -233,7 +233,9 @@ def make_reconstruction_tree_figure_w_labels(outfile,branch_snps,treefile,width,
     
     c_func=lambda k: 'steelblue' if "_" in k.name else 'dimgrey' 
     
-    increment = my_tree.treeHeight/150
+    r2t = 200000*my_tree.treeHeight #rough number of snps root to tip
+    increment = my_tree.treeHeight/(r2t*2) # divide the tree height by about twice the num of r2t snps
+
     my_tree.plotTree(ax,x_attr=x_attr) ## plot branches
     my_tree.plotPoints(ax,size=s_func,colour=c_func,x_attr=x_attr) ## plot circles at tips
     mpl.rcParams['font.family'] = 'sans-serif'
@@ -277,8 +279,17 @@ def make_reconstruction_tree_figure_w_labels(outfile,branch_snps,treefile,width,
                     snps.append((4,"#D9B660"))
 
             for snp in sorted(snps, key = lambda x : x[0]):
-                plt.scatter([snp_placement],[k.y+0.5],color=snp[1],s=30)
-                snp_placement += increment
+                
+                if point_style == "circle":
+                    plt.scatter([snp_placement],[k.y+0.5],color=snp[1],s=30)
+                else:
+                    rect = patches.Rectangle((snp_placement,k.y-2),increment/2,4,alpha=1, fill=True, edgecolor='none',facecolor=snp[1])
+                    ax.add_patch(rect)  
+            
+            snp_placement += increment
+
+
+            
 
     [ax.spines[loc].set_visible(False) for loc in ['top','right','left']]
     ax.tick_params(axis='y',size=0)
@@ -287,7 +298,7 @@ def make_reconstruction_tree_figure_w_labels(outfile,branch_snps,treefile,width,
     ax.set_yticklabels([])
     ax.set_xticklabels([])
     plt.margins(0.005,0.005,tight=True)
-    plt.savefig(f"{outfile}.svg",bbox_inches='tight');
+    plt.savefig(f"{outfile}.svg",bbox_inches='tight')
     plt.savefig(f"{outfile}.png",bbox_inches='tight'
                    );
     
@@ -299,7 +310,7 @@ def generate_reconstruction_files(alignment, state_out, state_differences):
 
     return node_states
     
-def load_info(directory, alignment, treefile, state_out, state_differences, branch_snps_out, treefigureout, node_states="",width=25,height=30):
+def load_info(directory, alignment, treefile, state_out, state_differences, branch_snps_out, treefigureout, node_states="",point_style,width=25,height=30):
     
     if not node_states:
         node_states = get_node_states_all_sites(state_out, alignment)
@@ -314,7 +325,7 @@ def load_info(directory, alignment, treefile, state_out, state_differences, bran
     make_reconstruction_tree_figure_w_labels(treefigureout,
                                     branch_snps_out,
                                     treefile,
-                                    width,height)
+                                    width,height,point_style)
     
 def get_gene_boundaries(gene_boundaries_file):
     genes = {}
@@ -664,7 +675,7 @@ def get_root_to_tip_counts_date_in(aa_reconstruction,state_diffs,root_to_tip_cou
                     fw.write(f"{i},{len(seq_snps[i])},0,0,{datestring},{odate},{precision}\n")
 
 
-def run_full_analysis(directory, alignment, treefile,state_file,config,width,height):
+def run_full_analysis(directory, alignment, treefile,state_file,config,point_style,width,height):
 
     state_out = state_file
     state_differences = f"{treefile}.state_differences.csv"
@@ -676,7 +687,7 @@ def run_full_analysis(directory, alignment, treefile,state_file,config,width,hei
                                   state_differences)
 
     tree_fig = f"{treefile}"
-    load_info(directory,alignment,treefile,state_out,state_differences,branch_snps_out,tree_fig,node_states,width,height)
+    load_info(directory,alignment,treefile,state_out,state_differences,branch_snps_out,tree_fig,node_states,point_style,width,height)
 
 
     grantham_scores_file = config[KEY_GRANTHAM_SCORES]
