@@ -65,16 +65,22 @@ def set_up_outfile(outfile_arg,cwd,query_arg, outfile, outdir):
                 sys.stderr.write(cyan(f'Error: cannot create output directory for outfile {outdir}.\n'))
                 sys.exit(-1)
     else:
-        if not os.path.exists(os.path.join(cwd, query_arg[0])):
-            outfile_stem = "sequences"
-            outfile_name = "sequences.aln.fasta"
-        else:
-            # get the file name
-            query_file = query_arg[0].split("/")[-1]
-            
-            # get the file stem & name
-            outfile_stem = ".".join(query_file.split(".")[:-1])
-            outfile_name = f'{outfile_stem}.aln.fasta'
+        try:
+            if not os.path.exists(os.path.join(cwd, query_arg[0])):
+                outfile_stem = "sequences"
+                outfile_name = "sequences.aln.fasta"
+            else:
+                # get the file name
+                query_file = query_arg[0].split("/")[-1]
+                
+                # get the file stem & name
+                outfile_stem = ".".join(query_file.split(".")[:-1])
+                outfile_name = f'{outfile_stem}.aln.fasta'
+        except IndexError:
+            sys.stderr.write(cyan(
+                f'Error: input query fasta could not be detected from a filepath or through stdin.\n'))
+            sys.exit(-1)
+
 
     outfile = os.path.join(outdir, outfile_name)
 
