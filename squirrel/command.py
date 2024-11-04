@@ -54,6 +54,7 @@ def main(sysargs = sys.argv[1:]):
     p_group.add_argument("-bf","--background-file",action="store",help="Include this additional FASTA file as background to the phylogenetics.")
     p_group.add_argument("-bm","--binary-partition-mask",action="store_true",help="Calculate and write binary partition mask")
     p_group.add_argument("--bm-separate-dimers",action="store_true",help="Write partition mask with 0 for non-apo, 1 for GA and 2 for TC target sites")
+    p_group.add_argument("--point-style",action="store",help="Shape of points for apobec3 reconstruction figure. Options: circle, square. Default: circle")
 
     m_group = parser.add_argument_group('Misc options')
     m_group.add_argument("-v","--version", action='version', version=f"squirrel {__version__}")
@@ -104,7 +105,7 @@ def main(sysargs = sys.argv[1:]):
         # args.run_phylo = True
 
     config[KEY_FIG_HEIGHT] = recon.get_fig_height(config[KEY_INPUT_FASTA])
-    config[KEY_INPUT_FASTA] = io.phylo_options(args.run_phylo,args.run_apobec3_phylo,args.outgroups,args.include_background,args.binary_partition_mask,config[KEY_INPUT_FASTA],config)
+    config[KEY_INPUT_FASTA] = io.phylo_options(args.run_phylo,args.run_apobec3_phylo,args.outgroups,args.include_background,args.binary_partition_mask,args.point_style,config[KEY_INPUT_FASTA],config)
 
     snakefile = get_snakefile(thisdir,"msa")
 
