@@ -342,7 +342,27 @@ def add_background_to_input(input_fasta,background,clade,config):
 
     return new_input_fasta
 
-def phylo_options(run_phylo,run_apobec3_phylo,outgroups,include_background,binary_partition_mask,point_style_arg,input_fasta,config):
+def parse_tf_options(tree_figure_only,width,height,point_style_arg,config):
+    if point_style_arg:
+        config[KEY_POINT_STYLE] = point_style_arg
+    
+    if  config[KEY_POINT_STYLE] not in ["circle","square"]:
+        sys.stderr.write(cyan(f'Error: not a valid point style, please specify one of `circle` or `square`.\n'))
+        sys.exit(-1)
+
+    if width:
+        config[KEY_FIG_WIDTH] = width
+    if height:
+        config[KEY_FIG_HEIGHT] = height
+    
+    config[KEY_TREE_FIGURE_ONLY] = tree_figure_only
+
+    # if config[KEY_TREE_FIGURE_ONLY]:
+        #look for the files you need
+        #treefile, reconstruction file
+
+
+def phylo_options(run_phylo,run_apobec3_phylo,outgroups,include_background,binary_partition_mask,input_fasta,config):
     config[KEY_RUN_PHYLO] = run_phylo
 
     if run_apobec3_phylo:
@@ -354,12 +374,6 @@ def phylo_options(run_phylo,run_apobec3_phylo,outgroups,include_background,binar
                         f'Error: binary partition mask file can only be written if APOBEC3 reconstruction mode is on.\n'))
         sys.exit(-1)
 
-    if point_style_arg:
-        config[KEY_POINT_STYLE] = point_style_arg
-    
-    if  config[KEY_POINT_STYLE] not in ["circle","square"]:
-        sys.stderr.write(cyan(f'Error: not a valid point style, please specify one of `circle` or `square`.\n'))
-        sys.exit(-1)
 
     if config[KEY_RUN_PHYLO]:
 

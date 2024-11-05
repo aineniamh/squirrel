@@ -219,7 +219,7 @@ def get_fig_height(alignment):
         return 15
 
 
-def make_reconstruction_tree_figure_w_labels(outfile,branch_snps,treefile,width,height,point_style):
+def make_reconstruction_tree_figure_w_labels(outfile,branch_snps,treefile,point_style,w=None,h=None):
     branch_snps_dict = read_in_branch_snps(branch_snps)
     
     my_tree=bt.loadNewick(treefile,absoluteTime=False)
@@ -232,19 +232,24 @@ def make_reconstruction_tree_figure_w_labels(outfile,branch_snps,treefile,width,
     c_func=lambda k: "dimgrey"
     
     c_func=lambda k: 'steelblue' if "_" in k.name else 'dimgrey' 
-    
-    r2t = 200000*my_tree.treeHeight #rough number of snps root to tip
-    increment = my_tree.treeHeight/(r2t*0.75) # divide the tree height by about twice the num of r2t snps
-    if r2t < 200:
-        width = math.sqrt(r2t)*3
+    w,h=None,None
+    if w==None:
+        r2t = 200000*my_tree.treeHeight #rough number of snps root to tip
+        increment = my_tree.treeHeight/(r2t*1.5) # divide the tree height by about twice the num of r2t snps
+        if r2t < 200:
+            width = math.sqrt(r2t)*3
+        else:
+            width = 25
     else:
-        width = 25
+        width = w
 
-    
-    if my_tree.ySpan < 300:
-        height = math.sqrt(my_tree.ySpan)*2
+    if h == None:
+        if my_tree.ySpan < 300:
+            height = math.sqrt(my_tree.ySpan)*2
+        else:
+            height = 40
     else:
-        height = 40
+        height = h
 
     fig,ax = plt.subplots(figsize=(width,height),facecolor='w')
 
@@ -252,13 +257,13 @@ def make_reconstruction_tree_figure_w_labels(outfile,branch_snps,treefile,width,
     my_tree.plotPoints(ax,size=s_func,colour=c_func,x_attr=x_attr) ## plot circles at tips
     mpl.rcParams['font.family'] = 'sans-serif'
     
-    
     target_func=lambda k: k.is_leaf() ## which branches will be annotated
     text_func=lambda k: k.name ## what text is plotted
     text_x_attr=lambda k: k.height+(increment*4) ## where x coordinate for text is
 
     my_tree.addText(ax,x_attr=text_x_attr,target=target_func,text=text_func) #
-    
+    justification = "right"
+
     for k in my_tree.Objects:
         current_node = k
         if k.branchType == 'leaf':
@@ -274,7 +279,10 @@ def make_reconstruction_tree_figure_w_labels(outfile,branch_snps,treefile,width,
         if branch_name in branch_snps_dict:
             snps = []
 #                 print(branch_name, len(branch_snps_dict[branch_name]))
-            snp_placement = current_node.parent.height + increment
+            if justification == "right":
+                snp_placement = current_node.height - increment/2
+            else:
+                snp_placement = current_node.parent.height + increment/2
             for s in branch_snps_dict[branch_name]:
                 site,snp,dimer = s
                 if snp == "G->A":
@@ -290,18 +298,17 @@ def make_reconstruction_tree_figure_w_labels(outfile,branch_snps,treefile,width,
                 else:
                     snps.append((4,"#D9B660"))
 
-            for snp in sorted(snps, key = lambda x : x[0]):
+            for snp in sorted(snps, key = lambda x : x[0], reverse=True):
                 
                 if point_style == "circle":
-                    plt.scatter([snp_placement],[k.y+0.5],color=snp[1],s=30)
+                    plt.scatter([snp_placement],[k.y+0.5],color=snp[1],s=50)
                 else:
-                    rect = patches.Rectangle((snp_placement,k.y-2),increment/2,4,alpha=1, fill=True, edgecolor='none',facecolor=snp[1])
+                    rect = patches.Rectangle((snp_placement,k.y-0.5),increment/2,1,alpha=1, fill=True, edgecolor='none',facecolor=snp[1])
                     ax.add_patch(rect)  
-            
-            snp_placement += increment
-
-
-            
+                if justification == "right":
+                    snp_placement -= increment
+                else:
+                    snp_placement += increment
 
     [ax.spines[loc].set_visible(False) for loc in ['top','right','left']]
     ax.tick_params(axis='y',size=0)
@@ -322,7 +329,7 @@ def generate_reconstruction_files(alignment, state_out, state_differences):
 
     return node_states
     
-def load_info(directory, alignment, treefile, state_out, state_differences, branch_snps_out, treefigureout,point_style, node_states="",width=25,height=30):
+def load_info(directory, alignment, treefile, state_out, state_differences, branch_snps_out, treefigureout,point_style, node_states="",width=None,height=None):
     
     if not node_states:
         node_states = get_node_states_all_sites(state_out, alignment)
@@ -337,7 +344,9 @@ def load_info(directory, alignment, treefile, state_out, state_differences, bran
     make_reconstruction_tree_figure_w_labels(treefigureout,
                                     branch_snps_out,
                                     treefile,
-                                    width,height,point_style)
+                                    point_style,
+                                    height,
+                                    width)
     
 def get_gene_boundaries(gene_boundaries_file):
     genes = {}
