@@ -232,10 +232,11 @@ def make_reconstruction_tree_figure_w_labels(outfile,branch_snps,treefile,point_
     c_func=lambda k: "dimgrey"
     
     c_func=lambda k: 'steelblue' if "_" in k.name else 'dimgrey' 
-    w,h=None,None
+    
+    r2t = 200000*my_tree.treeHeight #rough number of snps root to tip
+    increment = my_tree.treeHeight/(r2t*1.5) # divide the tree height by about twice the num of r2t snps
+    
     if w==None:
-        r2t = 200000*my_tree.treeHeight #rough number of snps root to tip
-        increment = my_tree.treeHeight/(r2t*1.5) # divide the tree height by about twice the num of r2t snps
         if r2t < 200:
             width = math.sqrt(r2t)*3
         else:
@@ -250,7 +251,7 @@ def make_reconstruction_tree_figure_w_labels(outfile,branch_snps,treefile,point_
             height = 40
     else:
         height = h
-
+    print(height,width)
     fig,ax = plt.subplots(figsize=(width,height),facecolor='w')
 
     my_tree.plotTree(ax,x_attr=x_attr) ## plot branches
