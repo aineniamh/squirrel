@@ -56,9 +56,11 @@ def main(sysargs = sys.argv[1:]):
     p_group.add_argument("--bm-separate-dimers",action="store_true",help="Write partition mask with 0 for non-apo, 1 for GA and 2 for TC target sites")
 
     pf_group = parser.add_argument_group("Tree figure options")
-    pf_group.add_argument("-tf","--tree-figure-only",action="store",help="Re-render tree figure custom height and width arguments. Requires: tree file, branch reconstruction file, height, width.")
-    pf_group.add_argument("--height",action="store",help="Overwrite tree figure default height.",type=int)
-    pf_group.add_argument("--width",action="store",help="Overwrite tree figure default width.",type=int)
+    pf_group.add_argument("-tfig","--tree-figure-only",action="store_true",help="Re-render tree figure custom height and width arguments. Requires: tree file, branch reconstruction file, height, width.")
+    pf_group.add_argument('-tf',"--tree-file",action="store",help="Tree for re-rendering the figure.")
+    pf_group.add_argument('-brf',"--branch-reconstruction-file",action="store",help="Reconstruction file for re-rendering the figure.")
+    pf_group.add_argument("--fig-height",action="store",help="Overwrite tree figure default height.",type=int)
+    pf_group.add_argument("--fig-width",action="store",help="Overwrite tree figure default width.",type=int)
     p_group.add_argument("--point-style",action="store",help="Shape of points for apobec3 reconstruction figure. Options: circle, square. Default: circle")
 
     m_group = parser.add_argument_group('Misc options')
@@ -84,7 +86,14 @@ def main(sysargs = sys.argv[1:]):
     io.set_up_threads(args.threads,config)
     config[KEY_OUTDIR] = io.set_up_outdir(args.outdir,cwd,config[KEY_OUTDIR])
 
-    # io.parse_tf_options(args.tree_figure_only,args.height,args.width,args.point_style)
+    io.parse_tf_options(args.tree_figure_only,args.tree_file,args.branch_reconstruction_file,args.fig_width,args.fig_height,args.point_style,cwd,config)
+    if args.tree_figure_only:
+        new_tree = f"{config[KEY_TREE]}.rerender"
+        outfile = os.path.join(config[KEY_OUTDIR],"")
+        recon.make_reconstruction_tree_figure_w_labels(new_tree,config[KEY_BRANCH_RECONSTRUCTION],config[KEY_TREE],config[KEY_POINT_STYLE],config[KEY_FIG_WIDTH],config[KEY_FIG_HEIGHT])
+        print(green("Success! New tree figure written."))
+        sys.exit(0)
+    
     config[KEY_OUTFILE],config[KEY_CDS_OUTFILE],config[KEY_OUTFILENAME],config[KEY_OUTFILE_STEM],config[KEY_OUTDIR] = io.set_up_outfile(args.outfile,cwd,args.input, config[KEY_OUTFILE],config[KEY_OUTDIR])
     io.set_up_tempdir(args.tempdir,args.no_temp,cwd,config[KEY_OUTDIR], config)
 
@@ -111,7 +120,10 @@ def main(sysargs = sys.argv[1:]):
         assembly_refs = qc.find_assembly_refs(cwd,args.assembly_refs,config)
         # args.run_phylo = True
 
-    config[KEY_FIG_HEIGHT] = recon.get_fig_height(config[KEY_INPUT_FASTA])
+    # config[KEY_FIG_HEIGHT] = recon.get_fig_height(config[KEY_INPUT_FASTA])
+
+    
+
     config[KEY_INPUT_FASTA] = io.phylo_options(args.run_phylo,args.run_apobec3_phylo,args.outgroups,args.include_background,args.binary_partition_mask,config[KEY_INPUT_FASTA],config)
 
     snakefile = get_snakefile(thisdir,"msa")
