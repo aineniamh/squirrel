@@ -342,7 +342,7 @@ def add_background_to_input(input_fasta,background,clade,config):
 
     return new_input_fasta
 
-def parse_tf_options(tree_figure_only,width,height,point_style_arg,config):
+def parse_tf_options(tree_figure_only,tree_file,branch_reconstruction_file,width,height,point_style_arg,cwd,config):
     if point_style_arg:
         config[KEY_POINT_STYLE] = point_style_arg
     
@@ -355,11 +355,22 @@ def parse_tf_options(tree_figure_only,width,height,point_style_arg,config):
     if height:
         config[KEY_FIG_HEIGHT] = height
     
-    config[KEY_TREE_FIGURE_ONLY] = tree_figure_only
+    if tree_figure_only:
+        if not tree_file or not branch_reconstruction_file:
+            sys.stderr.write(cyan(f'Error: must supply a tree and branch reconstruction file alongside `-tfig/--tree-figure-only`.\n'))
+            sys.exit(-1)
 
-    # if config[KEY_TREE_FIGURE_ONLY]:
-        #look for the files you need
-        #treefile, reconstruction file
+        tree = os.path.join(cwd, tree_file)
+        if not os.path.exists(tree):
+            sys.stderr.write(cyan(f'Error: cannot find treefile:') + f"{tree}")
+            sys.exit(-1)
+        config[KEY_TREE] = tree
+
+        branch_reconstruction = os.path.join(cwd, branch_reconstruction_file)
+        if not os.path.exists(branch_reconstruction):
+            sys.stderr.write(cyan(f'Error: cannot find branch reconstruction file:') + f"{branch_reconstruction}")
+            sys.exit(-1)
+        config[KEY_BRANCH_RECONSTRUCTION] = branch_reconstruction
 
 
 def phylo_options(run_phylo,run_apobec3_phylo,outgroups,include_background,binary_partition_mask,input_fasta,config):
