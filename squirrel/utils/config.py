@@ -37,7 +37,11 @@ KEY_OUTGROUP_SENTENCE="outgroup_sentence"
 KEY_GRANTHAM_SCORES="grantham_scores"
 KEY_REPORT_TEMPLATE = "report_template"
 
+KEY_TREE = "tree"
+KEY_BRANCH_RECONSTRUCTION = "branch_reconstruction"
+
 KEY_FIG_HEIGHT = "fig_height"
+KEY_FIG_WIDTH = "fig_width"
 KEY_POINT_STYLE = "point_style"
 
 VALUE_VALID_CLADES = ["cladei","cladeia","cladeib","cladeii","cladeiia","cladeiib"]

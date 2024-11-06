@@ -24,7 +24,11 @@ def setup_config_dict(cwd):
             KEY_NO_TEMP:False,
 
             KEY_ASSEMBLY_REFERENCES:[],
-            KEY_FIG_HEIGHT:30,
+            
+            KEY_TREE:None,
+            KEY_BRANCH_RECONSTRUCTION:None,
+            KEY_FIG_HEIGHT:None,
+            KEY_FIG_WIDTH:None,
             KEY_POINT_STYLE:"circle",
 
             KEY_TRIM_END:190788,
