@@ -30,6 +30,7 @@ def setup_config_dict(cwd):
             KEY_FIG_HEIGHT:None,
             KEY_FIG_WIDTH:None,
             KEY_POINT_STYLE:"circle",
+            KEY_POINT_JUSTIFY:"left",
 
             KEY_TRIM_END:190788,
             KEY_EXTRACT_CDS:False,
