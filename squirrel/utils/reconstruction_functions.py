@@ -219,7 +219,7 @@ def get_fig_height(alignment):
         return 15
 
 
-def make_reconstruction_tree_figure_w_labels(outfile,branch_snps,treefile,point_style,w=None,h=None):
+def make_reconstruction_tree_figure_w_labels(outfile,branch_snps,treefile,point_style,justification,w=None,h=None):
     branch_snps_dict = read_in_branch_snps(branch_snps)
     
     my_tree=bt.loadNewick(treefile,absoluteTime=False)
@@ -251,7 +251,7 @@ def make_reconstruction_tree_figure_w_labels(outfile,branch_snps,treefile,point_
             height = 40
     else:
         height = h
-    print(height,width)
+    # print(height,width)
     fig,ax = plt.subplots(figsize=(width,height),facecolor='w')
 
     my_tree.plotTree(ax,x_attr=x_attr) ## plot branches
@@ -263,8 +263,8 @@ def make_reconstruction_tree_figure_w_labels(outfile,branch_snps,treefile,point_
     text_x_attr=lambda k: k.height+(increment*4) ## where x coordinate for text is
 
     my_tree.addText(ax,x_attr=text_x_attr,target=target_func,text=text_func) #
-    justification = "right"
 
+    
     for k in my_tree.Objects:
         current_node = k
         if k.branchType == 'leaf':
@@ -280,32 +280,44 @@ def make_reconstruction_tree_figure_w_labels(outfile,branch_snps,treefile,point_
         if branch_name in branch_snps_dict:
             snps = []
 #                 print(branch_name, len(branch_snps_dict[branch_name]))
+            right_settings = {
+                "apobec":(1,"#995E62"),
+                "non_apobec":(2,"#D9B660")
+            }
+            left_settings = {
+                "apobec":(2,"#995E62"),
+                "non_apobec":(1,"#D9B660")
+            }
             if justification == "right":
-                snp_placement = current_node.height - increment/2
+                setting_dict = right_settings
+                snp_placement = current_node.height - increment
             else:
+                setting_dict = left_settings
                 snp_placement = current_node.parent.height + increment/2
+
             for s in branch_snps_dict[branch_name]:
                 site,snp,dimer = s
                 if snp == "G->A":
                     if dimer in ["GA"]:
-                        snps.append((1,"#995E62"))
+                        snps.append(setting_dict["apobec"])
                     else:
-                        snps.append((3,"#D9B660"))
+                        snps.append(setting_dict["non_apobec"])
                 elif snp == "C->T":
                     if dimer in ["TC"]:
-                        snps.append((2,"#995E62"))
+                        snps.append(setting_dict["apobec"])
                     else:
-                        snps.append((3,"#D9B660"))
+                        snps.append(setting_dict["non_apobec"])
                 else:
-                    snps.append((4,"#D9B660"))
+                    snps.append(setting_dict["non_apobec"])
 
-            for snp in sorted(snps, key = lambda x : x[0], reverse=True):
+            for snp in sorted(snps, key = lambda x : x[0]):
                 
                 if point_style == "circle":
                     plt.scatter([snp_placement],[k.y+0.5],color=snp[1],s=50)
                 else:
                     rect = patches.Rectangle((snp_placement,k.y-0.5),increment/2,1,alpha=1, fill=True, edgecolor='none',facecolor=snp[1])
-                    ax.add_patch(rect)  
+                    ax.add_patch(rect)
+
                 if justification == "right":
                     snp_placement -= increment
                 else:
@@ -330,7 +342,7 @@ def generate_reconstruction_files(alignment, state_out, state_differences):
 
     return node_states
     
-def load_info(directory, alignment, treefile, state_out, state_differences, branch_snps_out, treefigureout,point_style, node_states="",width=None,height=None):
+def load_info(directory, alignment, treefile, state_out, state_differences, branch_snps_out, treefigureout,point_style,point_justify, node_states="",width=None,height=None):
     
     if not node_states:
         node_states = get_node_states_all_sites(state_out, alignment)
@@ -346,6 +358,7 @@ def load_info(directory, alignment, treefile, state_out, state_differences, bran
                                     branch_snps_out,
                                     treefile,
                                     point_style,
+                                    point_justify,
                                     height,
                                     width)
     
@@ -697,7 +710,7 @@ def get_root_to_tip_counts_date_in(aa_reconstruction,state_diffs,root_to_tip_cou
                     fw.write(f"{i},{len(seq_snps[i])},0,0,{datestring},{odate},{precision}\n")
 
 
-def run_full_analysis(directory, alignment, treefile,state_file,config,point_style,width,height):
+def run_full_analysis(directory, alignment, treefile,state_file,config,point_style,point_justify,width,height):
 
     state_out = state_file
     state_differences = f"{treefile}.state_differences.csv"
@@ -709,7 +722,7 @@ def run_full_analysis(directory, alignment, treefile,state_file,config,point_sty
                                   state_differences)
 
     tree_fig = f"{treefile}"
-    load_info(directory,alignment,treefile,state_out,state_differences,branch_snps_out,tree_fig,point_style,node_states,width,height)
+    load_info(directory,alignment,treefile,state_out,state_differences,branch_snps_out,tree_fig,point_style,point_justify,node_states,width,height)
 
 
     grantham_scores_file = config[KEY_GRANTHAM_SCORES]
