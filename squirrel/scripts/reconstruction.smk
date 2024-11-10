@@ -70,8 +70,8 @@ rule reconstruction_analysis:
     run:
         directory = params.outdir
         point_style = config[KEY_POINT_STYLE]
-        width= 25
+        point_justify = config[KEY_POINT_JUSTIFY]
+        # width= config[KEY_FIG_HEIGHT]
+        # height = recon.get_fig_height(input.alignment)
 
-        height = recon.get_fig_height(input.alignment)
-
-        recon.run_full_analysis(directory, input.alignment, input.tree,input.state_file,config,point_style,width,height)
+        recon.run_full_analysis(directory, input.alignment, input.tree,input.state_file,config,point_style,point_justify,config[KEY_FIG_WIDTH],config[KEY_FIG_HEIGHT])
