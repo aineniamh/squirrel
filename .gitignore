@@ -32,7 +32,7 @@ MANIFEST
 #  before PyInstaller builds the exe, so as to inject date/other infos into it.
 *.manifest
 *.spec
-
+.DS_Store
 # Installer logs
 pip-log.txt
 pip-delete-this-directory.txt
@@ -83,6 +83,9 @@ ipython_config.py
 
 # pyenv
 .python-version
+
+# tested
+*.aln.fasta
 
 # pipenv
 #   According to pypa/pipenv#598, it is recommended to include Pipfile.lock in version control.

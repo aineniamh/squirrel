@@ -20,7 +20,9 @@ import numpy as np
 import seaborn as sns
 import collections
 import pandas as pd
+import matplotlib.patches as patches
 
+import math
 plt.switch_backend('Agg') 
 
 
@@ -217,14 +219,12 @@ def get_fig_height(alignment):
         return 15
 
 
-def make_reconstruction_tree_figure_w_labels(outfile,branch_snps,treefile,width,height):
-    
+def make_reconstruction_tree_figure_w_labels(outfile,branch_snps,treefile,point_style,justification,w=None,h=None):
     branch_snps_dict = read_in_branch_snps(branch_snps)
     
     my_tree=bt.loadNewick(treefile,absoluteTime=False)
     plt.switch_backend('Agg') 
 
-    fig,ax = plt.subplots(figsize=(width,height),facecolor='w')
 
     x_attr=lambda k: k.height ## x coordinate of branches will be absoluteTime attribute
     su_func=lambda k: 50-30*k.height/my_tree.treeHeight ## size of tips
@@ -233,17 +233,37 @@ def make_reconstruction_tree_figure_w_labels(outfile,branch_snps,treefile,width,
     
     c_func=lambda k: 'steelblue' if "_" in k.name else 'dimgrey' 
     
-    increment = my_tree.treeHeight/150
+    r2t = 200000*my_tree.treeHeight #rough number of snps root to tip
+    increment = my_tree.treeHeight/(r2t*1.5) # divide the tree height by about twice the num of r2t snps
+    
+    if w==None:
+        if r2t < 200:
+            width = math.sqrt(r2t)*3
+        else:
+            width = 25
+    else:
+        width = w
+
+    if h == None:
+        if my_tree.ySpan < 300:
+            height = math.sqrt(my_tree.ySpan)*2
+        else:
+            height = 40
+    else:
+        height = h
+    # print(height,width)
+    fig,ax = plt.subplots(figsize=(width,height),facecolor='w')
+
     my_tree.plotTree(ax,x_attr=x_attr) ## plot branches
     my_tree.plotPoints(ax,size=s_func,colour=c_func,x_attr=x_attr) ## plot circles at tips
     mpl.rcParams['font.family'] = 'sans-serif'
-    
     
     target_func=lambda k: k.is_leaf() ## which branches will be annotated
     text_func=lambda k: k.name ## what text is plotted
     text_x_attr=lambda k: k.height+(increment*4) ## where x coordinate for text is
 
     my_tree.addText(ax,x_attr=text_x_attr,target=target_func,text=text_func) #
+
     
     for k in my_tree.Objects:
         current_node = k
@@ -260,25 +280,48 @@ def make_reconstruction_tree_figure_w_labels(outfile,branch_snps,treefile,width,
         if branch_name in branch_snps_dict:
             snps = []
 #                 print(branch_name, len(branch_snps_dict[branch_name]))
-            snp_placement = current_node.parent.height + increment
+            right_settings = {
+                "apobec":(1,"#995E62"),
+                "non_apobec":(2,"#D9B660")
+            }
+            left_settings = {
+                "apobec":(2,"#995E62"),
+                "non_apobec":(1,"#D9B660")
+            }
+            if justification == "right":
+                setting_dict = right_settings
+                snp_placement = current_node.height - increment
+            else:
+                setting_dict = left_settings
+                snp_placement = current_node.parent.height + increment/2
+
             for s in branch_snps_dict[branch_name]:
                 site,snp,dimer = s
                 if snp == "G->A":
                     if dimer in ["GA"]:
-                        snps.append((1,"#995E62"))
+                        snps.append(setting_dict["apobec"])
                     else:
-                        snps.append((3,"#D9B660"))
+                        snps.append(setting_dict["non_apobec"])
                 elif snp == "C->T":
                     if dimer in ["TC"]:
-                        snps.append((2,"#995E62"))
+                        snps.append(setting_dict["apobec"])
                     else:
-                        snps.append((3,"#D9B660"))
+                        snps.append(setting_dict["non_apobec"])
                 else:
-                    snps.append((4,"#D9B660"))
+                    snps.append(setting_dict["non_apobec"])
 
             for snp in sorted(snps, key = lambda x : x[0]):
-                plt.scatter([snp_placement],[k.y+0.5],color=snp[1],s=30)
-                snp_placement += increment
+                
+                if point_style == "circle":
+                    plt.scatter([snp_placement],[k.y+0.5],color=snp[1],s=50)
+                else:
+                    rect = patches.Rectangle((snp_placement,k.y-0.5),increment/2,1,alpha=1, fill=True, edgecolor='none',facecolor=snp[1])
+                    ax.add_patch(rect)
+
+                if justification == "right":
+                    snp_placement -= increment
+                else:
+                    snp_placement += increment
 
     [ax.spines[loc].set_visible(False) for loc in ['top','right','left']]
     ax.tick_params(axis='y',size=0)
@@ -287,7 +330,7 @@ def make_reconstruction_tree_figure_w_labels(outfile,branch_snps,treefile,width,
     ax.set_yticklabels([])
     ax.set_xticklabels([])
     plt.margins(0.005,0.005,tight=True)
-    plt.savefig(f"{outfile}.svg",bbox_inches='tight');
+    plt.savefig(f"{outfile}.svg",bbox_inches='tight')
     plt.savefig(f"{outfile}.png",bbox_inches='tight'
                    );
     
@@ -299,7 +342,7 @@ def generate_reconstruction_files(alignment, state_out, state_differences):
 
     return node_states
     
-def load_info(directory, alignment, treefile, state_out, state_differences, branch_snps_out, treefigureout, node_states="",width=25,height=30):
+def load_info(directory, alignment, treefile, state_out, state_differences, branch_snps_out, treefigureout,point_style,point_justify, node_states="",width=None,height=None):
     
     if not node_states:
         node_states = get_node_states_all_sites(state_out, alignment)
@@ -314,7 +357,10 @@ def load_info(directory, alignment, treefile, state_out, state_differences, bran
     make_reconstruction_tree_figure_w_labels(treefigureout,
                                     branch_snps_out,
                                     treefile,
-                                    width,height)
+                                    point_style,
+                                    point_justify,
+                                    height,
+                                    width)
     
 def get_gene_boundaries(gene_boundaries_file):
     genes = {}
@@ -664,7 +710,7 @@ def get_root_to_tip_counts_date_in(aa_reconstruction,state_diffs,root_to_tip_cou
                     fw.write(f"{i},{len(seq_snps[i])},0,0,{datestring},{odate},{precision}\n")
 
 
-def run_full_analysis(directory, alignment, treefile,state_file,config,width,height):
+def run_full_analysis(directory, alignment, treefile,state_file,config,point_style,point_justify,width,height):
 
     state_out = state_file
     state_differences = f"{treefile}.state_differences.csv"
@@ -676,7 +722,7 @@ def run_full_analysis(directory, alignment, treefile,state_file,config,width,hei
                                   state_differences)
 
     tree_fig = f"{treefile}"
-    load_info(directory,alignment,treefile,state_out,state_differences,branch_snps_out,tree_fig,node_states,width,height)
+    load_info(directory,alignment,treefile,state_out,state_differences,branch_snps_out,tree_fig,point_style,point_justify,node_states,width,height)
 
 
     grantham_scores_file = config[KEY_GRANTHAM_SCORES]

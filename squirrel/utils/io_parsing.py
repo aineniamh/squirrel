@@ -342,6 +342,44 @@ def add_background_to_input(input_fasta,background,clade,config):
 
     return new_input_fasta
 
+def parse_tf_options(tree_figure_only,tree_file,branch_reconstruction_file,width,height,point_style_arg,justify_arg,cwd,config):
+    if point_style_arg:
+        config[KEY_POINT_STYLE] = point_style_arg
+    
+    if  config[KEY_POINT_STYLE] not in ["circle","square"]:
+        sys.stderr.write(cyan(f'Error: not a valid point style, please specify one of `circle` or `square`.\n'))
+        sys.exit(-1)
+
+    if justify_arg:
+        config[KEY_POINT_JUSTIFY] = justify_arg
+    
+    if  config[KEY_POINT_JUSTIFY] not in ["left","right"]:
+        sys.stderr.write(cyan(f'Error: not a valid point justification, please specify one of `left` or `right`.\n'))
+        sys.exit(-1)
+
+    if width:
+        config[KEY_FIG_WIDTH] = width
+    if height:
+        config[KEY_FIG_HEIGHT] = height
+    
+    if tree_figure_only:
+        if not tree_file or not branch_reconstruction_file:
+            sys.stderr.write(cyan(f'Error: must supply a tree and branch reconstruction file alongside `-tfig/--tree-figure-only`.\n'))
+            sys.exit(-1)
+
+        tree = os.path.join(cwd, tree_file)
+        if not os.path.exists(tree):
+            sys.stderr.write(cyan(f'Error: cannot find treefile:') + f"{tree}")
+            sys.exit(-1)
+        config[KEY_TREE] = tree
+
+        branch_reconstruction = os.path.join(cwd, branch_reconstruction_file)
+        if not os.path.exists(branch_reconstruction):
+            sys.stderr.write(cyan(f'Error: cannot find branch reconstruction file:') + f"{branch_reconstruction}")
+            sys.exit(-1)
+        config[KEY_BRANCH_RECONSTRUCTION] = branch_reconstruction
+
+
 def phylo_options(run_phylo,run_apobec3_phylo,outgroups,include_background,binary_partition_mask,input_fasta,config):
     config[KEY_RUN_PHYLO] = run_phylo
 
@@ -353,6 +391,7 @@ def phylo_options(run_phylo,run_apobec3_phylo,outgroups,include_background,binar
         sys.stderr.write(cyan(
                         f'Error: binary partition mask file can only be written if APOBEC3 reconstruction mode is on.\n'))
         sys.exit(-1)
+
 
     if config[KEY_RUN_PHYLO]:
 
@@ -390,4 +429,5 @@ def phylo_options(run_phylo,run_apobec3_phylo,outgroups,include_background,binar
                 sys.stderr.write(cyan(f"- {seq}\n"))
             sys.exit(-1)
 
+    
     return input_fasta

@@ -119,6 +119,15 @@ If you specify `-qc` when also running in phylogenetics mode (so both the `-qc` 
 
 Squirrel also flags any reversions to reference that occur in the phylogeny, which can flag issues with the assembly pipeline (often insufficient primer sequence trimming from reads or absent low-coverage masking). By default, the RefSeq records for each clade are checked against: `NC_063383` and `NC_003310`, however alternative references can be supplied with `--assembly-refs` if your sequences of interest have been assembled using a different reference, or if the primer scheme used for sequencing was constructed using a different reference.
 
+### APOBEC3-reconstruction tree figure customisation
+
+Occasionally, you may want to adjust the final APOBEC3-reconstruction tree figure output. There are now a number of options to help you achieve this. 
+
+Firstly, rather than having to rerun the entire analysis, there is now an option that allows the user to re-render the tree figure only (`-tfig/--tree-figure-only`). The user must supply a tree file and matching branch reconstruction file that has been output by a previous squirrel run. This can be done with the `-brf/--branch-reconstruction-file` and `-tf/--tree-file` arguments. 
+
+Alongside these files, the user can then specify a custom height (`--fig-height`) or width (`--fig-width`) for the final tree vizualisation.
+
+The user may now also specify whether the reconstructed mutations vizualised on the branch are either represented by a `circle` hovering over the branch or a `square` spanning the branch with the `--point-style` argument, and whether they want the points to begin stacking from the `left` or `right` with `--point-justify`. 
 
 ## Installation
 
