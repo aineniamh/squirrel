@@ -62,6 +62,7 @@ def main(sysargs = sys.argv[1:]):
     pf_group.add_argument("--fig-height",action="store",help="Overwrite tree figure default height.",type=int)
     pf_group.add_argument("--fig-width",action="store",help="Overwrite tree figure default width.",type=int)
     p_group.add_argument("--point-style",action="store",help="Shape of points for apobec3 reconstruction figure. Options: circle, square. Default: circle")
+    p_group.add_argument("--point-justify",action="store",help="Justification of points for apobec3 reconstruction figure. Options: left, right. Default: left")
 
     m_group = parser.add_argument_group('Misc options')
     m_group.add_argument("-v","--version", action='version', version=f"squirrel {__version__}")
@@ -86,11 +87,11 @@ def main(sysargs = sys.argv[1:]):
     io.set_up_threads(args.threads,config)
     config[KEY_OUTDIR] = io.set_up_outdir(args.outdir,cwd,config[KEY_OUTDIR])
 
-    io.parse_tf_options(args.tree_figure_only,args.tree_file,args.branch_reconstruction_file,args.fig_width,args.fig_height,args.point_style,cwd,config)
+    io.parse_tf_options(args.tree_figure_only,args.tree_file,args.branch_reconstruction_file,args.fig_width,args.fig_height,args.point_style,args.point_justify,cwd,config)
     if args.tree_figure_only:
         new_tree = f"{config[KEY_TREE]}.rerender"
         outfile = os.path.join(config[KEY_OUTDIR],"")
-        recon.make_reconstruction_tree_figure_w_labels(new_tree,config[KEY_BRANCH_RECONSTRUCTION],config[KEY_TREE],config[KEY_POINT_STYLE],config[KEY_FIG_WIDTH],config[KEY_FIG_HEIGHT])
+        recon.make_reconstruction_tree_figure_w_labels(new_tree,config[KEY_BRANCH_RECONSTRUCTION],config[KEY_TREE],config[KEY_POINT_STYLE],config[KEY_POINT_JUSTIFY],config[KEY_FIG_WIDTH],config[KEY_FIG_HEIGHT])
         print(green("Success! New tree figure written."))
         sys.exit(0)
     
