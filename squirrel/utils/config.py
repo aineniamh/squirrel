@@ -43,6 +43,7 @@ KEY_BRANCH_RECONSTRUCTION = "branch_reconstruction"
 KEY_FIG_HEIGHT = "fig_height"
 KEY_FIG_WIDTH = "fig_width"
 KEY_POINT_STYLE = "point_style"
+KEY_POINT_JUSTIFY = "point_justify"
 
 VALUE_VALID_CLADES = ["cladei","cladeia","cladeib","cladeii","cladeiia","cladeiib"]
 OUTGROUP_DICT = {
