@@ -342,12 +342,19 @@ def add_background_to_input(input_fasta,background,clade,config):
 
     return new_input_fasta
 
-def parse_tf_options(tree_figure_only,tree_file,branch_reconstruction_file,width,height,point_style_arg,cwd,config):
+def parse_tf_options(tree_figure_only,tree_file,branch_reconstruction_file,width,height,point_style_arg,justify_arg,cwd,config):
     if point_style_arg:
         config[KEY_POINT_STYLE] = point_style_arg
     
     if  config[KEY_POINT_STYLE] not in ["circle","square"]:
         sys.stderr.write(cyan(f'Error: not a valid point style, please specify one of `circle` or `square`.\n'))
+        sys.exit(-1)
+
+    if justify_arg:
+        config[KEY_POINT_JUSTIFY] = justify_arg
+    
+    if  config[KEY_POINT_JUSTIFY] not in ["left","right"]:
+        sys.stderr.write(cyan(f'Error: not a valid point justification, please specify one of `left` or `right`.\n'))
         sys.exit(-1)
 
     if width:
