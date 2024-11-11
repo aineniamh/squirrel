@@ -32,7 +32,7 @@ def setup_config_dict(cwd):
             KEY_POINT_STYLE:"circle",
             KEY_POINT_JUSTIFY:"left",
 
-            KEY_TRIM_END:190788,
+            KEY_TRIM_END:VALUE_TRIM_END,
             KEY_EXTRACT_CDS:False,
             KEY_CONCATENATE:False,
             KEY_ADDITIONAL_MASK:None,
@@ -82,6 +82,11 @@ def get_datafiles(config):
         fasta_filename = "NC_063383.fasta"
         mask_file = "to_mask.cladeii.csv"
         gene_boundaries_file = "gene_boundaries.cladeii.csv"
+    elif clade=="variola":
+        config[KEY_TRIM_END] = 184722 #184546
+        fasta_filename = "NC_001611.fasta"
+        mask_file = "to_mask.NC_001611.csv"
+        gene_boundaries_file = "gene_boundaries.NC_001611.csv"
     else:
         sys.stderr.write(cyan(f'Error: invalid clade specified. Please specify one of `cladei`, `cladeia`,`cladeib`, `cladeii`, `cladeiia`,`cladeiib`\n'))
         sys.exit(-1)
