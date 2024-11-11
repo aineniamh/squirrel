@@ -33,7 +33,7 @@ rule iqtree:
                 -redo \
                 -asr \
                 -o '{params.outgroup}' &&
-        cp {output.temp_aln}.state {output.state_file:q}
+        cp '{output.temp_aln}.state' {output.state_file:q}
         """
 
 rule prune_outgroup:
