@@ -43,6 +43,8 @@ Squirrel performs masking (replacement with `N`) on low-complexity or repetitive
 
 Squirrel can also accept an additional mask file in csv format (`--additional-mask`), if there are flagged sites that you wish to mask within the alignment. These sites will be masked in conjuntion with the default masking files within squirrel. The format of the mask file fits with the features format from Geneious and at a minimum should contain the following fields: "Maximum","Minimum". If squirrel is run in [QC mode](#alignment-quality-control) (`-qc` on the command like to toggle it on), it will flag sites that it believes may need to be masked from the alignment and produce a csv mask file summarising the sites. This file can then be provided to squirrel to redo the alignment with additional masking.
 
+Squirrel now offers a sequence-specific mask option for making particular sites in a problematic sequence, rather than masking out the entire column across the alignment. This can be achieved with `--sequence-mask` and requires the user to supply a csv file with a `sequence` column that contains the sequence name (must match an id in the supplied FASTA file) and a `site` column, with a 1-based position to mask. If a sequence needs multiple sites masked, specify them on separate lines in the file with the same sequence name.
+
 ## Alignment Quality Control
 Squirrel can run quality control (QC) on the alignment and flag certain sites to the user that may need to be masked. We recommend that the user looks at these sites in an alignment viewer to judge whether the sites should be masked or not. If `-qc` mode is toggled on, squirrel with check within the alignment for:
 - <strong>Mutations that are adjacent to N bases</strong>
