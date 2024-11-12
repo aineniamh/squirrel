@@ -2,6 +2,9 @@
 
 **S**ome **QUI**ck **R**econstruction to **R**esolve **E**volutionary **L**inks
 
+<img src="./docs/squirrel_logo.svg" width="400">
+
+
 Why use squirrel? 
 
 The MPXV genome is pretty challenging to work with and do reliable phylogenetics on. It is large (~200kb), has tracts of low complexity and repetitive regions, and has large deletions, which can lead to difficulties producing a reliable alignment. With squirrel, we provide a rapid way of producing reliable [alignments](#how-it-works---alignment) for MPXV and also enable maximum-likelihood [phylogenetics pipeline](#phylogenetics-options-within-squirrel) tree estimation. 
