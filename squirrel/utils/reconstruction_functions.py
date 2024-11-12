@@ -235,23 +235,23 @@ def make_reconstruction_tree_figure_w_labels(outfile,branch_snps,treefile,point_
     
     r2t = 200000*my_tree.treeHeight #rough number of snps root to tip
     increment = my_tree.treeHeight/(r2t*1.5) # divide the tree height by about twice the num of r2t snps
-    
-    if w==None:
+    # print(w,h)
+    if w==None or w=="None":
         if r2t < 200:
-            width = math.sqrt(r2t)*3
+            width = int(math.sqrt(r2t)*3)
         else:
             width = 25
     else:
-        width = w
+        width = float(w)
 
-    if h == None:
+    if h == None or h =="None":
         if my_tree.ySpan < 300:
-            height = math.sqrt(my_tree.ySpan)*2
+            height = int(math.sqrt(my_tree.ySpan)*2)
         else:
             height = 40
     else:
-        height = h
-    # print(height,width)
+        height = float(h)
+
     fig,ax = plt.subplots(figsize=(width,height),facecolor='w')
 
     my_tree.plotTree(ax,x_attr=x_attr) ## plot branches

@@ -61,8 +61,8 @@ def main(sysargs = sys.argv[1:]):
     pf_group.add_argument('-brf',"--branch-reconstruction-file",action="store",help="Reconstruction file for re-rendering the figure.")
     pf_group.add_argument("--fig-height",action="store",help="Overwrite tree figure default height.",type=int)
     pf_group.add_argument("--fig-width",action="store",help="Overwrite tree figure default width.",type=int)
-    p_group.add_argument("--point-style",action="store",help="Shape of points for apobec3 reconstruction figure. Options: circle, square. Default: circle")
-    p_group.add_argument("--point-justify",action="store",help="Justification of points for apobec3 reconstruction figure. Options: left, right. Default: left")
+    pf_group.add_argument("--point-style",action="store",help="Shape of points for apobec3 reconstruction figure. Options: circle, square. Default: circle")
+    pf_group.add_argument("--point-justify",action="store",help="Justification of points for apobec3 reconstruction figure. Options: left, right. Default: left")
 
     m_group = parser.add_argument_group('Misc options')
     m_group.add_argument("-v","--version", action='version', version=f"squirrel {__version__}")
