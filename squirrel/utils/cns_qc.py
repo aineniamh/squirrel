@@ -9,7 +9,7 @@ from Bio.Align.AlignInfo import SummaryInfo
 import collections
 import csv
 from squirrel.utils.config import *
-
+import math
 import baltic as bt
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -254,6 +254,26 @@ def make_reversion_tree_figure(outfile,branch_snps,branch_reversions,will_be_rev
 
     my_tree=bt.loadNewick(treefile,absoluteTime=False)
 
+    
+    r2t = 200000*my_tree.treeHeight #rough number of snps root to tip
+    increment = my_tree.treeHeight/(r2t*1.5) # divide the tree height by about twice the num of r2t snps
+    # print(w,h)
+    if w==None or w=="None":
+        if r2t < 200:
+            width = int(math.sqrt(r2t)*3)
+        else:
+            width = 25
+    else:
+        width = float(w)
+
+    if h == None or h =="None":
+        if my_tree.ySpan < 300:
+            height = int(math.sqrt(my_tree.ySpan)*2)
+        else:
+            height = 40
+    else:
+        height = float(h)
+    w,h = width,height
     fig,ax = plt.subplots(figsize=(w,h),facecolor='w')
 
     x_attr=lambda k: k.height ## x coordinate of branches will be absoluteTime attribute
@@ -343,7 +363,25 @@ def make_convergence_tree_figure(outfile,branch_snps,branch_convergence,treefile
     branch_snps_dict = read_in_branch_snps(branch_snps)
 
     my_tree=bt.loadNewick(treefile,absoluteTime=False)
+    r2t = 200000*my_tree.treeHeight #rough number of snps root to tip
+    increment = my_tree.treeHeight/(r2t*1.5) # divide the tree height by about twice the num of r2t snps
+    # print(w,h)
+    if w==None or w=="None":
+        if r2t < 200:
+            width = int(math.sqrt(r2t)*3)
+        else:
+            width = 25
+    else:
+        width = float(w)
 
+    if h == None or h =="None":
+        if my_tree.ySpan < 300:
+            height = int(math.sqrt(my_tree.ySpan)*2)
+        else:
+            height = 40
+    else:
+        height = float(h)
+    w,h = width,height
     fig,ax = plt.subplots(figsize=(w,h),facecolor='w')
 
     x_attr=lambda k: k.height ## x coordinate of branches will be absoluteTime attribute
