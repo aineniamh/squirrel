@@ -75,3 +75,12 @@ rule reconstruction_analysis:
         # height = recon.get_fig_height(input.alignment)
 
         recon.run_full_analysis(directory, input.alignment, input.tree,input.state_file,config,point_style,point_justify,config[KEY_FIG_WIDTH],config[KEY_FIG_HEIGHT])
+
+rule interactive_tree:
+    input:
+    params:
+    output:
+    shell:
+        """"
+        Rscript scripts/interactive_tree.R 
+        """
