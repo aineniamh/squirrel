@@ -78,9 +78,11 @@ rule reconstruction_analysis:
 
 rule interactive_tree:
     input:
-    params:
+        tree = rules.reconstruction_analysis.output.tree
+        mutations = f"{reconstruction_analysis.input.tree}.amino_acid.reconstruction.csv"
     output:
+        figure = os.path.join(config[KEY_OUTDIR], f"{config[KEY_PHYLOGENY]}.interactive.html")
     shell:
-        """"
-        Rscript scripts/interactive_tree.R 
+        """
+        Rscript scripts/interactive_tree.R {input.tree} {input.mutations} {output.figure}
         """

@@ -154,8 +154,8 @@ plot_interactive_tree <- function(tree_file, mut_file) {
 
 # Run and output command
 args  <- commandArgs(trailingOnly = TRUE, asValue = TRUE)
-fname <- 'interactive_apobec_tree.html'
-plot_apobec(args) %>% 
+fname <- args[3]
+plot_apobec(args[1], args[2]) %>% 
   htmlwidgets::saveWidget(fname)
 
 # Known issue with saveWidget requires manual dep directory removal
