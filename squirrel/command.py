@@ -143,6 +143,7 @@ def main(sysargs = sys.argv[1:]):
 
             if config[KEY_RUN_APOBEC3_PHYLO]:
                 config[KEY_PHYLOGENY_SVG] = f"{config[KEY_OUTFILE_STEM]}.tree.svg"
+                config[KEY_PHYLOGENY_INTERACTIVE] = f"{config[KEY_OUTFILE_STEM]}.tree.html"
                 phylo_snakefile = get_snakefile(thisdir,"reconstruction")
 
             status = misc.run_snakemake(config,phylo_snakefile,args.verbose,config)

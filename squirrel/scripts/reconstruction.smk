@@ -9,8 +9,8 @@ import squirrel.utils.reconstruction_functions as recon
 rule all:
     input:
         os.path.join(config[KEY_OUTDIR],config[KEY_PHYLOGENY]),
-        os.path.join(config[KEY_OUTDIR],config[KEY_PHYLOGENY_SVG])
-
+        os.path.join(config[KEY_OUTDIR],config[KEY_PHYLOGENY_SVG]),
+        os.path.join(config[KEY_OUTDIR],config[KEY_PHYLOGENY_INTERACTIVE])
 
 rule iqtree:
     input:
@@ -57,7 +57,6 @@ rule prune_outgroup:
         cp {params.temp_outtree:q} {output.tree:q}
         """
 
-
 rule reconstruction_analysis:
     input:
         tree = rules.prune_outgroup.output.tree,
@@ -66,7 +65,10 @@ rule reconstruction_analysis:
     params:
         outdir = config[KEY_OUTDIR]
     output:
-        tree = os.path.join(config[KEY_OUTDIR],config[KEY_PHYLOGENY_SVG])
+        tree = os.path.join(config[KEY_OUTDIR],config[KEY_PHYLOGENY_SVG]),
+        state_differences = os.path.join(config[KEY_OUTDIR],f"{config[KEY_PHYLOGENY]}.state_differences.csv"),
+        amino_acids_out = os.path.join(config[KEY_OUTDIR],f"{config[KEY_PHYLOGENY]}.amino_acid.reconstruction.csv"),
+        branch_snps_out = os.path.join(config[KEY_OUTDIR],f"{config[KEY_PHYLOGENY]}.branch_snps.reconstruction.csv")
     run:
         directory = params.outdir
         point_style = config[KEY_POINT_STYLE]
@@ -78,10 +80,10 @@ rule reconstruction_analysis:
 
 rule interactive_tree:
     input:
-        tree = rules.reconstruction_analysis.output.tree
-        mutations = f"{reconstruction_analysis.input.tree}.amino_acid.reconstruction.csv"
+        tree = rules.reconstruction_analysis.output.tree,
+        mutations = rules.reconstruction_analysis.output.amino_acids_out
     output:
-        figure = os.path.join(config[KEY_OUTDIR], f"{config[KEY_PHYLOGENY]}.interactive.html")
+        figure = os.path.join(config[KEY_OUTDIR],config[KEY_PHYLOGENY_INTERACTIVE])
     shell:
         """
         Rscript scripts/interactive_tree.R {input.tree} {input.mutations} {output.figure}
