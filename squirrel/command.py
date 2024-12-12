@@ -127,7 +127,7 @@ def main(sysargs = sys.argv[1:]):
 
     config[KEY_INPUT_FASTA] = io.phylo_options(args.run_phylo,args.run_apobec3_phylo,args.outgroups,args.include_background,args.binary_partition_mask,config[KEY_INPUT_FASTA],config)
 
-    snakefile = get_snakefile(thisdir,"msa")
+    snakefile = get_script(thisdir,"msa.smk")
 
     status = misc.run_snakemake(config,snakefile,args.verbose,config)
 
@@ -135,7 +135,7 @@ def main(sysargs = sys.argv[1:]):
     if status:
 
         if config[KEY_RUN_PHYLO]:
-            phylo_snakefile = get_snakefile(thisdir,"phylo")
+            phylo_snakefile = get_script(thisdir,"phylo.smk")
             config[KEY_PHYLOGENY] = f"{config[KEY_OUTFILE_STEM]}.tree"
             
             config[KEY_OUTGROUP_STRING] = ",".join(config[KEY_OUTGROUPS])
@@ -144,7 +144,8 @@ def main(sysargs = sys.argv[1:]):
             if config[KEY_RUN_APOBEC3_PHYLO]:
                 config[KEY_PHYLOGENY_SVG] = f"{config[KEY_OUTFILE_STEM]}.tree.svg"
                 config[KEY_PHYLOGENY_INTERACTIVE] = f"{config[KEY_OUTFILE_STEM]}.tree.html"
-                phylo_snakefile = get_snakefile(thisdir,"reconstruction")
+                config[KEY_INTERACTIVE_SCRIPT] = get_script(thisdir, "interactive_tree.R")
+                phylo_snakefile = get_script(thisdir, "reconstruction.smk")
 
             status = misc.run_snakemake(config,phylo_snakefile,args.verbose,config)
 

@@ -37,6 +37,7 @@ KEY_OUTGROUP_STRING="outgroup_string"
 KEY_OUTGROUP_SENTENCE="outgroup_sentence"
 KEY_GRANTHAM_SCORES="grantham_scores"
 KEY_REPORT_TEMPLATE = "report_template"
+KEY_INTERACTIVE_SCRIPT = "interactive_script"
 
 KEY_TREE = "tree"
 KEY_BRANCH_RECONSTRUCTION = "branch_reconstruction"
