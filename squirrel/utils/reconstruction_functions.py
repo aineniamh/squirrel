@@ -242,7 +242,7 @@ def make_reconstruction_tree_figure_w_labels(outfile,branch_snps,treefile,point_
         else:
             width = 25
     else:
-        width = float(w)
+        width = round(float(w),2)
 
     if h == None or h =="None":
         if my_tree.ySpan < 300:
@@ -250,7 +250,8 @@ def make_reconstruction_tree_figure_w_labels(outfile,branch_snps,treefile,point_
         else:
             height = 40
     else:
-        height = float(h)
+        height = round(float(h), 2)
+    print(width, height)
 
     fig,ax = plt.subplots(figsize=(width,height),facecolor='w')
 
