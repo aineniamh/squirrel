@@ -252,7 +252,6 @@ def make_reconstruction_tree_figure_w_labels(outfile,branch_snps,treefile,point_
     else:
         height = int(h)
 
-    print(width, height)
 
     if not np.isfinite(height):
         height = 40
