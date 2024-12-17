@@ -68,7 +68,7 @@ rule reconstruction_analysis:
         tree = os.path.join(config[KEY_OUTDIR],config[KEY_PHYLOGENY_SVG]),
         state_differences = os.path.join(config[KEY_OUTDIR],f"{config[KEY_PHYLOGENY]}.state_differences.csv"),
         amino_acids_out = os.path.join(config[KEY_OUTDIR],f"{config[KEY_PHYLOGENY]}.amino_acid.reconstruction.csv"),
-        branch_snps_out = os.path.join(config[KEY_OUTDIR],f"{config[KEY_PHYLOGENY]}.branch_snps.reconstruction.csv")
+        branch_snps_out = os.path.join(config[KEY_OUTDIR],f"{config[KEY_PHYLOGENY]}.branch_snps.reconstruction.csv"),
     run:
         directory = params.outdir
         point_style = config[KEY_POINT_STYLE]

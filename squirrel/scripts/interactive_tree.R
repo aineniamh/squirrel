@@ -57,8 +57,9 @@ annotate_tree <- function(t_data, mut_df) {
       nrow()
   }) %>% unname()
 
-  tdf <- mutate(tdf, apobec_ratio = round((apobec_count/total_muts)*100))
-  
+  tdf <- tdf %>% 
+    dplyr::mutate(apobec_ratio = round((apobec_count/total_muts)*100)) %>%
+    dplyr::mutate(apobec_ratio = paste0(apobec_ratio, '%'))
 
   # Quality checking with grantham score
   tdf$mean_grantham <- sapply(tdf$parent_path, function(x){
@@ -72,7 +73,7 @@ annotate_tree <- function(t_data, mut_df) {
   tdf$na_grantham <- sapply(tdf$parent_path, function(x){
     mut_sdf <- filter(mut_df, grepl(x, child))
     ratio <- nrow(filter(mut_sdf, is.na(score)))/nrow(mut_sdf)
-    ratio <- paste0(round(ratio*100), ' %')
+    ratio <- paste0(round(ratio*100), '%')
     return(ratio)
   }) %>% unname()
 
