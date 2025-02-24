@@ -98,7 +98,7 @@ def main(sysargs = sys.argv[1:]):
     config[KEY_OUTFILE],config[KEY_CDS_OUTFILE],config[KEY_OUTFILENAME],config[KEY_OUTFILE_STEM],config[KEY_OUTDIR] = io.set_up_outfile(args.outfile,cwd,args.input, config[KEY_OUTFILE],config[KEY_OUTDIR])
     io.set_up_tempdir(args.tempdir,args.no_temp,cwd,config[KEY_OUTDIR], config)
 
-    io.pipeline_options(args.no_mask, args.no_itr_mask, args.additional_mask,args.sequence_mask, args.extract_cds, args.concatenate,cwd, config)
+    io.pipeline_options(args.no_mask, args.no_itr_mask, args.additional_mask,args.sequence_mask, args.extract_cds, args.concatenate,config[KEY_CLADE],cwd, config)
 
     config[KEY_INPUT_FASTA] = io.find_query_file(cwd, config[KEY_TEMPDIR], args.input)
     
