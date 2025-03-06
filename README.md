@@ -134,7 +134,7 @@ Alongside these files, the user can then specify a custom height (`--fig-height`
 
 The user may now also specify whether the reconstructed mutations vizualised on the branch are either represented by a `circle` hovering over the branch or a `square` spanning the branch with the `--point-style` argument, and whether they want the points to begin stacking from the `left` or `right` with `--point-justify`.
 
-An interactive standalone tree file summarizing APOBEC3 mutations (`*tree.html`) is also created using an alternative R-based method (leveraging the [ggtree](https://bioconductor.org/packages/release/bioc/html/ggtree.html) and [plotly](https://plotly.com/r/) packages). This is provided for users to explore specific parts of the tree "node-by-node" and is currently left out of the static report.
+If run with the `--interactive-tree` argument, an interactive standalone tree file summarizing APOBEC3 mutations (`*tree.html`) is also created, so users can explore the phylogenetic reconstruction 'node-by-node'. This tree will match the static one included in the report, but is built using an alternative R-based method that leverages the [ggtree](https://bioconductor.org/packages/release/bioc/html/ggtree.html) and [plotly](https://plotly.com/r/) packages.
 
 ## Installation
 
@@ -182,34 +182,41 @@ Alignment options:
   --no-mask             Skip masking of repetitive regions. Default: masks repeat regions
   --no-itr-mask         Skip masking of end ITR. Default: masks ITR
   --additional-mask ADDITIONAL_MASK
-                        Masking additional sites provided as a csv. Needs columns `Maximum` and `Minimum` in 1-base.
+                        Masking additional sites provided as a csv. Needs columns `Maximum` and `Minimum` in
+                        1-base.
   --sequence-mask SEQUENCE_MASK
-                        Mask sites in specific sequences in the alignment as a csv, rather than the whole alignment column. Needs `sequence` and `site` (1-based) column.
+                        Mask sites in specific sequences in the alignment as a csv, rather than the whole
+                        alignment column. Needs `sequence` and `site` (1-based) column.
   -ex EXCLUDE, --exclude EXCLUDE
                         Supply a csv file listing sequences that should be excluded from the analysis.
   --extract-cds         Extract coding sequences based on coordinates in the reference
-  --concatenate         Concatenate coding sequences for each genome, separated by `NNN`. Default: write out as separate records
-  --clade CLADE         Specify whether the alignment is primarily for `cladei` or `cladeii` (can also specify a or b, e.g. `cladeia`, `cladeiib`). This will determine reference used for alignment, mask file
-                        and background set used if `--include-background` flag used in conjunction with the `--run-phylo` option. Default: `cladeii`
+  --concatenate         Concatenate coding sequences for each genome, separated by `NNN`. Default: write out
+                        as separate records
+  --clade CLADE         Specify whether the alignment is primarily for `cladei` or `cladeii` (can also
+                        specify a or b, e.g. `cladeia`, `cladeiib`). This will determine reference used for
+                        alignment, mask file and background set used if `--include-background` flag used in
+                        conjunction with the `--run-phylo` option. Default: `cladeii`
 
 Phylo options:
   -p, --run-phylo       Run phylogenetics pipeline
   -a, --run-apobec3-phylo
                         Run phylogenetics & APOBEC3-mutation reconstruction pipeline
   --outgroups OUTGROUPS
-                        Specify which MPXV outgroup(s) in the alignment to use in the phylogeny. These will get pruned out from the final tree.
+                        Specify which MPXV outgroup(s) in the alignment to use in the phylogeny. These will
+                        get pruned out from the final tree.
   -bg, --include-background
-                        Include a default background set of sequences for the phylogenetics pipeline. The set will be determined by the `--clade` specified.
+                        Include a default background set of sequences for the phylogenetics pipeline. The
+                        set will be determined by the `--clade` specified.
   -bf BACKGROUND_FILE, --background-file BACKGROUND_FILE
                         Include this additional FASTA file as background to the phylogenetics.
   -bm, --binary-partition-mask
                         Calculate and write binary partition mask
   --bm-separate-dimers  Write partition mask with 0 for non-apo, 1 for GA and 2 for TC target sites
 
-
 Tree figure options:
   -tfig, --tree-figure-only
-                        Re-render tree figure custom height and width arguments. Requires: tree file, branch reconstruction file, height, width.
+                        Re-render tree figure custom height and width arguments. Requires: tree file, branch
+                        reconstruction file, height, width.
   -tf TREE_FILE, --tree-file TREE_FILE
                         Tree for re-rendering the figure.
   -brf BRANCH_RECONSTRUCTION_FILE, --branch-reconstruction-file BRANCH_RECONSTRUCTION_FILE
@@ -219,9 +226,12 @@ Tree figure options:
   --fig-width FIG_WIDTH
                         Overwrite tree figure default width.
   --point-style POINT_STYLE
-                        Shape of points for apobec3 reconstruction figure. Options: circle, square. Default: circle
+                        Shape of points for apobec3 reconstruction figure. Options: circle, square. Default:
+                        circle
   --point-justify POINT_JUSTIFY
-                        Justification of points for apobec3 reconstruction figure. Options: left, right. Default: left
+                        Justification of points for apobec3 reconstruction figure. Options: left, right.
+                        Default: left
+  --interactive-tree    Create a separate interactive file built from R functions
 
 Misc options:
   -v, --version         show program's version number and exit

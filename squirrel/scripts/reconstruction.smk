@@ -87,6 +87,8 @@ rule interactive_tree:
     output:
         figure = os.path.join(config[KEY_OUTDIR],config[KEY_PHYLOGENY_INTERACTIVE])
     shell:
-        """
-        Rscript {params.script_path} {input.tree} {input.mutations} {output.figure}
+        """   
+        if [ {params.script_path} ]; then
+            Rscript {params.script_path} {input.tree} {input.mutations} {output.figure}
+        fi
         """
