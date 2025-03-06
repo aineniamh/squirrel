@@ -251,10 +251,16 @@ def find_sequence_mask_file(cwd,sequence_mask,config):
     return path_to_try
 
 
-def pipeline_options(no_mask, no_itr_mask, additional_mask,sequence_mask,extract_cds,concatenate,cwd, config):
+def pipeline_options(no_mask, no_itr_mask, additional_mask,sequence_mask,extract_cds,concatenate,clade,cwd, config):
     config[KEY_NO_MASK] = no_mask
     if no_itr_mask:
-        config[KEY_TRIM_END] = 197209
+        if clade.startswith("cladeii"):
+            config[KEY_TRIM_END] = 197209
+        elif clade.startswith("cladei"):
+            config[KEY_TRIM_END] = 196858
+        elif clade == "variola":
+            config[KEY_TRIM_END] = 185578
+
     
     if additional_mask:
         config[KEY_ADDITIONAL_MASK] = find_additional_mask_file(cwd,additional_mask,config)
