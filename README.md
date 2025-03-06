@@ -132,7 +132,9 @@ Firstly, rather than having to rerun the entire analysis, there is now an option
 
 Alongside these files, the user can then specify a custom height (`--fig-height`) or width (`--fig-width`) for the final tree vizualisation.
 
-The user may now also specify whether the reconstructed mutations vizualised on the branch are either represented by a `circle` hovering over the branch or a `square` spanning the branch with the `--point-style` argument, and whether they want the points to begin stacking from the `left` or `right` with `--point-justify`. 
+The user may now also specify whether the reconstructed mutations vizualised on the branch are either represented by a `circle` hovering over the branch or a `square` spanning the branch with the `--point-style` argument, and whether they want the points to begin stacking from the `left` or `right` with `--point-justify`.
+
+An interactive standalone tree file summarizing APOBEC3 mutations (`*tree.html`) is also created using an alternative R-based method (leveraging the [ggtree](https://bioconductor.org/packages/release/bioc/html/ggtree.html) and [plotly](https://plotly.com/r/) packages). This is provided for users to explore specific parts of the tree "node-by-node" and is currently left out of the static report.
 
 ## Installation
 
