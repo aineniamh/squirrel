@@ -228,6 +228,36 @@ Misc options:
                         Number of threads
 ```
 
+### Output files
+
+- `sequences.aln.fasta`
+  
+The alignment file, with alignment scaffolded against a clade-specific reference. By default one of the ITR regions and a curated set of problematic regions is masked as Ns.
+
+- `sequences.aln.tree`
+
+The output maximum likelihood tree file from IQTREE2 with Node labels that correspond to the reconstruction Node labels. This tree can be viewed in various tree viewers, for example FigTree. 
+
+- `sequences.aln.tree.state` and `sequences.aln.tree.state_differences.csv`
+
+The output ancestral state reconstruction file from IQTREE2 and the compiled list of unambiguously variable sites from squirrel.
+
+- `sequences.aln.tree.branch_snps.reconstruction.csv`
+
+A report of individual site changes mapped to specific branches and their dinucleotide context.
+
+- `sequences.aln.tree.amino_acid.reconstruction.csv`
+
+A report of each mutation that occurs across the phylogeny, their location, dinucleotide context, APOBEC3 status, which gene they're present in, codon position, amino acid change and a prediction of how extreme that amino acid change is with Grantham score.
+
+- `sequences.aln.tree.png` and `sequences.aln.tree.svg`
+
+Visualisation of reconstructed tree showing whether mutations are consistent with APOBEC3 editing or not.
+
+- `sequences.aln.report.html`
+
+Summary report of analysis run.
+
 ### What is a FASTA file <a name="fasta"></a>
 
 A FASTA-formatted file contains sequence records. A record minimally contains two pieces of information, the sequence ID (e.g. `sequence1`) and the sequence itself (e.g. `CGATCGAT...ACTGACT`). The sequence ID is stored in the header line, which is denoted by a `>` symbol. The header line may also contain additional information (called the sequence description), which can be found after the first space on the header line (e.g. `some_extra_information` in the example below). This is why it is important that the sequence ID does not contain whitespace (i.e. spaces or ` `). The sequence itself is then stored on the following line. Often the sequence is split across multiple lines for readability, but note that the next record does not start until the next line that begins with `>`. An example of this split line display is below for the record containing sequence2. 
