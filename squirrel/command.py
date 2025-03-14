@@ -45,7 +45,8 @@ def main(sysargs = sys.argv[1:]):
     a_group.add_argument("--extract-cds",action="store_true",help="Extract coding sequences based on coordinates in the reference")
     a_group.add_argument("--concatenate",action="store_true",help="Concatenate coding sequences for each genome, separated by `NNN`. Default: write out as separate records")
     a_group.add_argument("--clade",action="store",help="Specify whether the alignment is primarily for `cladei` or `cladeii` (can also specify a or b, e.g. `cladeia`, `cladeiib`). This will determine reference used for alignment, mask file and background set used if `--include-background` flag used in conjunction with the `--run-phylo` option. Default: `cladeii`")
-    
+    a_group.add_argument("--multiclade",action="store",help="Flag that your data may contain multiple clades, enable clade assignment and perform an analysis per clade.")
+
     p_group = parser.add_argument_group("Phylo options")
     p_group.add_argument("-p","--run-phylo",action="store_true",help="Run phylogenetics pipeline")
     p_group.add_argument("-a","--run-apobec3-phylo",action="store_true",help="Run phylogenetics & APOBEC3-mutation reconstruction pipeline")
@@ -81,6 +82,9 @@ def main(sysargs = sys.argv[1:]):
     
     if args.clade:
         config[KEY_CLADE] = args.clade
+
+    if args.multiclade:
+        config[KEY_MULTICLADE] = args.multiclade
 
     config["version"] = __version__
     get_datafiles(config)
