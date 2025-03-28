@@ -63,6 +63,7 @@ def main(sysargs = sys.argv[1:]):
     pf_group.add_argument("--fig-width",action="store",help="Overwrite tree figure default width.",type=int)
     pf_group.add_argument("--point-style",action="store",help="Shape of points for apobec3 reconstruction figure. Options: circle, square. Default: circle")
     pf_group.add_argument("--point-justify",action="store",help="Justification of points for apobec3 reconstruction figure. Options: left, right. Default: left")
+    pf_group.add_argument("--interactive-tree",action="store_true",help="Create a separate interactive file built from R functions")
 
     m_group = parser.add_argument_group('Misc options')
     m_group.add_argument("-v","--version", action='version', version=f"squirrel {__version__}")
@@ -127,7 +128,7 @@ def main(sysargs = sys.argv[1:]):
 
     config[KEY_INPUT_FASTA] = io.phylo_options(args.run_phylo,args.run_apobec3_phylo,args.outgroups,args.include_background,args.binary_partition_mask,config[KEY_INPUT_FASTA],config)
 
-    snakefile = get_snakefile(thisdir,"msa")
+    snakefile = get_script(thisdir,"msa.smk")
 
     status = misc.run_snakemake(config,snakefile,args.verbose,config)
 
@@ -135,7 +136,7 @@ def main(sysargs = sys.argv[1:]):
     if status:
 
         if config[KEY_RUN_PHYLO]:
-            phylo_snakefile = get_snakefile(thisdir,"phylo")
+            phylo_snakefile = get_script(thisdir,"phylo.smk")
             config[KEY_PHYLOGENY] = f"{config[KEY_OUTFILE_STEM]}.tree"
             
             config[KEY_OUTGROUP_STRING] = ",".join(config[KEY_OUTGROUPS])
@@ -143,7 +144,12 @@ def main(sysargs = sys.argv[1:]):
 
             if config[KEY_RUN_APOBEC3_PHYLO]:
                 config[KEY_PHYLOGENY_SVG] = f"{config[KEY_OUTFILE_STEM]}.tree.svg"
-                phylo_snakefile = get_snakefile(thisdir,"reconstruction")
+                config[KEY_PHYLOGENY_INTERACTIVE] = f"{config[KEY_OUTFILE_STEM]}.tree.interactive.html"
+                if args.interactive_tree:
+                    config[KEY_INTERACTIVE_SCRIPT] = get_script(thisdir, "interactive_tree.R")
+                else: 
+                    config[KEY_INTERACTIVE_SCRIPT] = ''
+                phylo_snakefile = get_script(thisdir, "reconstruction.smk")
 
             status = misc.run_snakemake(config,phylo_snakefile,args.verbose,config)
 

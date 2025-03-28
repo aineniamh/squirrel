@@ -11,8 +11,9 @@ setup(name='squirrel',
       scripts=[
             'squirrel/scripts/msa.smk',
             'squirrel/scripts/phylo.smk',
-            'squirrel/scripts/reconstruction.smk'
-                ],
+            'squirrel/scripts/reconstruction.smk',
+            'squirrel/scripts/interactive_tree.R'
+      ],
       package_data={"squirrel":["data/*"]},
       install_requires=[
             "biopython>=1.70",
@@ -21,7 +22,7 @@ setup(name='squirrel',
             'matplotlib>=3.3.1',
             'mako',
             'seaborn',
-            'pandas'
+            'pandas',
         ],
       description='Some QUIck Reconstruction to Resolve Evolutionary Links',
       url='https://github.com/cov-lineages/squirrel',
