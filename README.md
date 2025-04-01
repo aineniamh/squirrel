@@ -136,7 +136,7 @@ The user may now also specify whether the reconstructed mutations vizualised on 
 
 If run with the `--interactive-tree` argument, an interactive standalone tree file summarizing APOBEC3 mutations (`*tree.html`) is also created, so users can explore the phylogenetic reconstruction 'node-by-node'. This tree will match the static one included in the report, but is built using an alternative R-based method that leverages the [ggtree](https://bioconductor.org/packages/release/bioc/html/ggtree.html) and [plotly](https://plotly.com/r/) packages. An example is included below, with a summary of node metadata shown on hover and branches heated by the number of APOBEC3 mutations relative to the root of the tree.
 
-<img src="./docs/example_interactive.png" width="400">
+<img src="./docs/squirrel_interactive_example.png" width="400">
 
 ## Installation
 
