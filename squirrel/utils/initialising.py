@@ -41,7 +41,6 @@ def setup_config_dict(cwd):
             KEY_RUN_PHYLO:False,
             KEY_RUN_APOBEC3_PHYLO:False,
 
-
             KEY_VERBOSE: False,
             KEY_THREADS: 1,
             KEY_PHYLO_THREADS: "AUTO",

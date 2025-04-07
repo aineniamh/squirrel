@@ -2,6 +2,7 @@
 
 KEY_INPUT_FASTA="fasta"
 KEY_REFERENCE_FASTA = "reference_fasta"
+KEY_REFERENCE_PANEL = "reference_panel"
 KEY_BACKGROUND_FASTA = "background_fasta"
 KEY_TO_MASK = "to_mask"
 KEY_GENE_BOUNDARIES = "gene_boundaries"
@@ -46,7 +47,7 @@ KEY_POINT_STYLE = "point_style"
 KEY_POINT_JUSTIFY = "point_justify"
 
 VALUE_TRIM_END = 190788
-VALUE_VALID_CLADES = ["cladei","cladeia","cladeib","cladeii","cladeiia","cladeiib","variola"]
+VALUE_VALID_CLADES = ["cladei","cladeia","cladeib","cladeii","cladeiia","cladeiib","variola","split"]
 OUTGROUP_DICT = {
     "variola":["KJ642617|Nigeria|1971"],
     "cladei":["KJ642615|human|Nigeria||1978"],

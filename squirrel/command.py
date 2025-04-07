@@ -44,8 +44,8 @@ def main(sysargs = sys.argv[1:]):
     a_group.add_argument("-ex","--exclude",action="store",help="Supply a csv file listing sequences that should be excluded from the analysis.")
     a_group.add_argument("--extract-cds",action="store_true",help="Extract coding sequences based on coordinates in the reference")
     a_group.add_argument("--concatenate",action="store_true",help="Concatenate coding sequences for each genome, separated by `NNN`. Default: write out as separate records")
-    a_group.add_argument("--clade",action="store",help="Specify whether the alignment is primarily for `cladei` or `cladeii` (can also specify a or b, e.g. `cladeia`, `cladeiib`). This will determine reference used for alignment, mask file and background set used if `--include-background` flag used in conjunction with the `--run-phylo` option. Default: `cladeii`")
-    
+    a_group.add_argument("--clade",action="store",help="Specify whether the alignment is primarily for `cladei` or `cladeii` (can also specify a or b, e.g. `cladeia`, `cladeiib`). `split` will separate input sequences into separate cladei and cladeii alignments. This will determine reference used for alignment, mask file and background set used if `--include-background` flag used in conjunction with the `--run-phylo` option. Default: `cladeii`")
+
     p_group = parser.add_argument_group("Phylo options")
     p_group.add_argument("-p","--run-phylo",action="store_true",help="Run phylogenetics pipeline")
     p_group.add_argument("-a","--run-apobec3-phylo",action="store_true",help="Run phylogenetics & APOBEC3-mutation reconstruction pipeline")
@@ -79,8 +79,8 @@ def main(sysargs = sys.argv[1:]):
     # Initialise config dict
     config = setup_config_dict(cwd)
     
-    if args.clade:
-        config[KEY_CLADE] = args.clade
+    io.set_up_clade(args.clade,config)
+
 
     config["version"] = __version__
     get_datafiles(config)
@@ -102,6 +102,11 @@ def main(sysargs = sys.argv[1:]):
 
     config[KEY_INPUT_FASTA] = io.find_query_file(cwd, config[KEY_TEMPDIR], args.input)
     
+    if config[KEY_CLADE] == "split":
+        clade_snakefile = get_snakefile(thisdir,"clade.smk")
+        status = misc.run_snakemake(config,snakefile,args.verbose,config)
+        io.determine_clades(config[KEY_INPUT_FASTA], config)
+
     if args.background_file:
         config[KEY_INPUT_FASTA] = io.find_background_file(cwd,config[KEY_INPUT_FASTA],args.background_file,config)
 

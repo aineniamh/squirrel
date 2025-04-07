@@ -302,6 +302,14 @@ def find_background_file(cwd,input_fasta,background_file,config):
 
     return new_input_fasta
 
+def set_up_clade(clade,config):
+    if args.clade:
+        config[KEY_CLADE] = clade
+        if config[KEY_CLADE] not in VALUE_VALID_CLADES:
+            sys.stderr.write(cyan(
+                f'Error: clade must be one of {VALUE_VALID_CLADES}.\n'))
+            sys.exit(-1) 
+
 def add_background_to_input(input_fasta,background,clade,config):
     in_name = input_fasta.rstrip("fasta").split("/")[-1]
     new_input_fasta = os.path.join(config[KEY_TEMPDIR], f"{in_name}.background_included.fasta")
