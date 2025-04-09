@@ -6,6 +6,7 @@ from squirrel.utils.config import *
 from squirrel.utils.initialising import *
 import squirrel.utils.io_parsing as io
 import squirrel.utils.cns_qc as qc
+import squirrel.utils.clade_assignment as ca
 import squirrel.utils.reconstruction_functions as recon
 from squirrel.utils.make_report import *
 
@@ -80,10 +81,9 @@ def main(sysargs = sys.argv[1:]):
     config = setup_config_dict(cwd)
     
     io.set_up_clade(args.clade,config)
-
-
+    get_global_datafiles(config)
     config["version"] = __version__
-    get_datafiles(config)
+    
     io.set_up_threads(args.threads,config)
     config[KEY_OUTDIR] = io.set_up_outdir(args.outdir,cwd,config[KEY_OUTDIR])
 
@@ -101,17 +101,23 @@ def main(sysargs = sys.argv[1:]):
     io.pipeline_options(args.no_mask, args.no_itr_mask, args.additional_mask,args.sequence_mask, args.extract_cds, args.concatenate,config[KEY_CLADE],cwd, config)
 
     config[KEY_INPUT_FASTA] = io.find_query_file(cwd, config[KEY_TEMPDIR], args.input)
-    
-    if config[KEY_CLADE] == "split":
-        clade_snakefile = get_snakefile(thisdir,"clade.smk")
-        status = misc.run_snakemake(config,snakefile,args.verbose,config)
-        io.determine_clades(config[KEY_INPUT_FASTA], config)
 
     if args.background_file:
         config[KEY_INPUT_FASTA] = io.find_background_file(cwd,config[KEY_INPUT_FASTA],args.background_file,config)
 
     if args.exclude:
         config[KEY_INPUT_FASTA] = io.find_exclude_file(cwd,config[KEY_INPUT_FASTA],args.exclude,config)
+
+    if config[KEY_CLADE] == "split":
+        clade_snakefile = get_snakefile(thisdir,"clade.smk")
+        status = misc.run_snakemake(config,snakefile,args.verbose,config)
+
+        clade_out = os.path.join(config[KEY_TEMPDIR],"clades.yaml")
+        config[KEY_INPUT_FASTA] = os.path.join(config[KEY_TEMPDIR],"input.clade_annotated.fasta")
+        
+        config[KEY_ASSIGNED_CLADES] = ca.read_clades(clade_out, config)
+    
+    get_datafiles(config)
 
     if args.seq_qc:
         print(green("QC mode activated. Squirrel will flag:"))
