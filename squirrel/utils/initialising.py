@@ -17,6 +17,7 @@ def setup_config_dict(cwd):
             KEY_OUTFILENAME:None,
 
             KEY_CLADE:"cladeii",
+            KEY_ASSIGNED_CLADES:[],
 
             KEY_OUTDIR:cwd,
             KEY_OUTFILE:None,
@@ -68,6 +69,29 @@ def package_data_check(filename,directory,key,config):
         sys.stderr.write(cyan(f'Error: Missing package data.')+f'\n\t- {filename}\n')
         sys.exit(-1)
 
+def get_global_datafiles(config):
+
+    resources = [
+            {"key":KEY_REPORT_TEMPLATE,
+            "directory":"data",
+            "filename":"report.mako"},
+            {"key":KEY_BACKGROUND_FASTA,
+            "directory":"data",
+            "filename":"background.fasta"},
+            {"key":KEY_REFERENCE_PANEL,
+            "directory":"data",
+            "filename":"background.panel.fasta"},
+            {"key":KEY_GRANTHAM_SCORES,
+            "directory":"data",
+            "filename":"grantham_score.txt"},
+            {"key":KEY_ASSEMBLY_REFERENCES,
+            "directory":"data",
+            "filename":"ref_seq.fasta"}
+            ]
+
+    for resource in resources:
+        package_data_check(resource["filename"],resource["directory"],resource["key"],config)
+
 def get_datafiles(config):
     clade = config[KEY_CLADE].lower()
     config[KEY_CLADE] = clade
@@ -86,6 +110,8 @@ def get_datafiles(config):
         fasta_filename = "NC_001611.fasta"
         mask_file = "to_mask.NC_001611.csv"
         gene_boundaries_file = "gene_boundaries.NC_001611.csv"
+    elif clade=="split":
+        pass
     else:
         sys.stderr.write(cyan(f'Error: invalid clade specified. Please specify one of `cladei`, `cladeia`,`cladeib`, `cladeii`, `cladeiia`,`cladeiib`\n'))
         sys.exit(-1)
@@ -98,6 +124,9 @@ def get_datafiles(config):
             {"key":KEY_BACKGROUND_FASTA,
             "directory":"data",
             "filename":"background.fasta"},
+            {"key":KEY_REFERENCE_PANEL,
+            "directory":"data",
+            "filename":"background.panel.fasta"},
             {"key":KEY_REFERENCE_FASTA,
             "directory":"data",
             "filename":fasta_filename},
