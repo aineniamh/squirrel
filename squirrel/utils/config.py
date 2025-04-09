@@ -26,6 +26,7 @@ KEY_SEQ_QC = "seq_qc"
 KEY_ASSEMBLY_REFERENCES = "assembly_references"
 
 KEY_CLADE = "clade"
+KEY_ASSIGNED_CLADES = "assigned_clades"
 KEY_RUN_PHYLO="run_phylo"
 KEY_RUN_APOBEC3_PHYLO = "run_apobec3_phylo"
 KEY_OUTGROUPS="outgroups"
