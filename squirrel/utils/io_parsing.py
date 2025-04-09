@@ -303,7 +303,7 @@ def find_background_file(cwd,input_fasta,background_file,config):
     return new_input_fasta
 
 def set_up_clade(clade,config):
-    if args.clade:
+    if clade:
         config[KEY_CLADE] = clade
         if config[KEY_CLADE] not in VALUE_VALID_CLADES:
             sys.stderr.write(cyan(
