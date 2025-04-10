@@ -95,8 +95,8 @@ def main(sysargs = sys.argv[1:]):
         print(green("Success! New tree figure written."))
         sys.exit(0)
     
-    config[KEY_OUTFILE_STEM],config[KEY_OUTDIR] = io.set_up_outfile(args.outfile,cwd,args.input, config[KEY_OUTDIR])
-    io.set_up_tempdir(args.tempdir,args.no_temp,cwd,config[KEY_OUTDIR], config)
+    config[KEY_OUTFILE_STEM],config[KEY_OUTDIR] = io.set_up_outfile_stem(args.outfile,cwd,args.input, config[KEY_OUTDIR])
+    io.set_up_tempdir(args.tempdir,args.no_temp,cwd,config[KEY_OUTDIR], config)#outfile_arg, cwd, query_arg, outfile, outdir
 
     io.pipeline_options(args.no_mask, args.no_itr_mask, args.additional_mask,args.sequence_mask, args.extract_cds, args.concatenate,config[KEY_CLADE],cwd, config)
 
@@ -127,7 +127,7 @@ def main(sysargs = sys.argv[1:]):
     for clade in config[KEY_ASSIGNED_CLADES]:
 
         if len(config[KEY_ASSIGNED_CLADES]) >1:
-            config[KEY_APPEND_CLADE_STR] = f".{clade}
+            config[KEY_APPEND_CLADE_STR] = f".{clade}"
 
             print(f"Running analysis for {clade} sequences.")
 
@@ -137,7 +137,7 @@ def main(sysargs = sys.argv[1:]):
         config[KEY_CDS_OUTFILENAME] = f"{config[KEY_OUTFILE_STEM] }{config[KEY_APPEND_CLADE_STR]}.cds.aln.fasta"
 
         config[KEY_OUTFILE] = os.path.join(config[KEY_OUTDIR],config[KEY_OUTFILENAME])
-        config[KEY_CDS_OUTFILE] = = os.path.join(config[KEY_OUTDIR],config[KEY_CDS_OUTFILENAME])
+        config[KEY_CDS_OUTFILE] = os.path.join(config[KEY_OUTDIR],config[KEY_CDS_OUTFILENAME])
         #filter the input file
 
         get_datafiles(config)

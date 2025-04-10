@@ -33,7 +33,7 @@ def set_up_outdir(outdir_arg,cwd,outdir):
                 sys.exit(-1)
     return outdir
 
-def set_up_outfile_stem(outfile_arg, cwd, query_arg, outfile, outdir):
+def set_up_outfile_stem(outfile_arg, cwd, query_arg, outdir):
     outfile_stem = ""
 
     if outfile_arg:
