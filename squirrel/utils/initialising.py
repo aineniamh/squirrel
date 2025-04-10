@@ -18,6 +18,7 @@ def setup_config_dict(cwd):
 
             KEY_CLADE:"cladeii",
             KEY_ASSIGNED_CLADES:[],
+            KEY_APPEND_CLADE_STR:"",
 
             KEY_OUTDIR:cwd,
             KEY_OUTFILE:None,
@@ -97,6 +98,7 @@ def get_datafiles(config):
     config[KEY_CLADE] = clade
     fasta_filename = ""
     gene_boundaries_file = ""
+    mask_file = ""
     if clade in ["cladei","cladeia","cladeib"]:
         fasta_filename = "NC_003310.fasta"
         mask_file = "to_mask.cladei.csv"
@@ -115,7 +117,6 @@ def get_datafiles(config):
     else:
         sys.stderr.write(cyan(f'Error: invalid clade specified. Please specify one of `cladei`, `cladeia`,`cladeib`, `cladeii`, `cladeiia`,`cladeiib`\n'))
         sys.exit(-1)
-
 
     resources = [
             {"key":KEY_REPORT_TEMPLATE,
