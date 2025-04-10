@@ -8,6 +8,7 @@ KEY_TO_MASK = "to_mask"
 KEY_GENE_BOUNDARIES = "gene_boundaries"
 KEY_OUTDIR = "outdir"
 KEY_OUTFILE = "alignment_file"
+KEY_EXCLUDE_FILE = "exclude_file"
 KEY_OUTFILE_STEM = "outfile_stem"
 KEY_OUTFILENAME = "outfilename"
 KEY_TEMPDIR = "tempdir"
@@ -27,6 +28,7 @@ KEY_ASSEMBLY_REFERENCES = "assembly_references"
 
 KEY_CLADE = "clade"
 KEY_ASSIGNED_CLADES = "assigned_clades"
+KEY_APPEND_CLADE_STR = "append_clade_str"
 KEY_RUN_PHYLO="run_phylo"
 KEY_RUN_APOBEC3_PHYLO = "run_apobec3_phylo"
 KEY_OUTGROUPS="outgroups"
@@ -58,3 +60,6 @@ OUTGROUP_DICT = {
     "cladeiia":["KJ642613|human|DRC|Equateur|1970-09-01"],
     "cladeiib":["KJ642615|human|Nigeria||1978"]
 }
+
+
+VALUE_EXCLUDE_FILE_STEM = "suggested_to_exclude"
