@@ -95,7 +95,7 @@ def main(sysargs = sys.argv[1:]):
         print(green("Success! New tree figure written."))
         sys.exit(0)
     
-    config[KEY_OUTFILE],config[KEY_CDS_OUTFILE],config[KEY_OUTFILENAME],config[KEY_OUTFILE_STEM],config[KEY_OUTDIR] = io.set_up_outfile(args.outfile,cwd,args.input, config[KEY_OUTFILE],config[KEY_OUTDIR])
+    config[KEY_OUTFILE_STEM],config[KEY_OUTDIR] = io.set_up_outfile(args.outfile,cwd,args.input, config[KEY_OUTDIR])
     io.set_up_tempdir(args.tempdir,args.no_temp,cwd,config[KEY_OUTDIR], config)
 
     io.pipeline_options(args.no_mask, args.no_itr_mask, args.additional_mask,args.sequence_mask, args.extract_cds, args.concatenate,config[KEY_CLADE],cwd, config)
@@ -109,6 +109,7 @@ def main(sysargs = sys.argv[1:]):
         config[KEY_INPUT_FASTA] = io.find_exclude_file(cwd,config[KEY_INPUT_FASTA],args.exclude,config)
 
     if config[KEY_CLADE] == "split":
+
         clade_snakefile = get_snakefile(thisdir,"clade")
         status = misc.run_snakemake(config,clade_snakefile,args.verbose,config)
 
@@ -126,20 +127,28 @@ def main(sysargs = sys.argv[1:]):
     for clade in config[KEY_ASSIGNED_CLADES]:
 
         if len(config[KEY_ASSIGNED_CLADES]) >1:
-            config[KEY_APPEND_CLADE_STR] = clade
+            config[KEY_APPEND_CLADE_STR] = f".{clade}
+
+            print(f"Running analysis for {clade} sequences.")
 
         config[KEY_CLADE] = clade
+        
+        config[KEY_OUTFILENAME] = f"{config[KEY_OUTFILE_STEM] }{config[KEY_APPEND_CLADE_STR]}.aln.fasta"
+        config[KEY_CDS_OUTFILENAME] = f"{config[KEY_OUTFILE_STEM] }{config[KEY_APPEND_CLADE_STR]}.cds.aln.fasta"
 
+        config[KEY_OUTFILE] = os.path.join(config[KEY_OUTDIR],config[KEY_OUTFILENAME])
+        config[KEY_CDS_OUTFILE] = = os.path.join(config[KEY_OUTDIR],config[KEY_CDS_OUTFILENAME])
         #filter the input file
 
-        #fix output files
         get_datafiles(config)
+
+        config[KEY_INPUT_FASTA] = os.path.join(config[KEY_TEMPDIR],f"{clade}.fasta")
 
         if args.seq_qc:
             print(green("QC mode activated. Squirrel will flag:"))
             print("- Clumps of unique SNPs\n- SNPs adjacent to Ns\n- Sequences with high N content")
             config[KEY_SEQ_QC] = True
-            config[KEY_EXCLUDE_FILE] = os.path.join(config[KEY_OUTDIR],f"{VALUE_EXCLUDE_FILE_STEM}.{config[KEY_APPEND_CLADE_STR]}.csv")
+            config[KEY_EXCLUDE_FILE] = os.path.join(config[KEY_OUTDIR],f"{VALUE_EXCLUDE_FILE_STEM}{config[KEY_APPEND_CLADE_STR]}.csv")
             qc.check_flag_N_content(config[KEY_INPUT_FASTA],config[KEY_EXCLUDE_FILE],config)
         
         assembly_refs = []
@@ -160,13 +169,13 @@ def main(sysargs = sys.argv[1:]):
 
             if config[KEY_RUN_PHYLO]:
                 phylo_snakefile = get_snakefile(thisdir,"phylo")
-                config[KEY_PHYLOGENY] = f"{config[KEY_OUTFILE_STEM]}.tree"
+                config[KEY_PHYLOGENY] = f"{config[KEY_OUTFILE_STEM]}{config[KEY_APPEND_CLADE_STR]}.tree"
                 
                 config[KEY_OUTGROUP_STRING] = ",".join(config[KEY_OUTGROUPS])
                 config[KEY_OUTGROUP_SENTENCE] = " ".join(config[KEY_OUTGROUPS])
 
                 if config[KEY_RUN_APOBEC3_PHYLO]:
-                    config[KEY_PHYLOGENY_SVG] = f"{config[KEY_OUTFILE_STEM]}.tree.svg"
+                    config[KEY_PHYLOGENY_SVG] = f"{config[KEY_OUTFILE_STEM]}{config[KEY_APPEND_CLADE_STR]}.tree.svg"
                     phylo_snakefile = get_snakefile(thisdir,"reconstruction")
 
                 status = misc.run_snakemake(config,phylo_snakefile,args.verbose,config)
@@ -174,8 +183,8 @@ def main(sysargs = sys.argv[1:]):
                 if status:
                     if config[KEY_RUN_APOBEC3_PHYLO]:
                         if args.binary_partition_mask:
-                            outfile = os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILE_STEM]}.binary_partition_mask.csv")
-                            branch_reconstruction = os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILE_STEM]}.tree.branch_snps.reconstruction.csv")
+                            outfile = os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILE_STEM]}{config[KEY_APPEND_CLADE_STR]}.binary_partition_mask.csv")
+                            branch_reconstruction = os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILE_STEM]}{config[KEY_APPEND_CLADE_STR]}.tree.branch_snps.reconstruction.csv")
                             recon.find_binary_partition_mask(branch_reconstruction,args.bm_separate_dimers,config[KEY_REFERENCE_FASTA],outfile)
                             print(green(f"Binary partition mask string written to: "),outfile)
                         print(green("Ancestral reconstruction & phylogenetics complete."))
@@ -189,5 +198,5 @@ def main(sysargs = sys.argv[1:]):
                 print(green("Alignment complete."))
                 mask_file = ""
             # get the inputs for making the overall report
-            report =os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILE_STEM]}.report.html")
+            report =os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILE_STEM]}{config[KEY_APPEND_CLADE_STR]}.report.html")
             make_output_report(report,mask_file,config)
