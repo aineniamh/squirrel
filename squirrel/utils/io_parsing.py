@@ -33,9 +33,8 @@ def set_up_outdir(outdir_arg,cwd,outdir):
                 sys.exit(-1)
     return outdir
 
-def set_up_outfile(outfile_arg,cwd,query_arg, outfile, outdir):
+def set_up_outfile_stem(outfile_arg, cwd, query_arg, outfile, outdir):
     outfile_stem = ""
-    outfile_name = ""
 
     if outfile_arg:
         outfile_arg_dir = ""
@@ -48,15 +47,12 @@ def set_up_outfile(outfile_arg,cwd,query_arg, outfile, outdir):
         if "." in outfile_arg:
             # strip off extension if provided to get stem, keep for the name variable
             outfile_stem = ".".join(outfile_arg.split(".""")[:-1])
-            outfile_name = outfile_arg
         else:
             # add a stem to the aln outfile
             outfile_stem = outfile_arg
-            outfile_name = f"{outfile_stem}.aln.fasta"
             
         if outfile_arg_dir:
             # if the outfile provided was a path, join that path to the outdir
-            
             outdir = os.path.join(outdir,outfile_arg_dir)
             try:
                 if not os.path.exists(outdir):
@@ -67,27 +63,19 @@ def set_up_outfile(outfile_arg,cwd,query_arg, outfile, outdir):
     else:
         try:
             if not os.path.exists(os.path.join(cwd, query_arg[0])):
-                outfile_stem = "sequences"
-                outfile_name = "sequences.aln.fasta"
+                outfile_stem = VALUE_OUTFILE_STEM
             else:
                 # get the file name
                 query_file = query_arg[0].split("/")[-1]
                 
                 # get the file stem & name
                 outfile_stem = ".".join(query_file.split(".")[:-1])
-                outfile_name = f'{outfile_stem}.aln.fasta'
         except IndexError:
             sys.stderr.write(cyan(
                 f'Error: input query fasta could not be detected from a filepath or through stdin.\n'))
             sys.exit(-1)
 
-
-    outfile = os.path.join(outdir, outfile_name)
-
-    cds_outstr = f"{outfile_stem}.aln.cds.fasta"
-    cds_outfile = os.path.join(outdir, cds_outstr)
-
-    return outfile,cds_outfile,outfile_name,outfile_stem,outdir
+    return outfile_stem,outdir
 
 def set_up_tempdir(tempdir_arg,no_temp_arg,cwd,outdir,config):
 
