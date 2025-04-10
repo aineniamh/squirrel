@@ -11,6 +11,7 @@ setup(name='squirrel',
       scripts=[
             'squirrel/scripts/msa.smk',
             'squirrel/scripts/phylo.smk',
+            'squirrel/scripts/clade.smk',
             'squirrel/scripts/reconstruction.smk'
                 ],
       package_data={"squirrel":["data/*"]},
