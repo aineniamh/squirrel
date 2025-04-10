@@ -12,7 +12,7 @@ def get_clade_dict(panel):
     for record in SeqIO.parse(panel, "fasta"):
         tokens = record.description.split(" ")
         clade = [i.split("=")[1] for i in tokens if i.startswith("clade")][0]            
-        clade_dict[record.id] = clade.lower()
+        clade_dict[record.id] = clade.lower().rstrip("ab")
     return clade_dict
 
 def parse_paf(paf_file,panel, clade_out, config):
@@ -29,12 +29,6 @@ def parse_paf(paf_file,panel, clade_out, config):
             assigned_clade[seq_name] = clade
     return assigned_clade
 
-def annotate_fasta_with_clade(assigned_clade, input_fasta, output_fasta):
-    with open(output_fasta,"w") as fw:
-        for record in SeqIO.parse(input_fasta,"fasta"):
-            clade = assigned_clade[record.id]
-            fw.write(f">{record.description} clade={clade}\n{record.seq}\n")
-
 def condense_clade_info(assigned_clade):
     clades = set()
     for i in assigned_clade.values():
@@ -45,3 +39,18 @@ def condense_clade_info(assigned_clade):
         else:
             clades.add("unassigned")
     return {KEY_ASSIGNED_CLADES: list(clades)}
+
+
+def annotate_fasta_with_clade(clade_info, assigned_clade, input_fasta, tempdir):
+    clades = clade_info[KEY_ASSIGNED_CLADES]
+    file_handle_dict = {}
+    for clade in clades:
+        file_handle_dict[clade] = open(os.path.join(tempdir,f"{clade}.fasta"),"w")
+
+    for record in SeqIO.parse(input_fasta,"fasta"):
+        clade = assigned_clade[record.id]
+        file_handle_dict[clade].write(f">{record.description}\n{record.seq}\n")
+
+    for clade in clades:
+        file_handle_dict[clade].close()
+        
