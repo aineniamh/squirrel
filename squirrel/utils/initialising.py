@@ -22,6 +22,7 @@ def setup_config_dict(cwd):
 
             KEY_OUTDIR:cwd,
             KEY_OUTFILE:None,
+            KEY_OUTFILE_STEM:None,
             KEY_TEMPDIR:None,
             KEY_NO_TEMP:False,
 
