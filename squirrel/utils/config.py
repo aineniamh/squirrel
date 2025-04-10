@@ -61,5 +61,5 @@ OUTGROUP_DICT = {
     "cladeiib":["KJ642615|human|Nigeria||1978"]
 }
 
-
+VALUE_OUTFILE_STEM = "sequences"
 VALUE_EXCLUDE_FILE_STEM = "suggested_to_exclude"
