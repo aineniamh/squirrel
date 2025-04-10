@@ -109,72 +109,85 @@ def main(sysargs = sys.argv[1:]):
         config[KEY_INPUT_FASTA] = io.find_exclude_file(cwd,config[KEY_INPUT_FASTA],args.exclude,config)
 
     if config[KEY_CLADE] == "split":
-        clade_snakefile = get_snakefile(thisdir,"clade.smk")
-        status = misc.run_snakemake(config,snakefile,args.verbose,config)
+        clade_snakefile = get_snakefile(thisdir,"clade")
+        status = misc.run_snakemake(config,clade_snakefile,args.verbose,config)
 
-        clade_out = os.path.join(config[KEY_TEMPDIR],"clades.yaml")
-        config[KEY_INPUT_FASTA] = os.path.join(config[KEY_TEMPDIR],"input.clade_annotated.fasta")
         
-        config[KEY_ASSIGNED_CLADES] = ca.read_clades(clade_out, config)
+        clade_config = misc.load_yaml(os.path.join(config[KEY_TEMPDIR],"clades.yaml"))
+        config[KEY_ASSIGNED_CLADES] = clade_config[KEY_ASSIGNED_CLADES]
+        print(green("Clades assigned:"))
+        
+        for clade in config[KEY_ASSIGNED_CLADES]:
+            print(f"- {clade}")
+    else:
+        config[KEY_ASSIGNED_CLADES] = [config[KEY_CLADE]]
     
-    get_datafiles(config)
-
-    if args.seq_qc:
-        print(green("QC mode activated. Squirrel will flag:"))
-        print("- Clumps of unique SNPs\n- SNPs adjacent to Ns\n- Sequences with high N content")
-        config[KEY_SEQ_QC] = True
-        exclude_file = os.path.join(config[KEY_OUTDIR],"suggested_to_exclude.csv")
-        qc.check_flag_N_content(config[KEY_INPUT_FASTA],exclude_file,config)
     
-    assembly_refs = []
-    if args.seq_qc and args.run_apobec3_phylo:
-        print("- Reversions to reference\n- Convergent mutations")
-        assembly_refs = qc.find_assembly_refs(cwd,args.assembly_refs,config)
-        # args.run_phylo = True
+    for clade in config[KEY_ASSIGNED_CLADES]:
 
-    # config[KEY_FIG_HEIGHT] = recon.get_fig_height(config[KEY_INPUT_FASTA])
+        if len(config[KEY_ASSIGNED_CLADES]) >1:
+            config[KEY_APPEND_CLADE_STR] = clade
 
-    
+        config[KEY_CLADE] = clade
 
-    config[KEY_INPUT_FASTA] = io.phylo_options(args.run_phylo,args.run_apobec3_phylo,args.outgroups,args.include_background,args.binary_partition_mask,config[KEY_INPUT_FASTA],config)
+        #filter the input file
 
-    snakefile = get_snakefile(thisdir,"msa")
-
-    status = misc.run_snakemake(config,snakefile,args.verbose,config)
-
-
-    if status:
-
-        if config[KEY_RUN_PHYLO]:
-            phylo_snakefile = get_snakefile(thisdir,"phylo")
-            config[KEY_PHYLOGENY] = f"{config[KEY_OUTFILE_STEM]}.tree"
-            
-            config[KEY_OUTGROUP_STRING] = ",".join(config[KEY_OUTGROUPS])
-            config[KEY_OUTGROUP_SENTENCE] = " ".join(config[KEY_OUTGROUPS])
-
-            if config[KEY_RUN_APOBEC3_PHYLO]:
-                config[KEY_PHYLOGENY_SVG] = f"{config[KEY_OUTFILE_STEM]}.tree.svg"
-                phylo_snakefile = get_snakefile(thisdir,"reconstruction")
-
-            status = misc.run_snakemake(config,phylo_snakefile,args.verbose,config)
-
-            if status:
-                if config[KEY_RUN_APOBEC3_PHYLO]:
-                    if args.binary_partition_mask:
-                        outfile = os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILE_STEM]}.binary_partition_mask.csv")
-                        branch_reconstruction = os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILE_STEM]}.tree.branch_snps.reconstruction.csv")
-                        recon.find_binary_partition_mask(branch_reconstruction,args.bm_separate_dimers,config[KEY_REFERENCE_FASTA],outfile)
-                        print(green(f"Binary partition mask string written to: "),outfile)
-                    print(green("Ancestral reconstruction & phylogenetics complete."))
-                else:
-                    print(green("Phylogenetics complete."))
+        #fix output files
+        get_datafiles(config)
 
         if args.seq_qc:
-            mask_file = qc.check_for_snp_anomalies(assembly_refs,config,config[KEY_FIG_HEIGHT])
-            print(green("Flagged mutations writted to:"), f"{mask_file}")
-        else:
-            print(green("Alignment complete."))
-            mask_file = ""
-        # get the inputs for making the overall report
-        report =os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILE_STEM]}.report.html")
-        make_output_report(report,mask_file,config)
+            print(green("QC mode activated. Squirrel will flag:"))
+            print("- Clumps of unique SNPs\n- SNPs adjacent to Ns\n- Sequences with high N content")
+            config[KEY_SEQ_QC] = True
+            config[KEY_EXCLUDE_FILE] = os.path.join(config[KEY_OUTDIR],f"{VALUE_EXCLUDE_FILE_STEM}.{config[KEY_APPEND_CLADE_STR]}.csv")
+            qc.check_flag_N_content(config[KEY_INPUT_FASTA],config[KEY_EXCLUDE_FILE],config)
+        
+        assembly_refs = []
+        if args.seq_qc and args.run_apobec3_phylo:
+            print("- Reversions to reference\n- Convergent mutations")
+            assembly_refs = qc.find_assembly_refs(cwd,args.assembly_refs,config)
+            # args.run_phylo = True
+
+        # config[KEY_FIG_HEIGHT] = recon.get_fig_height(config[KEY_INPUT_FASTA])
+
+        config[KEY_INPUT_FASTA] = io.phylo_options(args.run_phylo,args.run_apobec3_phylo,args.outgroups,args.include_background,args.binary_partition_mask,config[KEY_INPUT_FASTA],config)
+
+        snakefile = get_snakefile(thisdir,"msa")
+
+        status = misc.run_snakemake(config,snakefile,args.verbose,config)
+
+        if status:
+
+            if config[KEY_RUN_PHYLO]:
+                phylo_snakefile = get_snakefile(thisdir,"phylo")
+                config[KEY_PHYLOGENY] = f"{config[KEY_OUTFILE_STEM]}.tree"
+                
+                config[KEY_OUTGROUP_STRING] = ",".join(config[KEY_OUTGROUPS])
+                config[KEY_OUTGROUP_SENTENCE] = " ".join(config[KEY_OUTGROUPS])
+
+                if config[KEY_RUN_APOBEC3_PHYLO]:
+                    config[KEY_PHYLOGENY_SVG] = f"{config[KEY_OUTFILE_STEM]}.tree.svg"
+                    phylo_snakefile = get_snakefile(thisdir,"reconstruction")
+
+                status = misc.run_snakemake(config,phylo_snakefile,args.verbose,config)
+
+                if status:
+                    if config[KEY_RUN_APOBEC3_PHYLO]:
+                        if args.binary_partition_mask:
+                            outfile = os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILE_STEM]}.binary_partition_mask.csv")
+                            branch_reconstruction = os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILE_STEM]}.tree.branch_snps.reconstruction.csv")
+                            recon.find_binary_partition_mask(branch_reconstruction,args.bm_separate_dimers,config[KEY_REFERENCE_FASTA],outfile)
+                            print(green(f"Binary partition mask string written to: "),outfile)
+                        print(green("Ancestral reconstruction & phylogenetics complete."))
+                    else:
+                        print(green("Phylogenetics complete."))
+
+            if args.seq_qc:
+                mask_file = qc.check_for_snp_anomalies(assembly_refs,config,config[KEY_FIG_HEIGHT])
+                print(green("Flagged mutations writted to:"), f"{mask_file}")
+            else:
+                print(green("Alignment complete."))
+                mask_file = ""
+            # get the inputs for making the overall report
+            report =os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILE_STEM]}.report.html")
+            make_output_report(report,mask_file,config)
