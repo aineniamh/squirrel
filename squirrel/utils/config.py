@@ -60,7 +60,8 @@ OUTGROUP_DICT = {
     "cladeib":["KJ642613|human|DRC|Equateur|1970-09-01"],
     "cladeii":["KJ642613|human|DRC|Equateur|1970-09-01"],
     "cladeiia":["KJ642613|human|DRC|Equateur|1970-09-01"],
-    "cladeiib":["KJ642615|human|Nigeria||1978"]
+    "cladeiib":["KJ642615|human|Nigeria||1978"],
+    "split":["KJ642615|human|Nigeria||1978"]
 }
 
 VALUE_OUTFILE_STEM = "sequences"
