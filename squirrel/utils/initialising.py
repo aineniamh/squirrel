@@ -19,6 +19,7 @@ def setup_config_dict(cwd):
             KEY_CLADE:"cladeii",
             KEY_ASSIGNED_CLADES:[],
             KEY_APPEND_CLADE_STR:"",
+            KEY_SPLIT_CLADE:False,
 
             KEY_OUTDIR:cwd,
             KEY_OUTFILE:None,
