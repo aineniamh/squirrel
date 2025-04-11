@@ -125,7 +125,7 @@ def main(sysargs = sys.argv[1:]):
     
     
     for clade in config[KEY_ASSIGNED_CLADES]:
-
+        
         if len(config[KEY_ASSIGNED_CLADES]) >1:
             config[KEY_APPEND_CLADE_STR] = f".{clade}"
 
@@ -142,8 +142,9 @@ def main(sysargs = sys.argv[1:]):
         #filter the input file
 
         get_datafiles(config)
-
-        config[KEY_INPUT_FASTA] = os.path.join(config[KEY_TEMPDIR],f"{clade}.fasta")
+        
+        if args.clade == "split":
+            config[KEY_INPUT_FASTA] = os.path.join(config[KEY_TEMPDIR],f"{clade}.fasta")
 
         if args.seq_qc:
             print(green("QC mode activated. Squirrel will flag:"))
