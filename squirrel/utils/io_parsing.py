@@ -428,8 +428,9 @@ def phylo_options(run_phylo,run_apobec3_phylo,outgroups,include_background,binar
                 print(cyan('Note: outgroup(s) are selected automatically with using `--include-background` flag.\n'))
             config[KEY_INCLUDE_BACKGROUND] = "True"
             clade = config[KEY_CLADE]
-            outgroups = OUTGROUP_DICT[clade]
-            print(green("Outgroup selected:"),outgroups[0])
+            config[KEY_OUTGROUPS] = OUTGROUP_DICT[clade]
+            
+            print(green("Outgroup selected:"),config[KEY_OUTGROUPS][0])
 
             new_input_fasta = add_background_to_input(input_fasta,config[KEY_BACKGROUND_FASTA],config[KEY_CLADE],config)
             return new_input_fasta
@@ -456,8 +457,8 @@ def phylo_options(run_phylo,run_apobec3_phylo,outgroups,include_background,binar
 
         elif not outgroups:
             
-            outgroups = OUTGROUP_DICT[clade]
-            print(green("Outgroup selected:"),outgroups[0])
+            config[KEY_OUTGROUPS] = OUTGROUP_DICT[clade]
+            print(green("Outgroup selected:"),config[KEY_OUTGROUPS][0])
             new_input_fasta = add_outgroup_to_input(input_fasta,config[KEY_BACKGROUND_FASTA],config[KEY_CLADE],config)
             return new_input_fasta
 
