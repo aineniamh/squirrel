@@ -138,6 +138,7 @@ def main(sysargs = sys.argv[1:]):
 
         config[KEY_OUTFILE] = os.path.join(config[KEY_OUTDIR],config[KEY_OUTFILENAME])
         config[KEY_CDS_OUTFILE] = os.path.join(config[KEY_OUTDIR],config[KEY_CDS_OUTFILENAME])
+
         #filter the input file
 
         get_datafiles(config)
@@ -192,11 +193,14 @@ def main(sysargs = sys.argv[1:]):
                         print(green("Phylogenetics complete."))
 
             if args.seq_qc:
-                mask_file = qc.check_for_snp_anomalies(assembly_refs,config,config[KEY_FIG_HEIGHT])
+                mask_file = os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILE_STEM]}{config[KEY_APPEND_CLADE_STR]}.suggested_mask.csv")
+
+                qc.check_for_snp_anomalies(assembly_refs,mask_file,config,config[KEY_FIG_HEIGHT])
                 print(green("Flagged mutations writted to:"), f"{mask_file}")
             else:
                 print(green("Alignment complete."))
                 mask_file = ""
+            
             # get the inputs for making the overall report
-            report =os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILE_STEM]}{config[KEY_APPEND_CLADE_STR]}.report.html")
-            make_output_report(report,mask_file,config)
+    report =os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILE_STEM]}.report.html")
+    make_output_report(report,config)
