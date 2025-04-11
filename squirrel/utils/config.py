@@ -29,6 +29,7 @@ KEY_ASSEMBLY_REFERENCES = "assembly_references"
 
 KEY_CLADE = "clade"
 KEY_ASSIGNED_CLADES = "assigned_clades"
+KEY_SPLIT_CLADE="split_clade"
 KEY_APPEND_CLADE_STR = "append_clade_str"
 KEY_RUN_PHYLO="run_phylo"
 KEY_RUN_APOBEC3_PHYLO = "run_apobec3_phylo"
