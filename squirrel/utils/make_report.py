@@ -34,7 +34,7 @@ def make_output_report(report_to_generate,config):
     for clade in config[KEY_ASSIGNED_CLADES]:
         data_for_report = {}
         if config[KEY_RUN_APOBEC3_PHYLO]:
-            if clade in ["cladei","cladeii"]:
+            if config[KEY_SPLIT_CLADE]:
                 tree_image_file = os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILE_STEM]}.{clade}.tree.svg")
             else:
                 tree_image_file = os.path.join(config[KEY_OUTDIR],config[KEY_PHYLOGENY_SVG])
@@ -44,7 +44,7 @@ def make_output_report(report_to_generate,config):
 
         if config[KEY_SEQ_QC]:
             rows = []
-            if clade in ["cladei","cladeii"]:
+            if config[KEY_SPLIT_CLADE]:
                 mask_file = os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILE_STEM]}.{clade}.suggested_mask.csv")
             else:
                 mask_file = os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILE_STEM]}.suggested_mask.csv")
@@ -55,7 +55,7 @@ def make_output_report(report_to_generate,config):
             data_for_report["mask_csv"]=rows
         else:
             data_for_report["mask_csv"]=[]
-        if clade in ["cladei","cladeii"]:
+        if config[KEY_SPLIT_CLADE]:
             data_for_report["alignment_file"] = os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILE_STEM]}.{clade}.aln.fasta")
         else:
             data_for_report["alignment_file"] = config[KEY_OUTFILE]
