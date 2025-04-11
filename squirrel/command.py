@@ -142,7 +142,7 @@ def main(sysargs = sys.argv[1:]):
         #filter the input file
 
         get_datafiles(config)
-        
+
         if args.clade == "split":
             config[KEY_INPUT_FASTA] = os.path.join(config[KEY_TEMPDIR],f"{clade}.fasta")
 
@@ -161,7 +161,7 @@ def main(sysargs = sys.argv[1:]):
 
         # config[KEY_FIG_HEIGHT] = recon.get_fig_height(config[KEY_INPUT_FASTA])
 
-        config[KEY_INPUT_FASTA] = io.phylo_options(args.run_phylo,args.run_apobec3_phylo,args.outgroups,args.include_background,args.binary_partition_mask,config[KEY_INPUT_FASTA],config)
+        config[KEY_INPUT_FASTA] = io.phylo_options(args.run_phylo,args.run_apobec3_phylo,args.outgroups,args.include_background,args.binary_partition_mask,config[KEY_INPUT_FASTA],clade,config)
 
         snakefile = get_snakefile(thisdir,"msa")
 
