@@ -64,6 +64,7 @@ def main(sysargs = sys.argv[1:]):
     pf_group.add_argument("--fig-width",action="store",help="Overwrite tree figure default width.",type=int)
     pf_group.add_argument("--point-style",action="store",help="Shape of points for apobec3 reconstruction figure. Options: circle, square. Default: circle")
     pf_group.add_argument("--point-justify",action="store",help="Justification of points for apobec3 reconstruction figure. Options: left, right. Default: left")
+    pf_group.add_argument("--interactive-tree",action="store_true",help="Create a separate interactive file built from R functions")
 
     m_group = parser.add_argument_group('Misc options')
     m_group.add_argument("-v","--version", action='version', version=f"squirrel {__version__}")
@@ -131,10 +132,12 @@ def main(sysargs = sys.argv[1:]):
 
             print(f"Running analysis for {clade} sequences.")
 
+
         config[KEY_CLADE] = clade
         
         config[KEY_OUTFILENAME] = f"{config[KEY_OUTFILE_STEM] }{config[KEY_APPEND_CLADE_STR]}.aln.fasta"
         config[KEY_CDS_OUTFILENAME] = f"{config[KEY_OUTFILE_STEM] }{config[KEY_APPEND_CLADE_STR]}.cds.aln.fasta"
+
 
         config[KEY_OUTFILE] = os.path.join(config[KEY_OUTDIR],config[KEY_OUTFILENAME])
         config[KEY_CDS_OUTFILE] = os.path.join(config[KEY_OUTDIR],config[KEY_CDS_OUTFILENAME])
@@ -158,6 +161,22 @@ def main(sysargs = sys.argv[1:]):
             print("- Reversions to reference\n- Convergent mutations")
             assembly_refs = qc.find_assembly_refs(cwd,args.assembly_refs,config)
             # args.run_phylo = True
+
+        if config[KEY_RUN_PHYLO]:
+            phylo_snakefile = get_script(thisdir,"phylo.smk")
+            config[KEY_PHYLOGENY] = f"{config[KEY_OUTFILE_STEM]}.tree"
+            
+            config[KEY_OUTGROUP_STRING] = ",".join(config[KEY_OUTGROUPS])
+            config[KEY_OUTGROUP_SENTENCE] = " ".join(config[KEY_OUTGROUPS])
+
+            if config[KEY_RUN_APOBEC3_PHYLO]:
+                config[KEY_PHYLOGENY_SVG] = f"{config[KEY_OUTFILE_STEM]}.tree.svg"
+                config[KEY_PHYLOGENY_INTERACTIVE] = f"{config[KEY_OUTFILE_STEM]}.tree.interactive.html"
+                if args.interactive_tree:
+                    config[KEY_INTERACTIVE_SCRIPT] = get_script(thisdir, "interactive_tree.R")
+                else: 
+                    config[KEY_INTERACTIVE_SCRIPT] = ''
+                phylo_snakefile = get_script(thisdir, "reconstruction.smk")
 
         # config[KEY_FIG_HEIGHT] = recon.get_fig_height(config[KEY_INPUT_FASTA])
 
