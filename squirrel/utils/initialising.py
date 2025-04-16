@@ -53,15 +53,15 @@ def setup_config_dict(cwd):
             }
     return default_dict
 
-def get_snakefile(thisdir,filename):
-    snakefile = ""
-    # in this case now, the snakefile used should be the name of the analysis mode (i.e. pangolearn, usher or preprocessing)
-    snakefile = os.path.join(thisdir, 'scripts',f'{filename}.smk')
-    if not os.path.exists(snakefile):
-        sys.stderr.write(cyan(f'Error: cannot find Snakefile at {snakefile}. Check installation\n'))
-        sys.exit(-1)
-    return snakefile
+# Necessary for scripts other than the python utilities (which should integrate more seamlessly through import)
+def get_script(thisdir, filename):
+    script_path = ""
 
+    script_path = os.path.join(thisdir, 'scripts', filename)
+    if not os.path.exists(script_path):
+        sys.stderr.write(cyan(f'Error: cannot find file at {script_path}. Check installation\n'))
+        sys.exit(-1)
+    return script_path
 
 def package_data_check(filename,directory,key,config):
     try:
