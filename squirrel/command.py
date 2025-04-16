@@ -111,7 +111,7 @@ def main(sysargs = sys.argv[1:]):
 
     if config[KEY_CLADE] == "split":
 
-        clade_snakefile = get_script(thisdir,"clade")
+        clade_snakefile = get_script(thisdir,"clade.smk")
         status = misc.run_snakemake(config,clade_snakefile,args.verbose,config)
 
         
@@ -162,42 +162,33 @@ def main(sysargs = sys.argv[1:]):
             assembly_refs = qc.find_assembly_refs(cwd,args.assembly_refs,config)
             # args.run_phylo = True
 
-        if config[KEY_RUN_PHYLO]:
-            phylo_snakefile = get_script(thisdir,"phylo.smk")
-            config[KEY_PHYLOGENY] = f"{config[KEY_OUTFILE_STEM]}.tree"
-            
-            config[KEY_OUTGROUP_STRING] = ",".join(config[KEY_OUTGROUPS])
-            config[KEY_OUTGROUP_SENTENCE] = " ".join(config[KEY_OUTGROUPS])
-
-            if config[KEY_RUN_APOBEC3_PHYLO]:
-                config[KEY_PHYLOGENY_SVG] = f"{config[KEY_OUTFILE_STEM]}.tree.svg"
-                config[KEY_PHYLOGENY_INTERACTIVE] = f"{config[KEY_OUTFILE_STEM]}.tree.interactive.html"
-                if args.interactive_tree:
-                    config[KEY_INTERACTIVE_SCRIPT] = get_script(thisdir, "interactive_tree.R")
-                else: 
-                    config[KEY_INTERACTIVE_SCRIPT] = ''
-                phylo_snakefile = get_script(thisdir, "reconstruction.smk")
-
         # config[KEY_FIG_HEIGHT] = recon.get_fig_height(config[KEY_INPUT_FASTA])
 
         config[KEY_INPUT_FASTA] = io.phylo_options(args.run_phylo,args.run_apobec3_phylo,args.outgroups,args.include_background,args.binary_partition_mask,config[KEY_INPUT_FASTA],clade,config)
 
-        snakefile = get_script(thisdir,"msa")
+        snakefile = get_script(thisdir,"msa.smk")
 
         status = misc.run_snakemake(config,snakefile,args.verbose,config)
 
         if status:
 
             if config[KEY_RUN_PHYLO]:
-                phylo_snakefile = get_script(thisdir,"phylo")
+                phylo_snakefile = get_script(thisdir,"phylo.smk")
                 config[KEY_PHYLOGENY] = f"{config[KEY_OUTFILE_STEM]}{config[KEY_APPEND_CLADE_STR]}.tree"
                 
                 config[KEY_OUTGROUP_STRING] = ",".join(config[KEY_OUTGROUPS])
                 config[KEY_OUTGROUP_SENTENCE] = " ".join(config[KEY_OUTGROUPS])
 
+                config[KEY_PHYLOGENY_INTERACTIVE] = f"{config[KEY_OUTFILE_STEM]}.tree.interactive.html"
+                
+                if args.interactive_tree:
+                    config[KEY_INTERACTIVE_SCRIPT] = get_script(thisdir, "interactive_tree.R")
+                else: 
+                    config[KEY_INTERACTIVE_SCRIPT] = ''
+
                 if config[KEY_RUN_APOBEC3_PHYLO]:
                     config[KEY_PHYLOGENY_SVG] = f"{config[KEY_OUTFILE_STEM]}{config[KEY_APPEND_CLADE_STR]}.tree.svg"
-                    phylo_snakefile = get_script(thisdir,"reconstruction")
+                    phylo_snakefile = get_script(thisdir,"reconstruction.smk")
 
                 status = misc.run_snakemake(config,phylo_snakefile,args.verbose,config)
 
