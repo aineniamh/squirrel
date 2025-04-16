@@ -111,7 +111,7 @@ def main(sysargs = sys.argv[1:]):
 
     if config[KEY_CLADE] == "split":
 
-        clade_snakefile = get_snakefile(thisdir,"clade")
+        clade_snakefile = get_script(thisdir,"clade")
         status = misc.run_snakemake(config,clade_snakefile,args.verbose,config)
 
         
@@ -182,14 +182,14 @@ def main(sysargs = sys.argv[1:]):
 
         config[KEY_INPUT_FASTA] = io.phylo_options(args.run_phylo,args.run_apobec3_phylo,args.outgroups,args.include_background,args.binary_partition_mask,config[KEY_INPUT_FASTA],clade,config)
 
-        snakefile = get_snakefile(thisdir,"msa")
+        snakefile = get_script(thisdir,"msa")
 
         status = misc.run_snakemake(config,snakefile,args.verbose,config)
 
         if status:
 
             if config[KEY_RUN_PHYLO]:
-                phylo_snakefile = get_snakefile(thisdir,"phylo")
+                phylo_snakefile = get_script(thisdir,"phylo")
                 config[KEY_PHYLOGENY] = f"{config[KEY_OUTFILE_STEM]}{config[KEY_APPEND_CLADE_STR]}.tree"
                 
                 config[KEY_OUTGROUP_STRING] = ",".join(config[KEY_OUTGROUPS])
@@ -197,7 +197,7 @@ def main(sysargs = sys.argv[1:]):
 
                 if config[KEY_RUN_APOBEC3_PHYLO]:
                     config[KEY_PHYLOGENY_SVG] = f"{config[KEY_OUTFILE_STEM]}{config[KEY_APPEND_CLADE_STR]}.tree.svg"
-                    phylo_snakefile = get_snakefile(thisdir,"reconstruction")
+                    phylo_snakefile = get_script(thisdir,"reconstruction")
 
                 status = misc.run_snakemake(config,phylo_snakefile,args.verbose,config)
 
