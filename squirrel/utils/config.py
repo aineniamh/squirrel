@@ -2,15 +2,18 @@
 
 KEY_INPUT_FASTA="fasta"
 KEY_REFERENCE_FASTA = "reference_fasta"
+KEY_REFERENCE_PANEL = "reference_panel"
 KEY_BACKGROUND_FASTA = "background_fasta"
 KEY_TO_MASK = "to_mask"
 KEY_GENE_BOUNDARIES = "gene_boundaries"
 KEY_OUTDIR = "outdir"
 KEY_OUTFILE = "alignment_file"
+KEY_EXCLUDE_FILE = "exclude_file"
 KEY_OUTFILE_STEM = "outfile_stem"
 KEY_OUTFILENAME = "outfilename"
 KEY_TEMPDIR = "tempdir"
 KEY_CDS_OUTFILE = "cds_outfile"
+KEY_CDS_OUTFILENAME = "cds_outfilename"
 KEY_CONCATENATE = "concatenate"
 KEY_NO_TEMP="no_temp"
 KEY_VERBOSE="verbose"
@@ -25,6 +28,9 @@ KEY_SEQ_QC = "seq_qc"
 KEY_ASSEMBLY_REFERENCES = "assembly_references"
 
 KEY_CLADE = "clade"
+KEY_ASSIGNED_CLADES = "assigned_clades"
+KEY_SPLIT_CLADE="split_clade"
+KEY_APPEND_CLADE_STR = "append_clade_str"
 KEY_RUN_PHYLO="run_phylo"
 KEY_RUN_APOBEC3_PHYLO = "run_apobec3_phylo"
 KEY_OUTGROUPS="outgroups"
@@ -48,7 +54,7 @@ KEY_POINT_STYLE = "point_style"
 KEY_POINT_JUSTIFY = "point_justify"
 
 VALUE_TRIM_END = 190788
-VALUE_VALID_CLADES = ["cladei","cladeia","cladeib","cladeii","cladeiia","cladeiib","variola"]
+VALUE_VALID_CLADES = ["cladei","cladeia","cladeib","cladeii","cladeiia","cladeiib","variola","split"]
 OUTGROUP_DICT = {
     "variola":["KJ642617|Nigeria|1971"],
     "cladei":["KJ642615|human|Nigeria||1978"],
@@ -56,5 +62,9 @@ OUTGROUP_DICT = {
     "cladeib":["KJ642613|human|DRC|Equateur|1970-09-01"],
     "cladeii":["KJ642613|human|DRC|Equateur|1970-09-01"],
     "cladeiia":["KJ642613|human|DRC|Equateur|1970-09-01"],
-    "cladeiib":["KJ642615|human|Nigeria||1978"]
+    "cladeiib":["KJ642615|human|Nigeria||1978"],
+    "split":["KJ642615|human|Nigeria||1978"]
 }
+
+VALUE_OUTFILE_STEM = "sequences"
+VALUE_EXCLUDE_FILE_STEM = "suggested_to_exclude"

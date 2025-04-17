@@ -34,3 +34,7 @@ jobs:
         run: squirrel ./test/cI_test.fasta --clade cladei  --run-phylo --include-background 2>&1 | tee squirrel_bg.log
       - name: Run squirrel --include-background with test data and outdir specified and seqqc
         run: squirrel ./test/cI_test.fasta --clade cladei -o squirrel_output --run-phylo --seq-qc --include-background 2>&1 | tee squirrel_bg.log
+      - name: Run squirrel --include-background with test data and outdir specified and seqqc with clade split
+        run: squirrel ./test/varied_test.fasta --clade split -o squirrel_output --run-phylo --seq-qc --include-background 2>&1 | tee squirrel_split.log
+      - name: Run squirrel variola
+        run: squirrel ./test/cI_test.fasta --clade variola -o squirrel_output --run-phylo --seq-qc --include-background 2>&1 | tee squirrel_var.log

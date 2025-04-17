@@ -540,24 +540,27 @@
         <h3>Best-practice phylogenetics for MPXV analysis</h3>
         <br>
         </div>
+    
     <br>
     <% section_count = 1 %>
-    <h2>${section_count}. Alignment</h2>
+    %for clade in data_for_both_clades:
+    <%data_for_report=data_for_both_clades[clade]%>
+    <h2>${section_count}. Alignment for ${clade}</h2>
     <% section_count +=1 %>
       <p>
-        Output alignment written to <a href="${config['alignment_file']}">${config['alignment_file'].split('/')[-1]}</a> 
+        Output alignment written to <a href="${config['outdir']}">${config['outdir']}</a> 
       </p>
     
     <% figure_count = 0 %>
     
     %if config["run_phylo"]:
-        <h2>${section_count}. Tree file</h2>
+        <h2>${section_count}. Tree file for ${clade}</h2>
         <% section_count +=1 %>
         <p>
-          Output tree file written to <a href="${config['phylogeny']}">${config['phylogeny']}</a> 
+          Output tree file written to <a href="${config['outdir']}">${config['outdir']}</a> 
         </p>
         %if config["run_apobec3_phylo"]:
-          <h2>${section_count}. Phylo image</h2>
+          <h2>${section_count}. Phylo image for ${clade}</h2>
           <% section_count +=1 %>
           <br>
           <button class="accordion">Export image</button>
@@ -582,13 +585,13 @@
           exportImagePNG("#phylo_png","#phylo_div", "phylo_image");
           </script>
           <% figure_count +=1 %>
-          <h3><strong>Figure ${figure_count}</strong> | Phylogenetic tree with APOBEC3 reconstruction</h3>
+          <h3><strong>Figure ${figure_count}</strong> | Phylogenetic tree with APOBEC3 reconstruction for ${clade}</h3>
                   <hr>  
         %endif
     %endif
     %if config["seq_qc"]:
 
-      <h2>${section_count}. Suggested sites to mask</h2>
+      <h2>${section_count}. Suggested sites to mask for ${clade}</h2>
       <% section_count +=1 %>
     
       <table class="display nowrap" id="myTable1">
@@ -635,7 +638,7 @@
   </script>
 
     %endif
-
+  % endfor
 
 <script>
   function exportImageSVG(buttonID,svgID,name){

@@ -7,9 +7,9 @@
 
 Why use squirrel? 
 
-The MPXV genome is pretty challenging to work with and do reliable phylogenetics on. It is large (~200kb), has tracts of low complexity and repetitive regions, and has large deletions, which can lead to difficulties producing a reliable alignment. With squirrel, we provide a rapid way of producing reliable [alignments](#how-it-works---alignment) for MPXV and also enable maximum-likelihood [phylogenetics pipeline](#phylogenetics-options-within-squirrel) tree estimation. 
+The MPXV genome is pretty challenging to work with and do reliable phylogenetics on. It is large (~200kb), has tracts of low complexity and repetitive regions, and has large deletions, which can lead to difficulties producing a reliable alignment. With squirrel, we provide a rapid way of producing reliable [alignments](#how-it-works---alignment) for MPXV and also enable maximum-likelihood [phylogenetics pipeline](#phylogenetics-options-within-squirrel) tree estimation.
 
-The reliability of tree estimation is determined by the quality of the input genome sequences. In [QC mode](#alignment-quality-control), squirrel can flag potential issues in the MPXV sequences that have been provided for alignment (e.g. SNPS near tracts of N, clusters of unique SNPs, reversions to reference alleles and convergent mutations) and outputs these in a mask file for investigation. We suggest you use this information to examine the alignment and pay close attention to the regions flagged. Squirrel can then accept this file with suggested masks and apply it to the sequences before doing phylogenetics. 
+The reliability of tree estimation is determined by the quality of the input genome sequences. In [QC mode](#alignment-quality-control), squirrel can flag potential issues in the MPXV sequences that have been provided for alignment (e.g. SNPs near tracts of N, clusters of unique SNPs, reversions to reference alleles and convergent mutations) and outputs these in a mask file for investigation. We suggest you use this information to examine the alignment and pay close attention to the regions flagged. Squirrel can then accept this file with suggested masks and apply it to the sequences before doing phylogenetics. 
 
 Enrichment of APOBEC3-mutations in the MPXV population are a signature of sustained human-to-human transmission. Identifying APOBEC3-like mutations in MPXV genomes from samples in a new outbreak can be a piece of evidence to support sustained human transmission of mpox. Squirrel can run an [APOBEC3-reconstruction](#phylogenetics-options-within-squirrel) and map these mutations onto the phylogeny.
 
@@ -27,6 +27,11 @@ squirrel <your-sequences.fasta>
 squirrel --clade cladei <your-sequences.fasta>
 ```
 where `<your-sequences.fasta>` is the name of your input FASTA sequence file. Click [here](#fasta) see what a FASTA formatted file looks like.
+
+> *NEW FEATURE* If your FASTA file contains a mixture of Clade I and Clade II sequences, squirrel can now assign clade to your sequences, *split* them into separate alignments for Clade I and II, and run all downstream analysis per clade. A single report is produced at the end. To align a mixed FASTA file, run:
+```
+squirrel --clade split <your-sequences.fasta>
+```
 
 Note, an EPI2ME wrapper for squirrel with the same options is available [here](https://github.com/artic-network/squirrel-nf).
 
@@ -74,7 +79,6 @@ squirrel <your-sequences.fasta> --run-phylo --include-background
 More details on `--include-background` can be found [here](#automatically-include-background-and-outgroups-with-include-background-mode).
 
 
-
 Signatures of APOBEC3-editing are characteristic of MPXV evolution when sustained transmission in the human population (see [O'Toole et al 2023](https://www.science.org/doi/10.1126/science.adg8116)). To also run the maximum-likelihood phylogenetics and ancestral reconstruction pipeline that characterises the APOBEC3-like and non-APOBEC3 mutations that have occurred across the evolutionary history of the virus sequences provided, run the following:
 
 ```
@@ -83,6 +87,10 @@ squirrel <your-sequences.fasta> --run-apobec3-phylo --outgroups outgroup_id1,out
 Note: the sequence file you provide must have the specified outgroups in it, with the IDs matching those you provide. This pipeline can accept one or more outgroup IDs. The outgroups help to root the phylogeny so that ancestral reconstruction can be performed in the appropriate direction. 
 
 ### Recommended outgroups for phylogeny mode
+
+> *NEW FEATURE* It is no longer necessary to manually specify an outgroup. By default the recommended outgroups below are selected and pruned off for each clade I or II specifically.
+
+
 - <strong>Clade I</strong>
 KJ642617,KJ642615
   

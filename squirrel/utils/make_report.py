@@ -28,25 +28,39 @@ def get_tree_svg(tree_image_file):
 
 config = {}
 
-def make_output_report(report_to_generate,mask_file,config):
+def make_output_report(report_to_generate,config):
     #need to call this multiple times if there are multiple reports wanted
-    
-    data_for_report = {}
-    if config[KEY_RUN_APOBEC3_PHYLO]:
-        tree_image_file = os.path.join(config[KEY_OUTDIR],config[KEY_PHYLOGENY_SVG])
-        data_for_report["phylo_svg_string"] = get_tree_svg(tree_image_file)
-    else:
-        data_for_report["phylo_svg_string"] = ""
+    data_for_both_clades = {}
+    for clade in config[KEY_ASSIGNED_CLADES]:
+        data_for_report = {}
+        if config[KEY_RUN_APOBEC3_PHYLO]:
+            if config[KEY_SPLIT_CLADE]:
+                tree_image_file = os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILE_STEM]}.{clade}.tree.svg")
+            else:
+                tree_image_file = os.path.join(config[KEY_OUTDIR],config[KEY_PHYLOGENY_SVG])
+            data_for_report["phylo_svg_string"] = get_tree_svg(tree_image_file)
+        else:
+            data_for_report["phylo_svg_string"] = ""
 
-    if config[KEY_SEQ_QC]:
-        rows = []
-        with open(mask_file,"r") as f:
-            reader = csv.DictReader(f)
-            for row in reader:
-                rows.append(row)
-        data_for_report["mask_csv"]=rows
-    else:
-        data_for_report["mask_csv"]=[]
+        if config[KEY_SEQ_QC]:
+            rows = []
+            if config[KEY_SPLIT_CLADE]:
+                mask_file = os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILE_STEM]}.{clade}.suggested_mask.csv")
+            else:
+                mask_file = os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILE_STEM]}.suggested_mask.csv")
+            with open(mask_file,"r") as f:
+                reader = csv.DictReader(f)
+                for row in reader:
+                    rows.append(row)
+            data_for_report["mask_csv"]=rows
+        else:
+            data_for_report["mask_csv"]=[]
+        if config[KEY_SPLIT_CLADE]:
+            data_for_report["alignment_file"] = os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILE_STEM]}.{clade}.aln.fasta")
+        else:
+            data_for_report["alignment_file"] = config[KEY_OUTFILE]
+
+        data_for_both_clades[clade] = data_for_report
 
 
     template_dir = os.path.abspath(os.path.dirname(config[KEY_REPORT_TEMPLATE]))
@@ -58,7 +72,7 @@ def make_output_report(report_to_generate,mask_file,config):
     ctx = Context(buf, 
                     date = date.today(),
                     version = __version__,
-                    data_for_report = data_for_report,
+                    data_for_both_clades = data_for_both_clades,
                     config=config)
 
     try:

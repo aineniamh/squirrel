@@ -33,9 +33,8 @@ def set_up_outdir(outdir_arg,cwd,outdir):
                 sys.exit(-1)
     return outdir
 
-def set_up_outfile(outfile_arg,cwd,query_arg, outfile, outdir):
+def set_up_outfile_stem(outfile_arg, cwd, query_arg, outdir):
     outfile_stem = ""
-    outfile_name = ""
 
     if outfile_arg:
         outfile_arg_dir = ""
@@ -48,15 +47,12 @@ def set_up_outfile(outfile_arg,cwd,query_arg, outfile, outdir):
         if "." in outfile_arg:
             # strip off extension if provided to get stem, keep for the name variable
             outfile_stem = ".".join(outfile_arg.split(".""")[:-1])
-            outfile_name = outfile_arg
         else:
             # add a stem to the aln outfile
             outfile_stem = outfile_arg
-            outfile_name = f"{outfile_stem}.aln.fasta"
             
         if outfile_arg_dir:
             # if the outfile provided was a path, join that path to the outdir
-            
             outdir = os.path.join(outdir,outfile_arg_dir)
             try:
                 if not os.path.exists(outdir):
@@ -67,27 +63,19 @@ def set_up_outfile(outfile_arg,cwd,query_arg, outfile, outdir):
     else:
         try:
             if not os.path.exists(os.path.join(cwd, query_arg[0])):
-                outfile_stem = "sequences"
-                outfile_name = "sequences.aln.fasta"
+                outfile_stem = VALUE_OUTFILE_STEM
             else:
                 # get the file name
                 query_file = query_arg[0].split("/")[-1]
                 
                 # get the file stem & name
                 outfile_stem = ".".join(query_file.split(".")[:-1])
-                outfile_name = f'{outfile_stem}.aln.fasta'
         except IndexError:
             sys.stderr.write(cyan(
                 f'Error: input query fasta could not be detected from a filepath or through stdin.\n'))
             sys.exit(-1)
 
-
-    outfile = os.path.join(outdir, outfile_name)
-
-    cds_outstr = f"{outfile_stem}.aln.cds.fasta"
-    cds_outfile = os.path.join(outdir, cds_outstr)
-
-    return outfile,cds_outfile,outfile_name,outfile_stem,outdir
+    return outfile_stem,outdir
 
 def set_up_tempdir(tempdir_arg,no_temp_arg,cwd,outdir,config):
 
@@ -302,6 +290,40 @@ def find_background_file(cwd,input_fasta,background_file,config):
 
     return new_input_fasta
 
+def set_up_clade(clade,config):
+    if clade:
+        config[KEY_CLADE] = clade
+        if config[KEY_CLADE] not in VALUE_VALID_CLADES:
+            sys.stderr.write(cyan(
+                f'Error: clade must be one of {VALUE_VALID_CLADES}.\n'))
+            sys.exit(-1)
+        if config[KEY_CLADE] == "split":
+            config[KEY_SPLIT_CLADE] = True
+
+def add_outgroup_to_input(input_fasta,background,clade,config):
+    in_name = input_fasta.rstrip("fasta").split("/")[-1]
+    new_input_fasta = os.path.join(config[KEY_TEMPDIR], f"{in_name}.outgroup_included.fasta")
+
+    
+    added = set()
+    with open(new_input_fasta,"w") as fw:
+        for record in SeqIO.parse(background,"fasta"):
+            # include the outgroup seq
+            if record.id in config[KEY_OUTGROUPS]:
+                print("writing outgroup",record.id)
+                fw.write(f">{record.id}\n{record.seq}\n")
+                added.add(record.id)
+            
+        for record in SeqIO.parse(input_fasta,"fasta"):
+            for_iqtree = record.description.replace(" ","_").replace("'","_")
+            if for_iqtree in added:
+                sys.stderr.write(cyan(f'Error: duplicate sequence name `{for_iqtree}` in background and supplied file.\nPlease modify sequence name and try again.\n'))
+                sys.exit(-1)
+            fw.write(f">{record.description}\n{record.seq}\n")
+            
+
+    return new_input_fasta
+
 def add_background_to_input(input_fasta,background,clade,config):
     in_name = input_fasta.rstrip("fasta").split("/")[-1]
     new_input_fasta = os.path.join(config[KEY_TEMPDIR], f"{in_name}.background_included.fasta")
@@ -386,7 +408,7 @@ def parse_tf_options(tree_figure_only,tree_file,branch_reconstruction_file,width
         config[KEY_BRANCH_RECONSTRUCTION] = branch_reconstruction
 
 
-def phylo_options(run_phylo,run_apobec3_phylo,outgroups,include_background,binary_partition_mask,input_fasta,config):
+def phylo_options(run_phylo,run_apobec3_phylo,outgroups,include_background,binary_partition_mask,input_fasta,clade,config):
     config[KEY_RUN_PHYLO] = run_phylo
 
     if run_apobec3_phylo:
@@ -406,34 +428,38 @@ def phylo_options(run_phylo,run_apobec3_phylo,outgroups,include_background,binar
                 print(cyan('Note: outgroup(s) are selected automatically with using `--include-background` flag.\n'))
             config[KEY_INCLUDE_BACKGROUND] = "True"
             clade = config[KEY_CLADE]
-            outgroups = OUTGROUP_DICT[clade]
-            print(green("Outgroup selected:"),outgroups[0])
+            config[KEY_OUTGROUPS] = OUTGROUP_DICT[clade]
+            
+            print(green("Outgroup selected:"),config[KEY_OUTGROUPS][0])
 
-        if not outgroups:
-            sys.stderr.write(cyan(
-                        f'Error: must supply outgroup(s) for phylogenetics module.\n'))
-            sys.exit(-1)
-        if not type(outgroups) == list:
-            outgroups = outgroups.split(",")
-        config[KEY_OUTGROUPS] = outgroups
-        
-
-        if include_background:
             new_input_fasta = add_background_to_input(input_fasta,config[KEY_BACKGROUND_FASTA],config[KEY_CLADE],config)
             return new_input_fasta
 
-        seqs = SeqIO.index(input_fasta,"fasta")
-        not_in = set()
-        for outgroup in outgroups:
-            if outgroup not in seqs:
-                not_in.add(outgroup)
+        if outgroups:
+            if not type(outgroups) == list:
+                outgroups = outgroups.split(",")
+            config[KEY_OUTGROUPS] = outgroups
+        
+            seqs = SeqIO.index(input_fasta,"fasta")
+            not_in = set()
+            for outgroup in outgroups:
+                if outgroup not in seqs:
+                    not_in.add(outgroup)
 
-        if not_in:
-            sys.stderr.write(cyan(
-                        f'Error: outgroup(s) not found in input sequence file.\n'))
-            for seq in not_in:
-                sys.stderr.write(cyan(f"- {seq}\n"))
-            sys.exit(-1)
+            if not_in:
+                sys.stderr.write(cyan(
+                            f'Error: outgroup(s) not found in input sequence file.\n'))
+                for seq in not_in:
+                    sys.stderr.write(cyan(f"- {seq}\n"))
+                sys.exit(-1)
 
-    
-    return input_fasta
+            return input_fasta
+
+        elif not outgroups:
+            
+            config[KEY_OUTGROUPS] = OUTGROUP_DICT[clade]
+            print(green("Outgroup selected:"),config[KEY_OUTGROUPS][0])
+            new_input_fasta = add_outgroup_to_input(input_fasta,config[KEY_BACKGROUND_FASTA],config[KEY_CLADE],config)
+            return new_input_fasta
+
+

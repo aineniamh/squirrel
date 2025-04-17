@@ -7,6 +7,7 @@ import datetime as dt
 import snakemake
 from squirrel.utils.config import *
 from squirrel.utils.log_colours import green,cyan,red
+import yaml
 
 import squirrel.utils.custom_logger as custom_logger
 
@@ -25,3 +26,14 @@ def run_snakemake(snake_config,snakefile,verbose,config):
                                     quiet=True,log_handler=logger.log_handler
                                     )
     return status
+
+
+def load_yaml(yamlfile):
+    input_config = ""
+    with open(yamlfile, "r") as f:
+        try:
+            input_config = yaml.load(f, Loader=yaml.FullLoader)
+        except:
+            sys.stderr.write(cyan(f'Error: failed to read config file. Ensure your file in correct yaml format.\n'))
+            sys.exit(-1)
+    return input_config
