@@ -214,9 +214,11 @@ def main(sysargs = sys.argv[1:]):
             
             # get the inputs for making the overall report
 
-            report =os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILE_STEM]}.report.html")
-            make_output_report(report,config)
+            
         else:
 
             sys.exit(-1)
+            
+    report =os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILE_STEM]}.report.html")
+    make_output_report(report,config)
 
