@@ -411,6 +411,8 @@ def parse_tf_options(tree_figure_only,tree_file,branch_reconstruction_file,width
 def phylo_options(run_phylo,run_apobec3_phylo,outgroups,include_background,binary_partition_mask,input_fasta,clade,config):
     config[KEY_RUN_PHYLO] = run_phylo
 
+    new_input_fasta = input_fasta
+
     if run_apobec3_phylo:
         config[KEY_RUN_APOBEC3_PHYLO] = run_apobec3_phylo
         config[KEY_RUN_PHYLO] = True
@@ -433,7 +435,7 @@ def phylo_options(run_phylo,run_apobec3_phylo,outgroups,include_background,binar
             print(green("Outgroup selected:"),config[KEY_OUTGROUPS][0])
 
             new_input_fasta = add_background_to_input(input_fasta,config[KEY_BACKGROUND_FASTA],config[KEY_CLADE],config)
-            return new_input_fasta
+            
 
         if outgroups:
             if not type(outgroups) == list:
@@ -453,13 +455,13 @@ def phylo_options(run_phylo,run_apobec3_phylo,outgroups,include_background,binar
                     sys.stderr.write(cyan(f"- {seq}\n"))
                 sys.exit(-1)
 
-            return input_fasta
+            
 
         elif not outgroups:
             
             config[KEY_OUTGROUPS] = OUTGROUP_DICT[clade]
             print(green("Outgroup selected:"),config[KEY_OUTGROUPS][0])
             new_input_fasta = add_outgroup_to_input(input_fasta,config[KEY_BACKGROUND_FASTA],config[KEY_CLADE],config)
-            return new_input_fasta
-
+    
+    return new_input_fasta
 
