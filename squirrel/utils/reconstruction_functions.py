@@ -231,7 +231,7 @@ def make_reconstruction_tree_figure_w_labels(outfile,branch_snps,treefile,point_
     s_func=lambda k: 50-20*k.height/my_tree.treeHeight ## size of tips
     c_func=lambda k: "dimgrey"
     
-    c_func=lambda k: 'steelblue' if "_" in k.name else 'dimgrey' 
+    c_func=lambda k: 'dimgrey' 
     
     r2t = 200000*my_tree.treeHeight #rough number of snps root to tip
     increment = my_tree.treeHeight/(r2t*1.5) # divide the tree height by about twice the num of r2t snps
