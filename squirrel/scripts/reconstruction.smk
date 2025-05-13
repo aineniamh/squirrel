@@ -6,11 +6,17 @@ import csv
 from squirrel.utils.log_colours import green,cyan
 import squirrel.utils.reconstruction_functions as recon
 
-rule all:
-    input:
-        os.path.join(config[KEY_OUTDIR],config[KEY_PHYLOGENY]),
-        os.path.join(config[KEY_OUTDIR],config[KEY_PHYLOGENY_SVG]),
-        os.path.join(config[KEY_OUTDIR],config[KEY_PHYLOGENY_INTERACTIVE])
+if config[KEY_INTERACTIVE_SCRIPT]:
+    rule all:
+        input:
+            os.path.join(config[KEY_OUTDIR],config[KEY_PHYLOGENY]),
+            os.path.join(config[KEY_OUTDIR],config[KEY_PHYLOGENY_SVG]),
+            os.path.join(config[KEY_OUTDIR],config[KEY_PHYLOGENY_INTERACTIVE])
+else:
+    rule all:
+        input:
+            os.path.join(config[KEY_OUTDIR],config[KEY_PHYLOGENY]),
+            os.path.join(config[KEY_OUTDIR],config[KEY_PHYLOGENY_SVG])
 
 rule iqtree:
     input:
