@@ -56,7 +56,7 @@ KEY_POINT_JUSTIFY = "point_justify"
 VALUE_TRIM_END = 190788
 VALUE_VALID_CLADES = ["cladei","cladeia","cladeib","cladeii","cladeiia","cladeiib","variola","split"]
 OUTGROUP_DICT = {
-    "variola":["KJ642617|Nigeria|1971"],
+    "variola":["KJ642615|human|Nigeria||1978"],
     "cladei":["KJ642615|human|Nigeria||1978"],
     "cladeia":["KJ642615|human|Nigeria||1978"],
     "cladeib":["KJ642613|human|DRC|Equateur|1970-09-01"],
