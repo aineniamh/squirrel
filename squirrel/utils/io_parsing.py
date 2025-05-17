@@ -407,7 +407,37 @@ def parse_tf_options(tree_figure_only,tree_file,branch_reconstruction_file,width
             sys.exit(-1)
         config[KEY_BRANCH_RECONSTRUCTION] = branch_reconstruction
 
+def find_precomputed_file(cwd,filename,filetype,configkey,config):
+    path_to_try = os.path.join(cwd,filename)
 
+    if not os.path.exists(path_to_try):
+        sys.stderr.write(cyan(f'Error: cannot find {filetype} at: ') + f'{path_to_try}\n' + cyan('Please check file path and try again.\n'))
+        sys.exit(-1)
+    else:
+        config[configkey] = path_to_try
+
+def just_reconstruction_setup(treefile,statefile,alignment,cwd,config):
+
+    if not treefile and statefile and alignment:
+        sys.stderr.write(cyan(f'Error: must supply `-at/--asr-tree`, `-as/--asr-state` and `-aln/--asr-alignment` files.\n'))
+        sys.exit(-1)
+
+    find_precomputed_file(cwd,treefile,"treefile",KEY_ASR_TREE,config)
+    find_precomputed_file(cwd,statefile,"state file",KEY_ASR_STATE,config)
+    find_precomputed_file(cwd,alignment,"alignment",KEY_ASR_ALIGNMENT,config)
+
+    treefile_name = treefile.split("/")[-1]
+    config[KEY_PHYLOGENY] = treefile_name
+    config[KEY_PHYLOGENY_SVG] = f"{treefile_name}.svg"
+
+    grantham_scores_file = config[KEY_GRANTHAM_SCORES]
+    gene_boundaries_file = config[KEY_GENE_BOUNDARIES]
+
+    print(green("Supplied ASR tree file:"),config[KEY_ASR_TREE])
+    print(green("Supplied ASR state file:"),config[KEY_ASR_STATE])
+    print(green("Supplied ASR alignment file:"),config[KEY_ASR_ALIGNMENT])
+
+    
 def phylo_options(run_phylo,run_apobec3_phylo,outgroups,include_background,binary_partition_mask,input_fasta,clade,config):
     config[KEY_RUN_PHYLO] = run_phylo
 
