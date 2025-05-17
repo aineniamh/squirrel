@@ -34,7 +34,6 @@ new_rc_params = {'text.usetex': False,
 mpl.rcParams.update(new_rc_params)
 plt.rcParams['font.family'] = 'Helvetica'
 
-    
 def get_node_states_all_sites(state_file,alignment):
     
     #returns a dict keys off 1-based positions in the genome
@@ -482,7 +481,6 @@ def reconstruct_amino_acid_mutations(grantham_scores_file,gene_boundaries_file,b
     fw = open(outfile,"w")
     fw.write("site,gene,direction,snp,dimer,apobec,aa_position,parent,parent_codon,parent_aa,")
     fw.write("child,child_codon,child_aa,mutation_category,score,prediction,homoplasy,occurrence\n")
-    
     for site in branch_snps_dict:
         
         homoplasy = "False"
@@ -556,6 +554,7 @@ def get_reconstruction_amino_acids(alignment,grantham_scores_file,gene_boundarie
 
     reconstruct_amino_acid_mutations(grantham_scores_file,gene_boundaries_file,branch_snps_out,
                                     node_states, amino_acids_out)
+                
     
     
 def year_fraction(date):
@@ -719,22 +718,21 @@ def get_root_to_tip_counts_date_in(aa_reconstruction,state_diffs,root_to_tip_cou
 
 def run_full_analysis(directory, alignment, treefile,state_file,config,point_style,point_justify,width,height):
 
-    state_out = state_file
-    state_differences = f"{treefile}.state_differences.csv"
-    branch_snps_out = f"{treefile}.branch_snps.reconstruction.csv"
-    amino_acids_out= f"{treefile}.amino_acid.reconstruction.csv"
-
+    state_differences = os.path.join(directory,f"{config[KEY_PHYLOGENY]}.state_differences.csv")
+    branch_snps_out =  os.path.join(directory,f"{config[KEY_PHYLOGENY]}.branch_snps.reconstruction.csv")
+    amino_acids_out=  os.path.join(directory,f"{config[KEY_PHYLOGENY]}.amino_acid.reconstruction.csv")
+    tree_fig =  os.path.join(directory,f"{config[KEY_PHYLOGENY]}")
+    
     node_states= generate_reconstruction_files(alignment,
-                                  state_out,
+                                  state_file,
                                   state_differences)
 
-    tree_fig = f"{treefile}"
-    load_info(directory,alignment,treefile,state_out,state_differences,branch_snps_out,tree_fig,point_style,point_justify,node_states,width,height)
+    load_info(directory,alignment,treefile,state_file,state_differences,branch_snps_out,tree_fig,point_style,point_justify,node_states,width,height)
 
 
     grantham_scores_file = config[KEY_GRANTHAM_SCORES]
     gene_boundaries_file = config[KEY_GENE_BOUNDARIES]
-    get_reconstruction_amino_acids(alignment,grantham_scores_file,gene_boundaries_file,branch_snps_out,state_out,amino_acids_out,node_states)
+    get_reconstruction_amino_acids(alignment,grantham_scores_file,gene_boundaries_file,branch_snps_out,state_file,amino_acids_out,node_states)
 
 def find_binary_partition_mask(branch_reconstruction,sep_status,reference,outfile):
 
