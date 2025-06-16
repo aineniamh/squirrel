@@ -135,20 +135,19 @@ def main(sysargs = sys.argv[1:]):
 
         config[KEY_CLADE] = clade
         
-        config[KEY_OUTFILENAME] = f"{config[KEY_OUTFILE_STEM] }{config[KEY_APPEND_CLADE_STR]}.aln.fasta"
-        config[KEY_CDS_OUTFILENAME] = f"{config[KEY_OUTFILE_STEM] }{config[KEY_APPEND_CLADE_STR]}.cds.aln.fasta"
+        config[KEY_OUTFILENAME] = f"{config[KEY_OUTFILE_STEM]}{config[KEY_APPEND_CLADE_STR]}.aln.fasta"
+        config[KEY_CDS_OUTFILENAME] = f"{config[KEY_OUTFILE_STEM]}{config[KEY_APPEND_CLADE_STR]}.cds.aln.fasta"
 
 
         config[KEY_OUTFILE] = os.path.join(config[KEY_OUTDIR],config[KEY_OUTFILENAME])
         config[KEY_CDS_OUTFILE] = os.path.join(config[KEY_OUTDIR],config[KEY_CDS_OUTFILENAME])
-
         #filter the input file
 
         get_datafiles(config)
 
         if args.clade == "split":
             config[KEY_INPUT_FASTA] = os.path.join(config[KEY_TEMPDIR],f"{clade}.fasta")
-
+            
         if args.seq_qc:
             print(green("QC mode activated. Squirrel will flag:"))
             print("- Clumps of unique SNPs\n- SNPs adjacent to Ns\n- Sequences with high N content")
@@ -165,7 +164,6 @@ def main(sysargs = sys.argv[1:]):
         # config[KEY_FIG_HEIGHT] = recon.get_fig_height(config[KEY_INPUT_FASTA])
 
         config[KEY_INPUT_FASTA] = io.phylo_options(args.run_phylo,args.run_apobec3_phylo,args.outgroups,args.include_background,args.binary_partition_mask,config[KEY_INPUT_FASTA],clade,config)
-
         snakefile = get_script(thisdir,"msa.smk")
 
         status = misc.run_snakemake(config,snakefile,args.verbose,config)
