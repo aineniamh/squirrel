@@ -300,8 +300,8 @@ def set_up_clade(clade,config):
         if config[KEY_CLADE] == "split":
             config[KEY_SPLIT_CLADE] = True
 
-def add_outgroup_to_input(input_fasta,background,clade,config):
-    in_name = input_fasta.rstrip("fasta").split("/")[-1]
+def add_outgroup_to_input(input_fasta,background,include_background,clade,config):
+    in_name = input_fasta.rstrip(".fasta").split("/")[-1]
     new_input_fasta = os.path.join(config[KEY_TEMPDIR], f"{in_name}.outgroup_included.fasta")
 
     
@@ -316,7 +316,7 @@ def add_outgroup_to_input(input_fasta,background,clade,config):
             
         for record in SeqIO.parse(input_fasta,"fasta"):
             for_iqtree = record.description.replace(" ","_").replace("'","_")
-            if for_iqtree in added:
+            if for_iqtree in added and not include_background:
                 sys.stderr.write(cyan(f'Error: duplicate sequence name `{for_iqtree}` in background and supplied file.\nPlease modify sequence name and try again.\n'))
                 sys.exit(-1)
             fw.write(f">{record.description}\n{record.seq}\n")
@@ -326,7 +326,7 @@ def add_outgroup_to_input(input_fasta,background,clade,config):
 
 def add_background_to_input(input_fasta,background,clade,config):
     in_name = input_fasta.rstrip("fasta").split("/")[-1]
-    new_input_fasta = os.path.join(config[KEY_TEMPDIR], f"{in_name}.background_included.fasta")
+    new_input_fasta = os.path.join(config[KEY_TEMPDIR], f"{in_name}background_included.fasta")
 
     added = set()
     with open(new_input_fasta,"w") as fw:
@@ -367,7 +367,6 @@ def add_background_to_input(input_fasta,background,clade,config):
                 sys.exit(-1)
             fw.write(f">{record.description}\n{record.seq}\n")
             
-
     return new_input_fasta
 
 def parse_tf_options(tree_figure_only,tree_file,branch_reconstruction_file,width,height,point_style_arg,justify_arg,cwd,config):
@@ -435,6 +434,7 @@ def phylo_options(run_phylo,run_apobec3_phylo,outgroups,include_background,binar
             print(green("Outgroup selected:"),config[KEY_OUTGROUPS][0])
 
             new_input_fasta = add_background_to_input(input_fasta,config[KEY_BACKGROUND_FASTA],config[KEY_CLADE],config)
+
             
 
         if outgroups:
@@ -461,7 +461,7 @@ def phylo_options(run_phylo,run_apobec3_phylo,outgroups,include_background,binar
             
             config[KEY_OUTGROUPS] = OUTGROUP_DICT[clade]
             print(green("Outgroup selected:"),config[KEY_OUTGROUPS][0])
-            new_input_fasta = add_outgroup_to_input(input_fasta,config[KEY_BACKGROUND_FASTA],config[KEY_CLADE],config)
+            new_input_fasta = add_outgroup_to_input(new_input_fasta,config[KEY_BACKGROUND_FASTA],config[KEY_INCLUDE_BACKGROUND],config[KEY_CLADE],config)
     
     return new_input_fasta
 
