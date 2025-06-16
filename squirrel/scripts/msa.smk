@@ -9,12 +9,12 @@ import collections
 if config[KEY_EXTRACT_CDS]:
     rule all:
         input:
-            os.path.join(config[KEY_OUTDIR],config[KEY_OUTFILE]),
-            os.path.join(config[KEY_OUTDIR],config[KEY_CDS_OUTFILE])
+            config[KEY_OUTFILE],
+            config[KEY_CDS_OUTFILE]
 else:
     rule all:
         input:
-            os.path.join(config[KEY_OUTDIR],config[KEY_OUTFILE])
+            config[KEY_OUTFILE]
 
 rule align_to_reference:
     input:
@@ -53,7 +53,7 @@ rule mask_repetitive_regions:
         mask = config[KEY_TO_MASK],
         fasta = rules.align_to_reference.output.fasta
     output:
-        os.path.join(config[KEY_OUTDIR],config[KEY_OUTFILE])
+        config[KEY_OUTFILE]
     run:
         if not config["no_mask"]:
             mask_sites = []
