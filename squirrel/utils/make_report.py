@@ -32,10 +32,14 @@ def make_output_report(report_to_generate,config):
     #need to call this multiple times if there are multiple reports wanted
     data_for_both_clades = {}
     for clade in config[KEY_ASSIGNED_CLADES]:
+
+        if len(config[KEY_ASSIGNED_CLADES]) >1:
+            config[KEY_APPEND_CLADE_STR] = f".{clade}"
+
         data_for_report = {}
         if config[KEY_RUN_APOBEC3_PHYLO]:
             if config[KEY_SPLIT_CLADE]:
-                tree_image_file = os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILE_STEM]}.{clade}.tree.svg")
+                tree_image_file = os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILE_STEM]}{config[KEY_APPEND_CLADE_STR]}.tree.svg")
             else:
                 tree_image_file = os.path.join(config[KEY_OUTDIR],config[KEY_PHYLOGENY_SVG])
             data_for_report["phylo_svg_string"] = get_tree_svg(tree_image_file)
@@ -44,10 +48,7 @@ def make_output_report(report_to_generate,config):
 
         if config[KEY_SEQ_QC]:
             rows = []
-            if config[KEY_SPLIT_CLADE]:
-                mask_file = os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILE_STEM]}.{clade}.suggested_mask.csv")
-            else:
-                mask_file = os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILE_STEM]}.suggested_mask.csv")
+            mask_file = os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILE_STEM]}{config[KEY_APPEND_CLADE_STR]}.suggested_mask.csv")
             with open(mask_file,"r") as f:
                 reader = csv.DictReader(f)
                 for row in reader:
@@ -55,10 +56,8 @@ def make_output_report(report_to_generate,config):
             data_for_report["mask_csv"]=rows
         else:
             data_for_report["mask_csv"]=[]
-        if config[KEY_SPLIT_CLADE]:
-            data_for_report["alignment_file"] = os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILE_STEM]}.{clade}.aln.fasta")
-        else:
-            data_for_report["alignment_file"] = config[KEY_OUTFILE]
+        
+        data_for_report["alignment_file"] = os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILE_STEM]}{config[KEY_APPEND_CLADE_STR]}.aln.fasta")
 
         data_for_both_clades[clade] = data_for_report
 
