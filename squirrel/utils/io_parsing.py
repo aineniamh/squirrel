@@ -306,20 +306,22 @@ def add_outgroup_to_input(input_fasta,background,include_background,clade,config
 
     
     added = set()
+    seq_ids = set()
     with open(new_input_fasta,"w") as fw:
-        for record in SeqIO.parse(background,"fasta"):
-            # include the outgroup seq
-            if record.id in config[KEY_OUTGROUPS]:
-                print("writing outgroup",record.id)
-                fw.write(f">{record.id}\n{record.seq}\n")
-                added.add(record.id)
             
         for record in SeqIO.parse(input_fasta,"fasta"):
             for_iqtree = record.description.replace(" ","_").replace("'","_")
-            if for_iqtree in added and not include_background:
-                sys.stderr.write(cyan(f'Error: duplicate sequence name `{for_iqtree}` in background and supplied file.\nPlease modify sequence name and try again.\n'))
-                sys.exit(-1)
+            seq_ids.add(for_iqtree)
             fw.write(f">{record.description}\n{record.seq}\n")
+
+        for record in SeqIO.parse(background,"fasta"):
+            # include the outgroup seq
+
+            if record.id in config[KEY_OUTGROUPS]:
+                print("writing outgroup",record.id)
+                if record.id not in seq_ids:
+                    fw.write(f">{record.id}\n{record.seq}\n")
+                    added.add(record.id)
             
 
     return new_input_fasta
@@ -442,7 +444,7 @@ def phylo_options(run_phylo,run_apobec3_phylo,outgroups,include_background,binar
                 outgroups = outgroups.split(",")
             config[KEY_OUTGROUPS] = outgroups
         
-            seqs = SeqIO.index(input_fasta,"fasta")
+            seqs = SeqIO.index(new_input_fasta,"fasta")
             not_in = set()
             for outgroup in outgroups:
                 if outgroup not in seqs:
