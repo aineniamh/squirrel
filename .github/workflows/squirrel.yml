@@ -38,3 +38,5 @@ jobs:
         run: squirrel ./test/varied_test.fasta --clade split -o squirrel_output --run-phylo --seq-qc --include-background 2>&1 | tee squirrel_split.log
       - name: Run squirrel variola
         run: squirrel ./test/cI_test.fasta --clade variola -o squirrel_output --run-phylo --seq-qc --include-background 2>&1 | tee squirrel_var.log
+      - name: Run squirrel clade i and og and background
+        run: squirrel ./test/cI_test.fasta --clade cladei -o squirrel_double_og_test --outgroups 'KJ642615|human|Nigeria||1978' -a --seq-qc --include-background 2>&1 | tee squirrel_var.log
