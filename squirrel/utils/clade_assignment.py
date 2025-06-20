@@ -41,16 +41,23 @@ def condense_clade_info(assigned_clade):
     return {KEY_ASSIGNED_CLADES: list(clades)}
 
 
-def annotate_fasta_with_clade(clade_info, assigned_clade, input_fasta, tempdir):
+def annotate_fasta_with_clade(clade_info, assigned_clade, input_fasta,output_report, tempdir):
     clades = clade_info[KEY_ASSIGNED_CLADES]
     file_handle_dict = {}
-    for clade in clades:
-        file_handle_dict[clade] = open(os.path.join(tempdir,f"{clade}.fasta"),"w")
 
-    for record in SeqIO.parse(input_fasta,"fasta"):
-        clade = assigned_clade[record.id]
-        file_handle_dict[clade].write(f">{record.description}\n{record.seq}\n")
+    with open(output_report, "w") as fw:
+        writer = csv.DictWriter(fw, lineterminator="\n",fieldnames=["sequence_name","clade"])
+        writer.writeheader()
+        for clade in clades:
+            file_handle_dict[clade] = open(os.path.join(tempdir,f"{clade}.fasta"),"w")
 
-    for clade in clades:
-        file_handle_dict[clade].close()
+        for record in SeqIO.parse(input_fasta,"fasta"):
+            clade = assigned_clade[record.id]
+            file_handle_dict[clade].write(f">{record.description}\n{record.seq}\n")
+
+            row = {"sequence_name":record.id,"clade":clade}
+            writer.writerow(row)
+
+        for clade in clades:
+            file_handle_dict[clade].close()
         
