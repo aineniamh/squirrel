@@ -11,7 +11,8 @@ import squirrel.utils.clade_assignment as ca
 
 rule all:
         input:
-            os.path.join(config[KEY_TEMPDIR],"clades.yaml")
+            os.path.join(config[KEY_TEMPDIR],"clades.yaml"),
+            os.path.join(config[KEY_OUTDIR],"assignment_report.csv")
 
 rule map_seqs:
     input:
@@ -36,13 +37,14 @@ rule determine_clades:
     params:
         tempdir = config[KEY_TEMPDIR]
     output:
-        clade_config = os.path.join(config[KEY_TEMPDIR],"clades.yaml")
+        clade_config = os.path.join(config[KEY_TEMPDIR],"clades.yaml"),
+        csv = os.path.join(config[KEY_OUTDIR],"assignment_report.csv")
     run:
         assigned_clade = ca.parse_paf(input.paf,input.panel, output.clade_config, config)
 
         clade_info = ca.condense_clade_info(assigned_clade)
 
-        ca.annotate_fasta_with_clade(clade_info, assigned_clade, input.fasta, params.tempdir)
+        ca.annotate_fasta_with_clade(clade_info, assigned_clade, input.fasta, output.csv, params.tempdir)
 
         with open(output.clade_config, 'w') as f:
             yaml.dump(clade_info, f)
