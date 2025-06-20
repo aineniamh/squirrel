@@ -121,6 +121,15 @@ def main(sysargs = sys.argv[1:]):
         
         for clade in config[KEY_ASSIGNED_CLADES]:
             print(f"- {clade}")
+
+        if "unassigned" in config[KEY_ASSIGNED_CLADES]:
+            if len(config[KEY_ASSIGNED_CLADES])==1:
+                sys.stderr.write(cyan(
+                f'Error: no sequences had a clade successfully assigned.\nThis may be due to incomplete/ low coverage genome sequences.\n'))
+                sys.exit(-1)
+            else:
+                print(cyan("Warning: some sequences were not successfully assigned a clade. \nThis may be due to incomplete/ low coverage genome sequences.\nSee assignment_report.csv for more information."))
+                config[KEY_ASSIGNED_CLADES] = [i for i in config[KEY_ASSIGNED_CLADES] if not i=="unassigned"]
     else:
         config[KEY_ASSIGNED_CLADES] = [config[KEY_CLADE]]
     
