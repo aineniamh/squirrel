@@ -22,6 +22,7 @@ def setup_config_dict(cwd):
             KEY_SPLIT_CLADE:False,
 
             KEY_OUTDIR:cwd,
+            KEY_EPI2ME_OUTDIR:None,
             KEY_OUTFILE:None,
             KEY_OUTFILE_STEM:None,
             KEY_TEMPDIR:None,
