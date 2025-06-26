@@ -21,6 +21,13 @@ def set_up_threads(threads,config):
             sys.stderr.write(cyan(f'Error: threads specified must be an integer'))
             sys.exit(-1)
 
+def set_up_epi2me_outdir(epi2me_outdir, config):
+    if epi2me_outdir:
+        config[KEY_EPI2ME_OUTDIR] = epi2me_outdir
+    else:
+        config[KEY_EPI2ME_OUTDIR] = config[KEY_OUTDIR]
+    
+
 
 def set_up_outdir(outdir_arg,cwd,outdir):
     if outdir_arg:
@@ -30,7 +37,7 @@ def set_up_outdir(outdir_arg,cwd,outdir):
                 os.mkdir(outdir)
             except:
                 sys.stderr.write(cyan(f'Error: cannot create directory:') + f"{outdir}")
-                sys.exit(-1)
+                sys.exit(-1)        
     return outdir
 
 def set_up_outfile_stem(outfile_arg, cwd, query_arg, outdir):
