@@ -548,7 +548,7 @@
     <h2>${section_count}. Alignment for ${clade}</h2>
     <% section_count +=1 %>
       <p>
-        Output alignment written to <a href="${config['outdir']}">${config['outdir']}</a> 
+        Output alignment written to <a href="${config['epi2me_outdir']}">${config['epi2me_outdir']}</a> 
       </p>
     
     <% figure_count = 0 %>
@@ -557,7 +557,7 @@
         <h2>${section_count}. Tree file for ${clade}</h2>
         <% section_count +=1 %>
         <p>
-          Output tree file written to <a href="${config['outdir']}">${config['outdir']}</a> 
+          Output tree file written to <a href="${config['epi2me_outdir']}">${config['epi2me_outdir']}</a> 
         </p>
         %if config["run_apobec3_phylo"]:
           <h2>${section_count}. Phylo image for ${clade}</h2>
