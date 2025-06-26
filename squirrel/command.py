@@ -34,6 +34,8 @@ def main(sysargs = sys.argv[1:]):
     io_group.add_argument('--outfile', action="store",help="Optional output file name. Default: <input>.aln.fasta")
     io_group.add_argument('--tempdir',action="store",help="Specify where you want the temp stuff to go. Default: $TMPDIR")
     io_group.add_argument("--no-temp",action="store_true",help="Output all intermediate files, for dev purposes.")
+    io_group.add_argument("--epi2me-outdir",action="store",help="Output directory for report paths in epi2me.")
+
 
     a_group = parser.add_argument_group("Alignment options")
     a_group.add_argument("-qc","--seq-qc",action="store_true",help="Flag potentially problematic SNPs and sequences. Default: don't run QC")
@@ -87,7 +89,7 @@ def main(sysargs = sys.argv[1:]):
     
     io.set_up_threads(args.threads,config)
     config[KEY_OUTDIR] = io.set_up_outdir(args.outdir,cwd,config[KEY_OUTDIR])
-
+    io.set_up_epi2me_outdir(args.epi2me_outdir, config)
     io.parse_tf_options(args.tree_figure_only,args.tree_file,args.branch_reconstruction_file,args.fig_width,args.fig_height,args.point_style,args.point_justify,cwd,config)
     if args.tree_figure_only:
         new_tree = f"{config[KEY_TREE]}.rerender"
