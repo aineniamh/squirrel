@@ -594,7 +594,7 @@
       <h2>${section_count}. Suggested sites to mask for ${clade}</h2>
       <% section_count +=1 %>
     
-      <table class="display nowrap" id="myTable1">
+      <table class="display nowrap" id="myTable${section_count}">
         <thead>
           <tr>
            <% header = ["Name","note","present_in"] %>
@@ -620,7 +620,7 @@
       </table>
       <script type="text/javascript">
         $(document).ready( function () {
-            var table = $('#myTable1').DataTable({
+            var table = $('#myTable${section_count}').DataTable({
               select: {
                       style: 'multi'
                   },
