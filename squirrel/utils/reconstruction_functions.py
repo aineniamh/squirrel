@@ -336,7 +336,9 @@ def make_reconstruction_tree_figure_w_labels(outfile,branch_snps,treefile,point_
 
     ax.set_yticklabels([])
     ax.set_xticklabels([])
-    plt.margins(0.005,0.005,tight=True)
+    plt.margins(0.1,0.1,tight=True)
+    # plt.tight_layout(pad=2.4, w_pad=2.2, h_pad=2.2)
+
     plt.savefig(f"{outfile}.svg",bbox_inches='tight')
     plt.savefig(f"{outfile}.png",bbox_inches='tight'
                    );
