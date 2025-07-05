@@ -82,7 +82,7 @@ def readInAndFormatData(referenceSeq, imputationScores,sequencesFile, indiciesTo
 		# go line by line through the file, collecting a list of the sequences
 		for line in f:
 			# if the line isn't the header line
-			if "taxon,lineage" not in line:
+			if "taxon,clade" not in line:
 				line = line.strip()
 
 				if ">" in line:
@@ -122,7 +122,7 @@ def assign_lineage(header_file,model_file,reference_file,sequences_file,outfile)
 	dirname = os.path.dirname(__file__)
 
 	referenceSeq = ""
-	referenceId = "reference"
+	referenceId = "NC_063383"
 
 	imputationScores = dict()
 	records = 0
