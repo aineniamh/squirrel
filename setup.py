@@ -24,6 +24,8 @@ setup(name='squirrel',
             'mako',
             'seaborn',
             'pandas',
+            'scikit-learn>=0.23.1',
+            "PuLP>=2"
         ],
       description='Some QUIck Reconstruction to Resolve Evolutionary Links',
       url='https://github.com/cov-lineages/squirrel',
