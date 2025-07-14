@@ -367,8 +367,8 @@ def load_info(directory, alignment, treefile, state_out, state_differences, bran
                                     treefile,
                                     point_style,
                                     point_justify,
-                                    height,
-                                    width)
+                                    width,
+                                    height)
     
 def get_gene_boundaries(gene_boundaries_file):
     genes = {}
