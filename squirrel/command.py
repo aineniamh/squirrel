@@ -215,7 +215,7 @@ def main(sysargs = sys.argv[1:]):
             if args.seq_qc:
                 mask_file = os.path.join(config[KEY_OUTDIR],f"{config[KEY_OUTFILE_STEM]}{config[KEY_APPEND_CLADE_STR]}.suggested_mask.csv")
 
-                qc.check_for_snp_anomalies(assembly_refs,mask_file,config,config[KEY_FIG_HEIGHT])
+                qc.check_for_snp_anomalies(assembly_refs,config[KEY_OUTGROUPS],mask_file,config,config[KEY_FIG_HEIGHT])
                 print(green("Flagged mutations writted to:"), f"{mask_file}")
             else:
                 print(green("Alignment complete."))

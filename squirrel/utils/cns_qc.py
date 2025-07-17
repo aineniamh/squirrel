@@ -482,7 +482,7 @@ def sliding_window(elements, window_size):
     for i in range(len(elements)):
         print(elements[i:i+window_size])
 
-def check_for_alignment_issues(alignment):
+def check_for_alignment_issues(alignment,outgroup_ids):
     bases = ["A","T","G","C"]
     
     with open(alignment,"r") as f:
@@ -564,53 +564,54 @@ def check_for_alignment_issues(alignment):
         sites_to_mask = {}
         
         for s in aln:
+            if s.id not in outgroup_ids:
 
-            if s.id in clustered_snps:
-                sites = [i+1 for i in sorted(clustered_snps[s.id])]
-                for site in sites:
-                    if site not in sites_to_mask:
-                        sites_to_mask[site] = {
-                            "Name": site,
-                            "Minimum": site,
-                            "Maximum": site,
-                            "Length": 1,
-                            "present_in": [s.id],
-                            "note": {"clustered_snps"}
-                        }
-                    else:
-                        sites_to_mask[site]["present_in"].append(s.id)
+                if s.id in clustered_snps:
+                    sites = [i+1 for i in sorted(clustered_snps[s.id])]
+                    for site in sites:
+                        if site not in sites_to_mask:
+                            sites_to_mask[site] = {
+                                "Name": site,
+                                "Minimum": site,
+                                "Maximum": site,
+                                "Length": 1,
+                                "present_in": [s.id],
+                                "note": {"clustered_snps"}
+                            }
+                        else:
+                            sites_to_mask[site]["present_in"].append(s.id)
                         
-            if s.id in snps_near_n:
-                sites = [i+1 for i in sorted(snps_near_n[s.id])]
-                for site in sites:
-                    if site not in sites_to_mask:
-                        sites_to_mask[site] = {
-                            "Name": site,
-                            "Minimum": site,
-                            "Maximum": site,
-                            "Length": 1,
-                            "present_in": [s.id],
-                            "note": {"N_adjacent"}
-                        }
-                    else:
-                        sites_to_mask[site]["present_in"].append(s.id)
-                        sites_to_mask[site]["note"].add("N_adjacent")
+                if s.id in snps_near_n:
+                    sites = [i+1 for i in sorted(snps_near_n[s.id])]
+                    for site in sites:
+                        if site not in sites_to_mask:
+                            sites_to_mask[site] = {
+                                "Name": site,
+                                "Minimum": site,
+                                "Maximum": site,
+                                "Length": 1,
+                                "present_in": [s.id],
+                                "note": {"N_adjacent"}
+                            }
+                        else:
+                            sites_to_mask[site]["present_in"].append(s.id)
+                            sites_to_mask[site]["note"].add("N_adjacent")
             
-            if s.id in snps_near_gap:
-                sites = [i+1 for i in sorted(snps_near_gap[s.id])]
-                for site in sites:
-                    if site not in sites_to_mask:
-                        sites_to_mask[site] = {
-                            "Name": site,
-                            "Minimum": site,
-                            "Maximum": site,
-                            "Length": 1,
-                            "present_in": [s.id],
-                            "note": {"gap_adjacent"}
-                        }
-                    else:
-                        sites_to_mask[site]["present_in"].append(s.id)
-                        sites_to_mask[site]["note"].add("gap_adjacent")
+                if s.id in snps_near_gap:
+                    sites = [i+1 for i in sorted(snps_near_gap[s.id])]
+                    for site in sites:
+                        if site not in sites_to_mask:
+                            sites_to_mask[site] = {
+                                "Name": site,
+                                "Minimum": site,
+                                "Maximum": site,
+                                "Length": 1,
+                                "present_in": [s.id],
+                                "note": {"gap_adjacent"}
+                            }
+                        else:
+                            sites_to_mask[site]["present_in"].append(s.id)
+                            sites_to_mask[site]["note"].add("gap_adjacent")
 
         print(green(f"Number of possibly problematic SNPs: "),len(sites_to_mask))
         return sites_to_mask
@@ -687,7 +688,7 @@ def run_phylo_snp_checks(assembly_references,config,h):
 
     return branch_reversions, branch_convergence
 
-def check_for_snp_anomalies(assembly_references,mask_file,config,h):
+def check_for_snp_anomalies(assembly_references,outgroup_ids,mask_file,config,h):
 
     alignment = os.path.join(config[KEY_OUTDIR],config[KEY_OUTFILENAME])
     branch_reversions, branch_convergence = {},{}
@@ -695,7 +696,7 @@ def check_for_snp_anomalies(assembly_references,mask_file,config,h):
     if config[KEY_RUN_APOBEC3_PHYLO]:
         branch_reversions, branch_convergence = run_phylo_snp_checks(assembly_references,config,h)
 
-    sites_to_mask = check_for_alignment_issues(alignment)
+    sites_to_mask = check_for_alignment_issues(alignment,outgroup_ids)
 
     merge_flagged_sites(sites_to_mask,branch_reversions,branch_convergence,mask_file)
 

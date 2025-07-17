@@ -90,7 +90,16 @@ def get_global_datafiles(config):
             "filename":"grantham_score.txt"},
             {"key":KEY_ASSEMBLY_REFERENCES,
             "directory":"data",
-            "filename":"ref_seq.fasta"}
+            "filename":"ref_seq.fasta"},
+            {"key":KEY_ASSIGNMENT_REFERENCE,
+            "directory":"data",
+            "filename":"NC_063383.fasta"},
+            {"key":KEY_PLEARN_MODEL,
+            "directory":"data",
+            "filename":"randomForest_v2.joblib"},
+            {"key":KEY_PLEARN_HEADER,
+            "directory":"data",
+            "filename":"randomForestHeaders_v2.joblib"}
             ]
 
     for resource in resources:

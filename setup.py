@@ -24,9 +24,12 @@ setup(name='squirrel',
             'mako',
             'seaborn',
             'pandas',
+            "numpy<2.0.0",
+            'scikit-learn==1.2.2',
+            "PuLP>=2"
         ],
       description='Some QUIck Reconstruction to Resolve Evolutionary Links',
-      url='https://github.com/cov-lineages/squirrel',
+      url='https://github.com/aineniamh/squirrel',
       author='Aine OToole',
       author_email='aine.otoole@ed.ac.uk',
       entry_points="""
