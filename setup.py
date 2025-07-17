@@ -25,7 +25,7 @@ setup(name='squirrel',
             'seaborn',
             'pandas>2.2.0',
             "numpy>2.0.0",
-            'scikit-learn',
+            'scikit-learn==1.2.2',
             "PuLP>=2"
         ],
       description='Some QUIck Reconstruction to Resolve Evolutionary Links',
