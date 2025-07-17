@@ -56,7 +56,7 @@ rule pangolearn:
     params:
         tempdir = config[KEY_TEMPDIR]
     output:
-        csv = os.path.join(config[KEY_TEMPDIR],"assignment_report.csv"),
+        csv = os.path.join(config[KEY_OUTDIR],"assignment_report.csv"),
         clade_config = os.path.join(config[KEY_TEMPDIR],"clades.yaml")
     run:
         pangolearn.assign_lineage(input.header,input.model,input.reference,input.fasta,output.csv)
