@@ -24,6 +24,7 @@ setup(name='squirrel',
             'mako',
             'seaborn',
             'pandas',
+            "numpy<2.0.0",#later versions not compatible with newer pandas (which is wild)
             'scikit-learn==1.2.2',
             "PuLP>=2"
         ],
