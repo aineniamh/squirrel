@@ -17,6 +17,7 @@ def setup_config_dict(cwd):
             KEY_OUTFILENAME:None,
 
             KEY_CLADE:"cladeii",
+            KEY_OUTGROUPS:[],
             KEY_ASSIGNED_CLADES:[],
             KEY_APPEND_CLADE_STR:"",
             KEY_SPLIT_CLADE:False,
