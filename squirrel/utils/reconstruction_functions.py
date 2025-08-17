@@ -807,15 +807,13 @@ def find_binary_partition_mask(branch_reconstruction,sep_status,reference,outfil
     
 
 def get_node_parent_branch_names(k):
-    current_node = k
-    if k.branchType == 'leaf':
-        current_node.traits["label"]=k.name
-
-    node_name = current_node.traits["label"]
-    try:
-        parent_name = current_node.parent.traits["label"]
-    except:
-        parent_name = "root"
+    node_name = k.traits["label"]
+    print(k.traits, k.parent.traits)
+    parent_name = ""
+    if node_name == "Node1":
+        parent_name == "root"
+    else:
+        parent_name = k.parent.traits["label"]
         
     branch_name= f"{parent_name}_{node_name}"
     return node_name,parent_name,branch_name
@@ -851,14 +849,16 @@ def annotate_tree(outtree,branch_snps,treefile):
     
     branch_snps_dict = read_in_branch_snps(branch_snps)
     my_tree=bt.loadNexus(treefile,absoluteTime=False)
-
+        
     for k in my_tree.Objects:
         if k.branchType == "leaf":
             k.traits["label"] = k.name
-
-        node_name, parent_name, branch_name = get_node_parent_branch_names(k)
-
-
+        if k.traits["label"] == "Node1":
+            continue
+        parent_name = k.parent.traits["label"]
+        
+        branch_name= f"{parent_name}_{k.traits['label']}"
+        print(branch_name)
         branch_apo,branch_non_apo = 0,0
         branch_apo,branch_non_apo = get_branch_snps(branch_name, branch_snps_dict)
 
@@ -871,16 +871,23 @@ def annotate_tree(outtree,branch_snps,treefile):
         if local_tree:
 
             for node in local_tree.Objects:
+                if node.parent:
+                    if node.branchType == "leaf":
+                        node.traits["label"] = node.name
 
-                local_node_name, local_parent_name, local_branch_name = get_node_parent_branch_names(node)
-                if node.branchType == 'leaf':
-                    
-                    num_tips +=1
-                apo,non_apo = get_branch_snps(local_branch_name, branch_snps_dict)
-                total_apo += len(apo)
-                total_non_apo += len(non_apo)
+                    if node.traits["label"] == "Node1":
+                        continue
 
-    #         print("subtree apo,non-apo",total_apo, total_non_apo)
+                    local_parent_name = node.parent.traits["label"]
+                    local_branch_name= f"{local_parent_name}_{node.traits['label']}"
+
+                    if node.branchType == 'leaf':
+                        
+                        num_tips +=1
+                    apo,non_apo = get_branch_snps(local_branch_name, branch_snps_dict)
+                    total_apo += len(apo)
+                    total_non_apo += len(non_apo)
+
 
             binomial_prob = stats.binom.pmf(total_apo, total_apo+total_non_apo, 0.11)
             total_snps = total_non_apo+total_apo
@@ -890,7 +897,7 @@ def annotate_tree(outtree,branch_snps,treefile):
                 proportion = 1
             else:
                 proportion = "unknown" #adding in unknown category
-    
+
         k.traits["subtree_tips"] = num_tips
         k.traits["subtree_apo_non_apo"] = f"{total_apo}|{total_non_apo}"
         k.traits["subtree_apo"] = f"{total_apo}"
