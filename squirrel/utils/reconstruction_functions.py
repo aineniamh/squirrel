@@ -14,6 +14,8 @@ import datetime as dt
 import csv
 
 import baltic as bt
+from scipy import stats
+
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
@@ -803,3 +805,111 @@ def find_binary_partition_mask(branch_reconstruction,sep_status,reference,outfil
     with open(outfile,"w") as fw:
         fw.write(mask_string + "\n")
     
+
+def get_node_parent_branch_names(k):
+    node_name = k.traits["label"]
+    print(k.traits, k.parent.traits)
+    parent_name = ""
+    if node_name == "Node1":
+        parent_name == "root"
+    else:
+        parent_name = k.parent.traits["label"]
+        
+    branch_name= f"{parent_name}_{node_name}"
+    return node_name,parent_name,branch_name
+
+
+def get_branch_snps(branch, branch_snps_dict):
+    apo = set()
+    non_apo = set()
+    if branch in branch_snps_dict:
+        
+        for s in branch_snps_dict[branch]:
+            site,snp,dimer = s
+            if snp == "G->A":
+                if dimer in ["GA"]:
+                    apo.add(s)
+                else:
+                    non_apo.add(s)
+            elif snp == "C->T":
+                if dimer in ["TC"]:
+                    apo.add(s)
+                else:
+                    non_apo.add(s)
+            elif snp == "A->G" and dimer in ["GG"]:
+                non_apo.add(s)
+            elif snp == "T->C" and dimer in ["TT"]:
+                non_apo.add(s)
+            else:
+                non_apo.add(s)
+    return apo, non_apo
+
+
+def annotate_tree(outtree,branch_snps,treefile):
+    
+    branch_snps_dict = read_in_branch_snps(branch_snps)
+    my_tree=bt.loadNexus(treefile,absoluteTime=False)
+        
+    for k in my_tree.Objects:
+        if k.branchType == "leaf":
+            k.traits["label"] = k.name
+        if k.traits["label"] == "Node1":
+            continue
+        parent_name = k.parent.traits["label"]
+        
+        branch_name= f"{parent_name}_{k.traits['label']}"
+        print(branch_name)
+        branch_apo,branch_non_apo = 0,0
+        branch_apo,branch_non_apo = get_branch_snps(branch_name, branch_snps_dict)
+
+        total_apo = 0
+        total_non_apo = 0
+        proportion = -1
+        binomial_prob = 1
+        local_tree = my_tree.subtree(k)
+        num_tips = 0
+        if local_tree:
+
+            for node in local_tree.Objects:
+                if node.parent:
+                    if node.branchType == "leaf":
+                        node.traits["label"] = node.name
+
+                    if node.traits["label"] == "Node1":
+                        continue
+
+                    local_parent_name = node.parent.traits["label"]
+                    local_branch_name= f"{local_parent_name}_{node.traits['label']}"
+
+                    if node.branchType == 'leaf':
+                        
+                        num_tips +=1
+                    apo,non_apo = get_branch_snps(local_branch_name, branch_snps_dict)
+                    total_apo += len(apo)
+                    total_non_apo += len(non_apo)
+
+
+            binomial_prob = stats.binom.pmf(total_apo, total_apo+total_non_apo, 0.11)
+            total_snps = total_non_apo+total_apo
+            if total_snps:
+                proportion = total_apo/(total_snps)
+            elif total_apo:
+                proportion = 1
+            else:
+                proportion = "unknown" #adding in unknown category
+
+        k.traits["subtree_tips"] = num_tips
+        k.traits["subtree_apo_non_apo"] = f"{total_apo}|{total_non_apo}"
+        k.traits["subtree_apo"] = f"{total_apo}"
+        k.traits["subtree_non_apo"] = f"{total_non_apo}"
+        k.traits["proportion"] = proportion
+        k.traits["binomial11pc"] = binomial_prob
+        k.traits["branch_apo_non_apo"] = f"{len(branch_apo)}|{len(branch_non_apo)}"
+        k.traits["branch_apo"] = f"{len(branch_apo)}"
+        k.traits["branch_non_apo"] = f"{len(branch_non_apo)}"
+
+
+    with open(outtree,"w") as fw:
+        to_write = my_tree.toString(nexus=True,verbose=False)
+        fw.write(to_write)
+
