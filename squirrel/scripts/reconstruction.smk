@@ -11,12 +11,14 @@ if config[KEY_INTERACTIVE_SCRIPT]:
         input:
             os.path.join(config[KEY_OUTDIR],config[KEY_PHYLOGENY]),
             os.path.join(config[KEY_OUTDIR],config[KEY_PHYLOGENY_SVG]),
-            os.path.join(config[KEY_OUTDIR],config[KEY_PHYLOGENY_INTERACTIVE])
+            os.path.join(config[KEY_OUTDIR],config[KEY_PHYLOGENY_INTERACTIVE]),
+            os.path.join(config[KEY_OUTDIR],f"{config[KEY_PHYLOGENY]}.annotated.tree")
 else:
     rule all:
         input:
             os.path.join(config[KEY_OUTDIR],config[KEY_PHYLOGENY]),
-            os.path.join(config[KEY_OUTDIR],config[KEY_PHYLOGENY_SVG])
+            os.path.join(config[KEY_OUTDIR],config[KEY_PHYLOGENY_SVG]),
+            os.path.join(config[KEY_OUTDIR],f"{config[KEY_PHYLOGENY]}.annotated.tree")
 
 rule iqtree:
     input:
@@ -83,6 +85,15 @@ rule reconstruction_analysis:
         # height = recon.get_fig_height(input.alignment)
 
         recon.run_full_analysis(directory, input.alignment, input.tree,input.state_file,config,point_style,point_justify,config[KEY_FIG_WIDTH],config[KEY_FIG_HEIGHT])
+
+rule a3_annotation:
+    input:
+        branch_snps = rules.reconstruction_analysis.output.branch_snps_out,
+        treefile = rules.prune_outgroup.output.tree
+    output:
+        outtree = os.path.join(config[KEY_OUTDIR],f"{config[KEY_PHYLOGENY]}.annotated.tree")
+    run:
+        recon.annotate_tree(output.outtree,input.branch_snps,input.treefile)
 
 rule interactive_tree:
     input:
