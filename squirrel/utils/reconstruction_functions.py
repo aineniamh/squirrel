@@ -896,7 +896,7 @@ def annotate_tree(outtree,branch_snps,treefile):
             elif total_apo:
                 proportion = 1
             else:
-                proportion = "unknown" #adding in unknown category
+                proportion = 0 #adding in unknown category
 
         k.traits["subtree_tips"] = num_tips
         k.traits["subtree_apo_non_apo"] = f"{total_apo}|{total_non_apo}"
