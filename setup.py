@@ -26,7 +26,7 @@ setup(name='squirrel',
             'pandas',
             "numpy<2.0.0",
             'scikit-learn==1.2.2',
-            "PuLP>=2"
+            "PuLP<=2.8"
         ],
       description='Some QUIck Reconstruction to Resolve Evolutionary Links',
       url='https://github.com/aineniamh/squirrel',
