@@ -1,7 +1,6 @@
 from setuptools import setup, find_packages
 import glob
 import os
-import pkg_resources
 
 from squirrel import __version__, _program
 
@@ -18,15 +17,15 @@ setup(name='squirrel',
       package_data={"squirrel":["data/*"]},
       install_requires=[
             "biopython>=1.70",
-            'tabulate==0.8.10',
+            'tabulate',
             'baltic',
-            'matplotlib>=3.3.1',
+            'matplotlib',
             'mako',
             'seaborn',
             'pandas',
-            "numpy<2.0.0",
-            'scikit-learn==1.2.2',
-            "PuLP==2.7.0"
+            "numpy",
+            'scikit-learn',
+            "PuLP"
         ],
       description='Some QUIck Reconstruction to Resolve Evolutionary Links',
       url='https://github.com/aineniamh/squirrel',

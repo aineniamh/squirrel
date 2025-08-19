@@ -20,8 +20,6 @@ from functools import partial
 import inspect
 import textwrap
 
-from snakemake.common import DYNAMIC_FILL
-from snakemake.common import Mode
 
 
 class ColorizingStreamHandler(_logging.StreamHandler):
@@ -40,7 +38,7 @@ class ColorizingStreamHandler(_logging.StreamHandler):
     }
 
     def __init__(
-        self, nocolor=False, stream=sys.stderr, use_threads=False, mode=Mode.default
+        self, nocolor=False, stream=sys.stderr, use_threads=False
     ):
         super().__init__(stream=stream)
 
@@ -51,8 +49,7 @@ class ColorizingStreamHandler(_logging.StreamHandler):
     def can_color_tty(self, mode):
         if "TERM" in os.environ and os.environ["TERM"] == "dumb":
             return False
-        if mode == Mode.subprocess:
-            return True
+        
         return self.is_tty and not platform.system() == "Windows"
 
     @property
@@ -131,29 +128,16 @@ class Logger:
         self.quiet = False
         self.logfile = None
         self.last_msg_was_job_info = False
-        self.mode = Mode.default
         self.show_failed_logs = False
         self.logfile_handler = None
 
     def setup_logfile(self):
-        if self.mode == Mode.default:
-            os.makedirs(os.path.join(".snakemake", "log"), exist_ok=True)
-            self.logfile = os.path.abspath(
-                os.path.join(
-                    ".snakemake",
-                    "log",
-                    datetime.datetime.now().isoformat().replace(":", "")
-                    + ".snakemake.log",
-                )
-            )
 
             self.logfile_handler = _logging.FileHandler(self.logfile)
             self.logger.addHandler(self.logfile_handler)
 
     def cleanup(self):
-        if self.mode == Mode.default and self.logfile_handler is not None:
-            self.logger.removeHandler(self.logfile_handler)
-            self.logfile_handler.close()
+        
         self.log_handler = [self.text_handler]
 
     def get_logfile(self):
@@ -162,9 +146,7 @@ class Logger:
         return self.logfile
 
     def remove_logfile(self):
-        if self.mode == Mode.default:
-            self.logfile_handler.close()
-            os.remove(self.logfile)
+        pass
 
     def handler(self, msg):
         for handler in self.log_handler:
@@ -180,9 +162,7 @@ class Logger:
         self.logger.setLevel(level)
 
     def logfile_hint(self):
-        if self.mode == Mode.default:
-            logfile = self.get_logfile()
-            self.info("Complete log: {}".format(logfile))
+        pass
 
     def location(self, msg):
         callerframerecord = inspect.stack()[1]
@@ -349,7 +329,7 @@ def format_dict(dict_like, omit_keys=[], omit_values=[]):
 
 
 format_resources = partial(format_dict, omit_keys={"_cores", "_nodes"})
-format_wildcards = partial(format_dict, omit_values={DYNAMIC_FILL})
+format_wildcards = partial(format_dict)
 
 
 def format_resource_names(resources, omit_resources="_cores _nodes".split()):
@@ -369,7 +349,6 @@ def setup_logger(
     stdout=False,
     debug=False,
     use_threads=False,
-    mode=Mode.default,
     show_failed_logs=False,
 ):
     logger.log_handler.extend(handler)
