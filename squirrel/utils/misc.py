@@ -52,6 +52,7 @@ def run_snakemake(snake_config,my_snakefile,v,config):
         pshell = True
     with SnakemakeApi(
         OutputSettings(
+            printshellcmds=pshell,
             verbose=v
             # log_handler_settings=custom_logger,
         )
