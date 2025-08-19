@@ -6,7 +6,7 @@ channels:
 dependencies:
   - biopython>=1.74
   - minimap2>=2.16
-  - python=3.10
+  - python>=3.10
   - snakemake-minimal>=9.9.0
   - matplotlib
   - gofasta
