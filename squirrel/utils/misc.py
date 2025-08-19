@@ -23,7 +23,7 @@ from snakemake.api import (
     ExecutionSettings
 )
 
-import squirrel.utils.custom_logger as custom_logger
+# import squirrel.utils.custom_logger as custom_logger
 
 # def run_snakemake(snake_config,snakefile,verbose,config):
 #     if verbose:
@@ -46,13 +46,14 @@ import squirrel.utils.custom_logger as custom_logger
 #     return status
 
 
-def run_snakemake(snake_config,my_snakefile,verbose,config):
+def run_snakemake(snake_config,my_snakefile,v,config):
+    pshell = False
+    if v:
+        pshell = True
     with SnakemakeApi(
         OutputSettings(
-            printshellcmds=True,
-            quiet=False,
-            verbose=True,
-            log_handler_settings=custom_logger,
+            verbose=v
+            # log_handler_settings=custom_logger,
         )
     ) as snakemake_api:
         try:
