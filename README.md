@@ -108,6 +108,19 @@ squirrel --clade cladei --run-phylo --outgroups KJ642617,KJ642615 ./test/cladeI_
 
 Squirrel has the optional `--run-phylo` and `--run-apobec3-phylo` modes that will take the newly generated alignment and build a maximum likelihood phylogeny using [IQTREE2](https://doi.org/10.1093/molbev/msaa015). With  `--run-apobec3-phylo` mode, it also runs IQTREE ancestral state reconstruction (`-asr`), and parses the output state files, providing a branch-mapped summary of SNPs that have occurred across the phylogeny, and an output phylogeny figure with SNPs plotted along branches, coloured by whether SNPs are consistent with APOBEC3-editing or not (red for APOBEC3-like mutations and yellow for other mutations). An outgroup (or multiple outgroups) must be specified (although this is handled internally in `--include-background` mode) to ensure correct rooting for the ancestral state reconstruction. If `--cns-qc` mode is on in conjunction with phylogenetics, reversions to reference and convergent SNPs are also flagged using the reconstruction.
 
+### Automatically select outgroup if no outgroup specified
+If no outgroup is specified squirrel will now automatically pull out the background sequences from the relevant clade and select the appropriate outgroup from the background set.  This outgroup will be pruned from the final output tree, so will not be seen in the output file.
+
+The respective outgroups automatically selected from the background set are:
+```
+    cladei: "KJ642615|human|Nigeria||1978"
+    cladeia: "KJ642615|human|Nigeria||1978"
+    cladeib: "KJ642613|human|DRC|Equateur|1970-09-01"
+    cladeii: "KJ642613|human|DRC|Equateur|1970-09-01"
+    cladeiia: "KJ642613|human|DRC|Equateur|1970-09-01"
+    cladeiib: "KJ642615|human|Nigeria||1978"
+```
+
 ### Automatically include background and outgroups with include-background mode 
 
 The squirrel software has a set of publically available MPXV genome sequences that include representatives of CladeIa, CladeIb, Clade IIa and CladeIIb. The sequences, the Genbank accession numbers and their clade annotations can be found in [background_sample.csv](https://github.com/aineniamh/squirrel/blob/main/squirrel/data/background_sample.csv) and [background.fasta](https://github.com/aineniamh/squirrel/blob/main/squirrel/data/background.fasta).
