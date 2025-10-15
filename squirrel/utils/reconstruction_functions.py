@@ -897,17 +897,24 @@ def annotate_tree(outtree,branch_snps,treefile):
                 proportion = 1
             else:
                 proportion = 0 #adding in unknown category
+        branch_total_snps = len(branch_apo) + len(branch_non_apo)
+        if branch_total_snps:
+            branch_prop = len(branch_apo)/branch_total_snps
+        elif len(branch_apo):
+            branch_prop = 1
+        else:
+            branch_prop = 0
 
         k.traits["subtree_tips"] = num_tips
         k.traits["subtree_apo_non_apo"] = f"{total_apo}|{total_non_apo}"
         k.traits["subtree_apo"] = f"{total_apo}"
         k.traits["subtree_non_apo"] = f"{total_non_apo}"
-        k.traits["proportion"] = proportion
+        k.traits["subtree_proportion"] = proportion
         k.traits["binomial11pc"] = binomial_prob
         k.traits["branch_apo_non_apo"] = f"{len(branch_apo)}|{len(branch_non_apo)}"
         k.traits["branch_apo"] = f"{len(branch_apo)}"
         k.traits["branch_non_apo"] = f"{len(branch_non_apo)}"
-
+        k.traits["branch_proportion"] = branch_prop
 
     with open(outtree,"w") as fw:
         to_write = my_tree.toString(nexus=True,verbose=False)
