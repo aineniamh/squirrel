@@ -1,5 +1,5 @@
 _program = "squirrel"
-__version__ = "1.2.2"
+__version__ = "2.0"
 
 
 __all__ = ["utils"]

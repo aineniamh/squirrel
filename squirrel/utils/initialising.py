@@ -2,7 +2,7 @@
 import os
 import sys
 import itertools
-import pkg_resources
+import importlib.resources
 from Bio import SeqIO
 
 from squirrel.utils.log_colours import green,cyan
@@ -68,7 +68,8 @@ def get_script(thisdir, filename):
 def package_data_check(filename,directory,key,config):
     try:
         package_datafile = os.path.join(directory,filename)
-        data = pkg_resources.resource_filename('squirrel', package_datafile)
+        resource_path = importlib.resources.files('squirrel').joinpath(package_datafile)
+        data = os.path.join(resource_path)
         config[key] = data
     except:
         sys.stderr.write(cyan(f'Error: Missing package data.')+f'\n\t- {filename}\n')
