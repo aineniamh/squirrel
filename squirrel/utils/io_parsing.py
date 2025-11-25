@@ -301,10 +301,20 @@ def find_background_file(cwd,input_fasta,background_file,config):
 def qc_fasta_file(input_fasta_file):
     special_characters = ["'",'"',"{","(",")",";",",","}","[","]","`","%","#",":","\n","\t"]
     special_record = collections.defaultdict(set)
+    
+    entirely_N = 0
+    num_seqs = 0
+
     for record in SeqIO.parse(input_fasta_file,"fasta"):
+        num_seqs +=1
+        unique = ''.join(set(str(record.seq)))
+        if unique=="N":
+            entirely_N +=1
+
         for special_character in special_characters:
             if special_character in record.id:
                 special_record[record.id].add(special_character)
+        
     if special_record:
         sys.stderr.write(cyan(f'Error: special characters in the follow sequence IDs:\n'))
         
@@ -316,6 +326,12 @@ def qc_fasta_file(input_fasta_file):
             sys.stderr.write(f"{i} contains: `{characters}`\n")
         sys.stderr.write(cyan(f'Please remove these characters to correct the sequence IDs and try again.\n'))
         sys.exit(-1)
+
+    if num_seqs == entirely_N:
+        sys.stderr.write(cyan(f'Error: all sequences entered consist of entirely ambiguous bases. Please check input FASTA file and try again.\n'))
+        sys.exit(-1)
+    elif entirely_N:
+        sys.stderr.write(cyan(f'Warning: {entirely_N} of {num_seqs} sequences entered consist of entirely ambiguous bases.\n'))
 
 def set_up_clade(clade,config):
     if clade:
