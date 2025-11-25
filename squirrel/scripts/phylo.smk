@@ -21,7 +21,7 @@ rule iqtree:
     shell:
         """
         cp {input.aln:q} {output.temp_aln:q} && 
-        iqtree  -s {output.temp_aln:q} \
+        iqtree2  -s {output.temp_aln:q} \
                 -m HKY \
                 -czb \
                 -nt {params.threads} \
