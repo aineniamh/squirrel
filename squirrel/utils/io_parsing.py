@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import sys
 import os
+import collections
 from squirrel.utils.log_colours import green,cyan
 import select
 from Bio import SeqIO
@@ -297,6 +298,41 @@ def find_background_file(cwd,input_fasta,background_file,config):
 
     return new_input_fasta
 
+def qc_fasta_file(input_fasta_file):
+    special_characters = ["'",'"',"{","(",")",";",",","}","[","]","`","%","#",":","\n","\t"]
+    special_record = collections.defaultdict(set)
+    
+    entirely_N = 0
+    num_seqs = 0
+
+    for record in SeqIO.parse(input_fasta_file,"fasta"):
+        num_seqs +=1
+        unique = ''.join(set(str(record.seq)))
+        if unique=="N":
+            entirely_N +=1
+
+        for special_character in special_characters:
+            if special_character in record.id:
+                special_record[record.id].add(special_character)
+        
+    if special_record:
+        sys.stderr.write(cyan(f'Error: special characters in the follow sequence IDs:\n'))
+        
+        for i in special_record:
+            characters = ""
+            for j in special_record[i]:
+                characters+=f"{j} "
+                characters=characters.rstrip()
+            sys.stderr.write(f"{i} contains: `{characters}`\n")
+        sys.stderr.write(cyan(f'Please remove these characters to correct the sequence IDs and try again.\n'))
+        sys.exit(-1)
+
+    if num_seqs == entirely_N:
+        sys.stderr.write(cyan(f'Error: all sequences entered consist of entirely ambiguous bases. Please check input FASTA file and try again.\n'))
+        sys.exit(-1)
+    elif entirely_N:
+        sys.stderr.write(cyan(f'Warning: {entirely_N} of {num_seqs} sequences entered consist of entirely ambiguous bases.\n'))
+
 def set_up_clade(clade,config):
     if clade:
         config[KEY_CLADE] = clade
@@ -415,7 +451,37 @@ def parse_tf_options(tree_figure_only,tree_file,branch_reconstruction_file,width
             sys.exit(-1)
         config[KEY_BRANCH_RECONSTRUCTION] = branch_reconstruction
 
+def find_precomputed_file(cwd,filename,filetype,configkey,config):
+    path_to_try = os.path.join(cwd,filename)
 
+    if not os.path.exists(path_to_try):
+        sys.stderr.write(cyan(f'Error: cannot find {filetype} at: ') + f'{path_to_try}\n' + cyan('Please check file path and try again.\n'))
+        sys.exit(-1)
+    else:
+        config[configkey] = path_to_try
+
+def just_reconstruction_setup(treefile,statefile,alignment,cwd,config):
+
+    if not treefile and statefile and alignment:
+        sys.stderr.write(cyan(f'Error: must supply `-at/--asr-tree`, `-as/--asr-state` and `-aln/--asr-alignment` files.\n'))
+        sys.exit(-1)
+
+    find_precomputed_file(cwd,treefile,"treefile",KEY_ASR_TREE,config)
+    find_precomputed_file(cwd,statefile,"state file",KEY_ASR_STATE,config)
+    find_precomputed_file(cwd,alignment,"alignment",KEY_ASR_ALIGNMENT,config)
+
+    treefile_name = treefile.split("/")[-1]
+    config[KEY_PHYLOGENY] = treefile_name
+    config[KEY_PHYLOGENY_SVG] = f"{treefile_name}.svg"
+
+    grantham_scores_file = config[KEY_GRANTHAM_SCORES]
+    gene_boundaries_file = config[KEY_GENE_BOUNDARIES]
+
+    print(green("Supplied ASR tree file:"),config[KEY_ASR_TREE])
+    print(green("Supplied ASR state file:"),config[KEY_ASR_STATE])
+    print(green("Supplied ASR alignment file:"),config[KEY_ASR_ALIGNMENT])
+
+    
 def phylo_options(run_phylo,run_apobec3_phylo,outgroups,include_background,binary_partition_mask,input_fasta,clade,config):
     config[KEY_RUN_PHYLO] = run_phylo
 

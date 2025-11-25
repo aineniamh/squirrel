@@ -51,6 +51,9 @@ KEY_INTERACTIVE_SCRIPT = "interactive_script"
 
 KEY_TREE = "tree"
 KEY_BRANCH_RECONSTRUCTION = "branch_reconstruction"
+KEY_ASR_TREE = "asr_tree"
+KEY_ASR_STATE = "asr_state"
+KEY_ASR_ALIGNMENT = "asr_alignment"
 
 KEY_FIG_HEIGHT = "fig_height"
 KEY_FIG_WIDTH = "fig_width"

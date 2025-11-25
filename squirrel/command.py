@@ -57,6 +57,9 @@ def main(sysargs = sys.argv[1:]):
     p_group.add_argument("-bf","--background-file",action="store",help="Include this additional FASTA file as background to the phylogenetics.")
     p_group.add_argument("-bm","--binary-partition-mask",action="store_true",help="Calculate and write binary partition mask")
     p_group.add_argument("--bm-separate-dimers",action="store_true",help="Write partition mask with 0 for non-apo, 1 for GA and 2 for TC target sites")
+    p_group.add_argument("-at","--asr-tree",action="store",help="Precomputed tree with ancestral states reconstructed")
+    p_group.add_argument("-as","--asr-state",action="store",help="Precomputed ancestral states file")
+    p_group.add_argument("-aln","--asr-alignment",action="store",help="Precomputed alignment file")
 
     pf_group = parser.add_argument_group("Tree figure options")
     pf_group.add_argument("-tfig","--tree-figure-only",action="store_true",help="Re-render tree figure custom height and width arguments. Requires: tree file, branch reconstruction file, height, width.")
@@ -85,6 +88,7 @@ def main(sysargs = sys.argv[1:]):
     
     io.set_up_clade(args.clade,config)
     get_global_datafiles(config)
+
     config["version"] = __version__
     
     io.set_up_threads(args.threads,config)
@@ -98,6 +102,31 @@ def main(sysargs = sys.argv[1:]):
         print(green("Success! New tree figure written."))
         sys.exit(0)
     
+    if args.asr_tree or args.asr_state or args.asr_alignment:
+        
+        if config[KEY_CLADE] == "split":
+            sys.stderr.write(cyan(f'Error: `split` clade cannot be run with supplied tree and state files.\n'))
+            sys.exit(-1)
+        else:
+            get_datafiles(config)
+
+        io.just_reconstruction_setup(args.asr_tree,args.asr_state,args.asr_alignment,cwd,config)
+        
+        recon.run_full_analysis(config[KEY_OUTDIR], 
+                                config[KEY_ASR_ALIGNMENT], 
+                                config[KEY_ASR_TREE],
+                                config[KEY_ASR_STATE],
+                                config,
+                                config[KEY_POINT_STYLE],
+                                config[KEY_POINT_JUSTIFY],
+                                config[KEY_FIG_WIDTH],
+                                config[KEY_FIG_HEIGHT])
+
+        print(green("Success! APOBEC3 reconstruction complete."))
+        sys.exit(0)
+
+
+
     config[KEY_OUTFILE_STEM],config[KEY_OUTDIR] = io.set_up_outfile_stem(args.outfile,cwd,args.input, config[KEY_OUTDIR])
     io.set_up_tempdir(args.tempdir,args.no_temp,cwd,config[KEY_OUTDIR], config)#outfile_arg, cwd, query_arg, outfile, outdir
 
@@ -111,6 +140,8 @@ def main(sysargs = sys.argv[1:]):
     if args.exclude:
         config[KEY_INPUT_FASTA] = io.find_exclude_file(cwd,config[KEY_INPUT_FASTA],args.exclude,config)
 
+    io.qc_fasta_file(config[KEY_INPUT_FASTA])
+    
     if config[KEY_CLADE] == "split":
 
         clade_snakefile = get_script(thisdir,"clade.smk")
