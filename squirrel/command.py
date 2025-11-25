@@ -111,6 +111,8 @@ def main(sysargs = sys.argv[1:]):
     if args.exclude:
         config[KEY_INPUT_FASTA] = io.find_exclude_file(cwd,config[KEY_INPUT_FASTA],args.exclude,config)
 
+    io.qc_fasta_file(config[KEY_INPUT_FASTA])
+    
     if config[KEY_CLADE] == "split":
 
         clade_snakefile = get_script(thisdir,"clade.smk")

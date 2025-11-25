@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import sys
 import os
+import collections
 from squirrel.utils.log_colours import green,cyan
 import select
 from Bio import SeqIO
@@ -296,6 +297,25 @@ def find_background_file(cwd,input_fasta,background_file,config):
     print("Number of background sequences:",c)
 
     return new_input_fasta
+
+def qc_fasta_file(input_fasta_file):
+    special_characters = ["'",'"',"{","(",")",";",",","}","[","]","`","%","#",":","\n","\t"]
+    special_record = collections.defaultdict(set)
+    for record in SeqIO.parse(input_fasta_file,"fasta"):
+        for special_character in special_characters:
+            if special_character in record.id:
+                special_record[record.id].add(special_character)
+    if special_record:
+        sys.stderr.write(cyan(f'Error: special characters in the follow sequence IDs:\n'))
+        
+        for i in special_record:
+            characters = ""
+            for j in special_record[i]:
+                characters+=f"{j} "
+                characters=characters.rstrip()
+            sys.stderr.write(f"{i} contains: `{characters}`\n")
+        sys.stderr.write(cyan(f'Please remove these characters to correct the sequence IDs and try again.\n'))
+        sys.exit(-1)
 
 def set_up_clade(clade,config):
     if clade:
