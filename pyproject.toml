@@ -15,7 +15,7 @@ dependencies = [
     'pandas~=2.3.1',
     "numpy",
     'scikit-learn==1.7.1',
-    "PuLP"
+    "PuLP",
 ]
 authors = [
   { name="Aine OToole", email="aine.otoole@ed.ac.uk" },

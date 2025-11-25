@@ -1,9 +1,6 @@
 from setuptools import setup, find_packages
 
-from squirrel import __version__, _program
-
 setup(name='squirrel',
-      version=__version__,
       packages=find_packages(),
       scripts=[
             'squirrel/scripts/msa.smk',
@@ -12,4 +9,5 @@ setup(name='squirrel',
             'squirrel/scripts/reconstruction.smk',
             'squirrel/scripts/interactive_tree.R'
       ],
-      package_data={"squirrel":["data/*"]})
+      package_data={"squirrel":["data/*"]}
+      )
