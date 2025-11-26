@@ -303,6 +303,11 @@ The alignment file, with alignment scaffolded against a clade-specific reference
 
 The output maximum likelihood tree file from IQTREE2 with Node labels that correspond to the reconstruction Node labels. This tree can be viewed in various tree viewers, for example FigTree. 
 
+- `sequences.aln.annotated.tree`
+
+The output maximum likelihood tree file from IQTREE2 with annotations on branches that describe the APOBEC3-reconstrucion results. This tree can be viewed in various tree viewers, for example FigTree. 
+
+
 - `sequences.aln.tree.state` and `sequences.aln.tree.state_differences.csv`
 
 The output ancestral state reconstruction file from IQTREE2 and the compiled list of unambiguously variable sites from squirrel.
