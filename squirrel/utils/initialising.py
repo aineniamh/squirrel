@@ -114,7 +114,7 @@ def get_datafiles(config):
     gene_boundaries_file = ""
     mask_file = ""
     if clade in ["cladei","cladeia","cladeib"]:
-        fasta_filename = "NC_003310.fasta"
+        fasta_filename = "PX667572.fasta"
         mask_file = "to_mask.cladei.csv"
         gene_boundaries_file = "gene_boundaries.cladei.csv"
     elif clade in ["cladeii","cladeiia","cladeiib"]:
