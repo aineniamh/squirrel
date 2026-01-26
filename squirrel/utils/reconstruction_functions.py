@@ -66,7 +66,7 @@ def get_node_states_all_sites(state_file,alignment):
     for record in SeqIO.parse(alignment,"fasta"):
         for site in node_states:
             index = int(site)-1
-            base = record.seq[index]
+            base = record.seq[index].upper()
             if base in ["T","C","A","G"]:
                 node_states[site].append((record.id,base))
             else:
