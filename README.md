@@ -47,6 +47,8 @@ If you input sequences that are entirely N or very short, squirrel may fail to a
 
 Some of the phylogenetic software within squirrel (iqtree, baltic) will modify or break with particular special characters in the sequence names. Squirrel will check for these special characters in the sequence names and report back if it finds any to help you curate your alignment. Special characters that we check for are: ``` ' " { ( [ ] ) } ; , ` % # : \n \t ```, however accented letters etc may also distrupt the software. For best practice, please exclude special characters from sequence names.
 
+Squirrel can also run a pan-clade alignment option, which aligns against a pan-clade composite consensus reference generated from a pairwise alignment of PX667572 and NC_063383.
+
 ## Masking
 
 The final alignment from squirrel has additional processing steps that includes various masking options. By default, squirrel trims the alignment to 190788 at the end of the genome to mask out one of the inverted terminal repeat (ITR) regions and pads the end of the genome with `N`. This can be disabled with the `--no-itr-mask` flag.
