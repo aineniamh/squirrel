@@ -134,7 +134,8 @@ def get_datafiles(config):
     elif clade=="split":
         pass
     else:
-        sys.stderr.write(cyan(f'Error: invalid clade specified. Please specify one of `cladei`, `cladeia`,`cladeib`, `cladeii`, `cladeiia`,`cladeiib`,`variola`,`panclade` or `split`\n'))
+        sys.stderr.write(cyan(
+            f'Error: clade must be one of {VALUE_VALID_CLADES}.\n'))
         sys.exit(-1)
 
     resources = [
