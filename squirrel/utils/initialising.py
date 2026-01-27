@@ -126,10 +126,15 @@ def get_datafiles(config):
         fasta_filename = "NC_001611.fasta"
         mask_file = "to_mask.NC_001611.csv"
         gene_boundaries_file = "gene_boundaries.NC_001611.csv"
+    elif clade=="panclade":
+        config[KEY_TRIM_END] = 193610
+        fasta_filename = "pan_clade.cns.fasta"
+        mask_file = "to_mask.pan_clade.csv"
+        gene_boundaries_file = "gene_boundaries.pan_clade.csv"
     elif clade=="split":
         pass
     else:
-        sys.stderr.write(cyan(f'Error: invalid clade specified. Please specify one of `cladei`, `cladeia`,`cladeib`, `cladeii`, `cladeiia`,`cladeiib`\n'))
+        sys.stderr.write(cyan(f'Error: invalid clade specified. Please specify one of `cladei`, `cladeia`,`cladeib`, `cladeii`, `cladeiia`,`cladeiib`,`variola`,`panclade` or `split`\n'))
         sys.exit(-1)
 
     resources = [
