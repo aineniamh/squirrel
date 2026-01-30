@@ -4,8 +4,19 @@
 
 <img src="./docs/squirrel_logo.svg" width="400">
 
+## Data use
 
-Why use squirrel? 
+Squirrel used open data to train the clade assignment random forest model. This data was accessed through [Pathoplexus](https://pathoplexus.org/) and the *Sequence Set* used for training can be accessed at https://doi.org/10.62599/PP_SS_529.1. 
+
+## How to cite:
+   
+If you use squirrel in your research, please cite the Squirrel paper, which is now published in Virus Evolution: 
+
+Áine O’Toole, Eddy Kinganda-Lusamaki, Rachel Colquhoun, Connor Chato, Emily Scher, Chris Kent, Sam Wilkinson, Joshua Quick, Nicholas Loman, Ana T Duggan, Placide Mbala, Andrew Rambaut, Human outbreak detection and best practice MPXV analysis and interpretation with squirrel, Virus Evolution, Volume 12, Issue 1, 2026, veaf095, https://doi.org/10.1093/ve/veaf095
+
+
+
+## Why use squirrel? 
 
 The MPXV genome is pretty challenging to work with and do reliable phylogenetics on. It is large (~200kb), has tracts of low complexity and repetitive regions, and has large deletions, which can lead to difficulties producing a reliable alignment. With squirrel, we provide a rapid way of producing reliable [alignments](#how-it-works---alignment) for MPXV and also enable maximum-likelihood [phylogenetics pipeline](#phylogenetics-options-within-squirrel) tree estimation.
 
