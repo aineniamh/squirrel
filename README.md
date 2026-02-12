@@ -309,7 +309,7 @@ There are several options for customizing the final APOBEC3-reconstruction tree 
 
 - **`sequences.aln.tree.amino_acid.reconstruction.csv`** - A report of each mutation that occurs across the phylogeny: location, dinucleotide context, APOBEC3 status, gene, codon position, amino acid change, and Grantham score.
 
-### Visualization Files
+### Visualisation Files
 
 - **`sequences.aln.tree.png`** and **`sequences.aln.tree.svg`** - Visualization of reconstructed tree showing whether mutations are consistent with APOBEC3 editing or not (red for APOBEC3-like mutations, yellow for other mutations).
 
@@ -317,7 +317,7 @@ There are several options for customizing the final APOBEC3-reconstruction tree 
 
 ---
 
-## Full U
+
 ## Installation
 
 Install from bioconda with `conda` or `mamba`, e.g. `conda create -c bioconda -c conda-forge -n squirrel -y squirrel`.
