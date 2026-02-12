@@ -6,7 +6,6 @@
 
 <img src="./docs/squirrel_logo.svg" width="400">
 
-[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 </div>
 
