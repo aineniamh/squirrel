@@ -6,7 +6,17 @@
 
 <img src="./docs/squirrel_logo.svg" width="400">
 
+## Data use
 
+Squirrel used open data to train the clade assignment random forest model. This data was accessed through [Pathoplexus](https://pathoplexus.org/) and the *Sequence Set* used for training can be accessed at https://doi.org/10.62599/PP_SS_529.1. 
+
+## How to cite:
+   
+If you use squirrel in your research, please cite the Squirrel paper, which is now published in Virus Evolution: 
+
+Áine O’Toole, Eddy Kinganda-Lusamaki, Rachel Colquhoun, Connor Chato, Emily Scher, Chris Kent, Sam Wilkinson, Joshua Quick, Nicholas Loman, Ana T Duggan, Placide Mbala, Andrew Rambaut, Human outbreak detection and best practice MPXV analysis and interpretation with squirrel, Virus Evolution, Volume 12, Issue 1, 2026, veaf095, https://doi.org/10.1093/ve/veaf095
+
+  
 </div>
 
 ---
@@ -78,6 +88,7 @@ squirrel -v
 
 You should see the version of squirrel.
 
+
 ---
 
 ## How It Works
@@ -132,6 +143,8 @@ With `--run-apobec3-phylo` mode, it also runs IQTREE ancestral state reconstruct
 An outgroup (or multiple outgroups) must be specified (although this is handled internally in `--include-background` mode) to ensure correct rooting for the ancestral state reconstruction. If `--cns-qc` mode is on in conjunction with phylogenetics, reversions to reference and convergent SNPs are also flagged using the reconstruction.
 
 ---
+
+Squirrel can also run a pan-clade alignment option, which aligns against a pan-clade composite consensus reference generated from a pairwise alignment of PX667572 and NC_063383.
 
 ## Masking
 
