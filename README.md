@@ -1,3 +1,5 @@
+![bioconda downloads](https://anaconda.org/bioconda/squirrel/badges/downloads.svg)
+
 <div align="center">
 
 # squirrel
